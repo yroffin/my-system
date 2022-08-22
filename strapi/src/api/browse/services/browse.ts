@@ -76,6 +76,8 @@ export default class BrowseService {
                 data: {
                     uid: node.id,
                     label: node.label,
+                    x: node.x,
+                    y: node.y,
                     graphs: newGraph.id
                 }
             });

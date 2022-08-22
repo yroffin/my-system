@@ -149,7 +149,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       let label = this.graph.getEdgeAttribute(edge, 'label');
       let source = this.graph.getEdgeAttribute(edge, 'source');
       let target = this.graph.getEdgeAttribute(edge, 'target');
-      this.xml.push(`<edge id="${uid}" source="${source} target="${target} label="${label}" />`);
+      this.xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" />`);
     });
     this.xml.push(`</edges>`);
     this.xml.push(`</graph>`);
