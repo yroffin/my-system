@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,23 +15,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { StoreModule } from '@ngrx/store';
 
 import { modulesReducer } from './stats/module.reducer';
-import { HttpClientModule } from '@angular/common/http';
-import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
-
-import { ButtonModule } from 'primeng/button'
-import { InputTextModule } from 'primeng/inputtext'
-import { MenubarModule } from 'primeng/menubar'
-import { OverlayPanelModule } from 'primeng/overlaypanel'
-import { TabViewModule } from 'primeng/tabview'
-import { TooltipModule } from 'primeng/tooltip'
-import { CheckboxModule } from 'primeng/checkbox'
-import { CytoscapeAngularModule } from 'cytoscape-angular'
+import { graphsReducer } from './stats/graph.reducer';
 
 @NgModule({
   declarations: [
     AppComponent,
     ModuleComponent,
-    CytoscapeComponent
   ],
   imports: [
     BrowserModule,
@@ -43,17 +33,7 @@ import { CytoscapeAngularModule } from 'cytoscape-angular'
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    // Primeng
-    ButtonModule,
-    InputTextModule,
-    MenubarModule,
-    OverlayPanelModule,
-    TabViewModule,
-    TooltipModule,
-    CheckboxModule,
-    // Cytoscape
-    CytoscapeAngularModule,
-    StoreModule.forRoot({ modules: modulesReducer })
+    StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

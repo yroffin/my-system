@@ -1,0 +1,37 @@
+{
+    "kind": "collectionType",
+    "collectionName": "edges",
+    "info": {
+        "singularName": "edge",
+        "pluralName": "edges",
+        "displayName": "Edge",
+        "description": ""
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "label": {
+            "type": "string"
+        },
+        "source": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::node.node",
+            "inversedBy": "sources"
+        },
+        "target": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::node.node",
+            "inversedBy": "targets"
+        },
+        "graph": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::graph.graph",
+            "inversedBy": "edges"
+        }
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "kind": "collectionType",
+    "collectionName": "graphs",
+    "info": {
+        "singularName": "graph",
+        "pluralName": "graphs",
+        "displayName": "Graph",
+        "description": ""
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "label": {
+            "type": "string"
+        },
+        "nodes": {
+            "type": "relation",
+            "relation": "oneToMany",
+            "target": "api::node.node",
+            "mappedBy": "graph"
+        },
+        "edges": {
+            "type": "relation",
+            "relation": "oneToMany",
+            "target": "api::edge.edge",
+            "mappedBy": "graph"
+        }
+    }
+}

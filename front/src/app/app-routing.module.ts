@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CytoscapeComponent } from './components/cytoscape/cytoscape.component';
+import { GraphComponent } from './components/graph/graph.component';
 import { ModuleComponent } from './components/module/module.component';
 
 const routes: Routes = [
   { path: 'modules', component: ModuleComponent },
-  { path: 'cytoscape', component: CytoscapeComponent }
+  { path: 'graph', component: GraphComponent }
 ];
 
 @NgModule({

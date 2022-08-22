@@ -13,7 +13,7 @@ export class ModuleService {
     getModules(): Observable<Array<Module>> {
         return this.http
             .get<PageResultSet<Module>>(
-                'http://localhost:1337/api/browse/graph'
+                'http://localhost:1337/api/browse/module'
             )
             .pipe(map((modules) => modules.results || []));
     }

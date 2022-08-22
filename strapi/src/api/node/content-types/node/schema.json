@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nodes",
+  "info": {
+    "singularName": "node",
+    "pluralName": "nodes",
+    "displayName": "Node",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::edge.edge",
+      "mappedBy": "source"
+    },
+    "targets": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::edge.edge",
+      "mappedBy": "target"
+    },
+    "graph": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::graph.graph",
+      "inversedBy": "nodes"
+    },
+    "x": {
+      "type": "float"
+    },
+    "y": {
+      "type": "float"
+    },
+    "size": {
+      "type": "float"
+    },
+    "color": {
+      "type": "string"
+    }
+  }
+}

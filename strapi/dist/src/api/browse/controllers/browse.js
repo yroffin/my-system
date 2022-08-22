@@ -10,7 +10,7 @@ const browse_1 = __importDefault(require("../services/browse"));
 exports.default = {
     graph: async (ctx, next) => {
         try {
-            ctx.body = await browse_1.default.findAll();
+            ctx.body = await browse_1.default.browseGraph(ctx.query.label);
         }
         catch (err) {
             ctx.status = 500;
