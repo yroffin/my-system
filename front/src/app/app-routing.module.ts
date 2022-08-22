@@ -5,7 +5,7 @@ import { ModuleComponent } from './components/module/module.component';
 
 const routes: Routes = [
   { path: 'modules', component: ModuleComponent },
-  { path: 'graph', component: GraphComponent }
+  { path: 'graph/:label', component: GraphComponent }
 ];
 
 @NgModule({

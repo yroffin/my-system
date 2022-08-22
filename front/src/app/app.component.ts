@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,32 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'front';
+  items: MenuItem[] = [];
+
+  ngOnInit() {
+    this.items = [
+        {
+            label: 'File',
+            items: [{
+                    label: 'New', 
+                    icon: 'pi pi-fw pi-plus',
+                    items: [
+                        {label: 'Project'},
+                        {label: 'Other'},
+                    ]
+                },
+                {label: 'Open'},
+                {label: 'Quit'}
+            ]
+        },
+        {
+            label: 'Graph',
+            icon: 'pi pi-fw pi-pencil',
+            items: [
+                {label: 'Default', icon: 'pi pi-fw pi-trash', routerLink: '/graph/Default'},
+                {label: 'Another', icon: 'pi pi-fw pi-refresh', routerLink: '/graph/Another'}
+            ]
+        }
+    ];
+}
 }

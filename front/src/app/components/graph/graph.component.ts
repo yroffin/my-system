@@ -2,12 +2,13 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Store } from '@ngrx/store';
 import Graph from 'graphology';
 import ForceSupervisor from "graphology-layout-force/worker";
+import noverlap from 'graphology-layout-noverlap';
 import Sigma from 'sigma';
-import { SysGraph, SysNode } from 'src/app/models/graph';
 import { GraphService } from 'src/app/services/graph.service';
 import { selectGraphs } from 'src/app/stats/graph.selectors';
 import * as _ from 'lodash';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-graph',
@@ -22,7 +23,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   graphs$ = this.store.select(selectGraphs);
 
-  constructor(private graphsService: GraphService,
+  constructor(private http: HttpClient,private graphsService: GraphService,
     private store: Store) {
     this.graphs$.subscribe(graphs => {
       if (!graphs || graphs.length === 0) {
@@ -58,6 +59,23 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const renderer = new Sigma(this.graph, this.myGraph?.nativeElement, {
       renderEdgeLabels: true
     });
+  }
+
+   uploadHandler(event: any): void {
+
+    let reader = new FileReader();
+    reader.addEventListener("loadend",  () => { 
+      let data = reader.result; 
+       this.http
+            .post(
+                `http://localhost:1337/api/browse/graph?label=Default`, data
+            ).subscribe(result => {
+
+            });
+    });
+    reader.readAsText(event.files[0])
+
+
   }
 
   @HostListener('window:beforeunload', ['$event'])

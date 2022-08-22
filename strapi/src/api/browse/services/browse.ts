@@ -22,6 +22,7 @@ export default class BrowseService {
             graph.nodes = await Promise.all(_.map(graph.nodes, async (node) => {
                 let _node: any = await strapi.service<CollectionTypeService>('api::node.node').findOne(node.id, {
                     populate: {
+                        tags: true,
                     }
                 });
                 return _node;
@@ -29,6 +30,7 @@ export default class BrowseService {
             graph.edges = await Promise.all(_.map(graph.edges, async (edge) => {
                 let _edge: any = await strapi.service<CollectionTypeService>('api::edge.edge').findOne(edge.id, {
                     populate: {
+                        tags: true,
                         source: true,
                         target: true
                     }
@@ -40,5 +42,10 @@ export default class BrowseService {
         return {
             results: result
         }
+    }
+
+    public static async loadGraph(graphLabel: string, data: string): Promise<any> {
+        console.log(data);
+        return {}
     }
 }

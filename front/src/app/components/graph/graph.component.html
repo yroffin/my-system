@@ -12,4 +12,5 @@
     }
 </style>
 
+<p-fileUpload name="myfile[]" [customUpload]="true" (uploadHandler)="uploadHandler($event)"></p-fileUpload>
 <div #myGraph class="sigma-container"></div>

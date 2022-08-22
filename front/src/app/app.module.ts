@@ -12,15 +12,21 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+
+import {MenubarModule} from 'primeng/menubar';
+import {FileUploadModule} from 'primeng/fileupload';
+
 import { StoreModule } from '@ngrx/store';
 
 import { modulesReducer } from './stats/module.reducer';
 import { graphsReducer } from './stats/graph.reducer';
+import { GraphComponent } from './components/graph/graph.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ModuleComponent,
+    GraphComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +39,9 @@ import { graphsReducer } from './stats/graph.reducer';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    // PrimeNg
+    MenubarModule,
+    FileUploadModule,
     StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer })
   ],
   providers: [],

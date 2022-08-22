@@ -10,6 +10,11 @@ exports.default = {
                 policies: [],
                 middlewares: [],
             },
+        },
+        {
+            method: 'POST',
+            path: '/browse/graph',
+            handler: 'browse.load',
         }
     ],
 };

@@ -27,11 +27,11 @@
             "target": "api::edge.edge",
             "mappedBy": "target"
         },
-        "graph": {
+        "graphs": {
             "type": "relation",
-            "relation": "manyToOne",
+            "relation": "manyToMany",
             "target": "api::graph.graph",
-            "inversedBy": "nodes"
+            "mappedBy": "nodes"
         },
         "x": {
             "type": "float"
@@ -44,6 +44,15 @@
         },
         "color": {
             "type": "string"
+        },
+        "external": {
+            "type": "string"
+        },
+        "tags": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::tag.tag",
+            "mappedBy": "nodes"
         }
     }
 }

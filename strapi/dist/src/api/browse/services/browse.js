@@ -38,13 +38,16 @@ class BrowseService {
         let result = await Promise.all(_.map(graphs.results, async (graph) => {
             graph.nodes = await Promise.all(_.map(graph.nodes, async (node) => {
                 let _node = await strapi.service('api::node.node').findOne(node.id, {
-                    populate: {}
+                    populate: {
+                        tags: true,
+                    }
                 });
                 return _node;
             }));
             graph.edges = await Promise.all(_.map(graph.edges, async (edge) => {
                 let _edge = await strapi.service('api::edge.edge').findOne(edge.id, {
                     populate: {
+                        tags: true,
                         source: true,
                         target: true
                     }
@@ -56,6 +59,10 @@ class BrowseService {
         return {
             results: result
         };
+    }
+    static async loadGraph(graphLabel, data) {
+        console.log(data);
+        return {};
     }
 }
 exports.default = BrowseService;

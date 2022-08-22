@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "graphs",
+  "collectionName": "tags",
   "info": {
-    "singularName": "graph",
-    "pluralName": "graphs",
-    "displayName": "Graph",
+    "singularName": "tag",
+    "pluralName": "tags",
+    "displayName": "Tag",
     "description": ""
   },
   "options": {
@@ -15,23 +15,23 @@
     "label": {
       "type": "string"
     },
-    "edges": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::edge.edge",
-      "mappedBy": "graphs"
-    },
     "nodes": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::node.node",
-      "inversedBy": "graphs"
+      "inversedBy": "tags"
     },
-    "tags": {
+    "edges": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::tag.tag",
-      "mappedBy": "graphs"
+      "target": "api::edge.edge",
+      "inversedBy": "tags"
+    },
+    "graphs": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::graph.graph",
+      "inversedBy": "tags"
     }
   }
 }

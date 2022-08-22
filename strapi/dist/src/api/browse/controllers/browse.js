@@ -19,4 +19,17 @@ exports.default = {
             };
         }
     },
+    load: async (ctx, next) => {
+        try {
+            await next();
+            ctx.body = await browse_1.default.loadGraph(ctx.query.label, ctx.request.body);
+        }
+        catch (err) {
+            ctx.status = 500;
+            console.log(err);
+            ctx.body = {
+                message: err
+            };
+        }
+    },
 };

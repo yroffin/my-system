@@ -7,7 +7,15 @@ exports.default = [
     'strapi::poweredBy',
     'strapi::logger',
     'strapi::query',
-    'strapi::body',
+    {
+        name: 'strapi::body',
+        config: {
+            jsonLimit: '1mb',
+            formLimit: '1mb',
+            textLimit: '1mb',
+            encoding: 'gbk',
+        }
+    },
     'strapi::session',
     'strapi::favicon',
     'strapi::public',

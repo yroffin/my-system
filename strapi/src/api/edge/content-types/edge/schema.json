@@ -27,11 +27,20 @@
       "target": "api::node.node",
       "inversedBy": "targets"
     },
-    "graph": {
+    "graphs": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::graph.graph",
       "inversedBy": "edges"
+    },
+    "external": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "mappedBy": "edges"
     }
   }
 }
