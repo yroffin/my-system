@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2022-08-22T19:23:42.705Z"
+    "x-generation-date": "2022-08-22T20:54:10.568Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -136,9 +136,6 @@
                   "example": "string or id"
                 }
               },
-              "external": {
-                "type": "string"
-              },
               "tags": {
                 "type": "array",
                 "items": {
@@ -152,6 +149,9 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "uid": {
+                "type": "string"
               }
             }
           }
@@ -723,9 +723,6 @@
                                                   }
                                                 }
                                               },
-                                              "external": {
-                                                "type": "string"
-                                              },
                                               "tags": {
                                                 "type": "object",
                                                 "properties": {
@@ -745,6 +742,9 @@
                                                     }
                                                   }
                                                 }
+                                              },
+                                              "uid": {
+                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -850,9 +850,6 @@
                                 "color": {
                                   "type": "string"
                                 },
-                                "external": {
-                                  "type": "string"
-                                },
                                 "tags": {
                                   "type": "object",
                                   "properties": {
@@ -872,6 +869,9 @@
                                       }
                                     }
                                   }
+                                },
+                                "uid": {
+                                  "type": "string"
                                 },
                                 "createdAt": {
                                   "type": "string",
@@ -958,9 +958,6 @@
                         }
                       }
                     },
-                    "external": {
-                      "type": "string"
-                    },
                     "tags": {
                       "type": "object",
                       "properties": {
@@ -980,6 +977,9 @@
                           }
                         }
                       }
+                    },
+                    "uid": {
+                      "type": "string"
                     },
                     "createdAt": {
                       "type": "string",
@@ -1617,9 +1617,6 @@
                                                 }
                                               }
                                             },
-                                            "external": {
-                                              "type": "string"
-                                            },
                                             "tags": {
                                               "type": "object",
                                               "properties": {
@@ -1639,6 +1636,9 @@
                                                   }
                                                 }
                                               }
+                                            },
+                                            "uid": {
+                                              "type": "string"
                                             },
                                             "createdAt": {
                                               "type": "string",
@@ -1744,9 +1744,6 @@
                               "color": {
                                 "type": "string"
                               },
-                              "external": {
-                                "type": "string"
-                              },
                               "tags": {
                                 "type": "object",
                                 "properties": {
@@ -1766,6 +1763,9 @@
                                     }
                                   }
                                 }
+                              },
+                              "uid": {
+                                "type": "string"
                               },
                               "createdAt": {
                                 "type": "string",
@@ -1852,9 +1852,6 @@
                       }
                     }
                   },
-                  "external": {
-                    "type": "string"
-                  },
                   "tags": {
                     "type": "object",
                     "properties": {
@@ -1874,6 +1871,9 @@
                         }
                       }
                     }
+                  },
+                  "uid": {
+                    "type": "string"
                   },
                   "createdAt": {
                     "type": "string",
@@ -2572,9 +2572,6 @@
                                               "color": {
                                                 "type": "string"
                                               },
-                                              "external": {
-                                                "type": "string"
-                                              },
                                               "tags": {
                                                 "type": "object",
                                                 "properties": {
@@ -2594,6 +2591,9 @@
                                                     }
                                                   }
                                                 }
+                                              },
+                                              "uid": {
+                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -2680,9 +2680,6 @@
                                       }
                                     }
                                   },
-                                  "external": {
-                                    "type": "string"
-                                  },
                                   "tags": {
                                     "type": "object",
                                     "properties": {
@@ -2702,6 +2699,9 @@
                                         }
                                       }
                                     }
+                                  },
+                                  "uid": {
+                                    "type": "string"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -3449,9 +3449,6 @@
                                             "color": {
                                               "type": "string"
                                             },
-                                            "external": {
-                                              "type": "string"
-                                            },
                                             "tags": {
                                               "type": "object",
                                               "properties": {
@@ -3471,6 +3468,9 @@
                                                   }
                                                 }
                                               }
+                                            },
+                                            "uid": {
+                                              "type": "string"
                                             },
                                             "createdAt": {
                                               "type": "string",
@@ -3557,9 +3557,6 @@
                                     }
                                   }
                                 },
-                                "external": {
-                                  "type": "string"
-                                },
                                 "tags": {
                                   "type": "object",
                                   "properties": {
@@ -3579,6 +3576,9 @@
                                       }
                                     }
                                   }
+                                },
+                                "uid": {
+                                  "type": "string"
                                 },
                                 "createdAt": {
                                   "type": "string",
@@ -4464,9 +4464,6 @@
               "color": {
                 "type": "string"
               },
-              "external": {
-                "type": "string"
-              },
               "tags": {
                 "type": "array",
                 "items": {
@@ -4480,6 +4477,9 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "uid": {
+                "type": "string"
               }
             }
           }
@@ -5072,9 +5072,6 @@
                                               "color": {
                                                 "type": "string"
                                               },
-                                              "external": {
-                                                "type": "string"
-                                              },
                                               "tags": {
                                                 "type": "object",
                                                 "properties": {
@@ -5094,6 +5091,9 @@
                                                     }
                                                   }
                                                 }
+                                              },
+                                              "uid": {
+                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -5180,9 +5180,6 @@
                                       }
                                     }
                                   },
-                                  "external": {
-                                    "type": "string"
-                                  },
                                   "tags": {
                                     "type": "object",
                                     "properties": {
@@ -5202,6 +5199,9 @@
                                         }
                                       }
                                     }
+                                  },
+                                  "uid": {
+                                    "type": "string"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -5307,9 +5307,6 @@
                     "color": {
                       "type": "string"
                     },
-                    "external": {
-                      "type": "string"
-                    },
                     "tags": {
                       "type": "object",
                       "properties": {
@@ -5329,6 +5326,9 @@
                           }
                         }
                       }
+                    },
+                    "uid": {
+                      "type": "string"
                     },
                     "createdAt": {
                       "type": "string",
@@ -5987,9 +5987,6 @@
                                             "color": {
                                               "type": "string"
                                             },
-                                            "external": {
-                                              "type": "string"
-                                            },
                                             "tags": {
                                               "type": "object",
                                               "properties": {
@@ -6009,6 +6006,9 @@
                                                   }
                                                 }
                                               }
+                                            },
+                                            "uid": {
+                                              "type": "string"
                                             },
                                             "createdAt": {
                                               "type": "string",
@@ -6095,9 +6095,6 @@
                                     }
                                   }
                                 },
-                                "external": {
-                                  "type": "string"
-                                },
                                 "tags": {
                                   "type": "object",
                                   "properties": {
@@ -6117,6 +6114,9 @@
                                       }
                                     }
                                   }
+                                },
+                                "uid": {
+                                  "type": "string"
                                 },
                                 "createdAt": {
                                   "type": "string",
@@ -6222,9 +6222,6 @@
                   "color": {
                     "type": "string"
                   },
-                  "external": {
-                    "type": "string"
-                  },
                   "tags": {
                     "type": "object",
                     "properties": {
@@ -6244,6 +6241,9 @@
                         }
                       }
                     }
+                  },
+                  "uid": {
+                    "type": "string"
                   },
                   "createdAt": {
                     "type": "string",
@@ -6923,9 +6923,6 @@
                                                     }
                                                   }
                                                 },
-                                                "external": {
-                                                  "type": "string"
-                                                },
                                                 "tags": {
                                                   "type": "object",
                                                   "properties": {
@@ -6945,6 +6942,9 @@
                                                       }
                                                     }
                                                   }
+                                                },
+                                                "uid": {
+                                                  "type": "string"
                                                 },
                                                 "createdAt": {
                                                   "type": "string",
@@ -7050,9 +7050,6 @@
                                   "color": {
                                     "type": "string"
                                   },
-                                  "external": {
-                                    "type": "string"
-                                  },
                                   "tags": {
                                     "type": "object",
                                     "properties": {
@@ -7072,6 +7069,9 @@
                                         }
                                       }
                                     }
+                                  },
+                                  "uid": {
+                                    "type": "string"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -7800,9 +7800,6 @@
                                                   }
                                                 }
                                               },
-                                              "external": {
-                                                "type": "string"
-                                              },
                                               "tags": {
                                                 "type": "object",
                                                 "properties": {
@@ -7822,6 +7819,9 @@
                                                     }
                                                   }
                                                 }
+                                              },
+                                              "uid": {
+                                                "type": "string"
                                               },
                                               "createdAt": {
                                                 "type": "string",
@@ -7927,9 +7927,6 @@
                                 "color": {
                                   "type": "string"
                                 },
-                                "external": {
-                                  "type": "string"
-                                },
                                 "tags": {
                                   "type": "object",
                                   "properties": {
@@ -7949,6 +7946,9 @@
                                       }
                                     }
                                   }
+                                },
+                                "uid": {
+                                  "type": "string"
                                 },
                                 "createdAt": {
                                   "type": "string",

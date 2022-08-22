@@ -13,8 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 
-import {MenubarModule} from 'primeng/menubar';
-import {FileUploadModule} from 'primeng/fileupload';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { MenubarModule } from 'primeng/menubar';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
 
 import { StoreModule } from '@ngrx/store';
 
@@ -41,7 +46,12 @@ import { GraphComponent } from './components/graph/graph.component';
     MatMenuModule,
     // PrimeNg
     MenubarModule,
+    ContextMenuModule,
     FileUploadModule,
+    ButtonModule,
+    InputTextareaModule,
+    ConfirmDialogModule,
+    DialogModule,
     StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer })
   ],
   providers: [],

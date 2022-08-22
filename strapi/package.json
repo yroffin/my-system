@@ -17,7 +17,7 @@
     "@strapi/strapi": "4.3.4",
     "better-sqlite3": "7.4.6",
     "lodash": "4.17.21",
-    "formidable": "2.0.1",
+    "xml2js": "0.4.23",
     "yarn": "^1.22.19"
   },
   "author": {

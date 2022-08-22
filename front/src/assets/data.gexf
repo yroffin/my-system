@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.2" version="1.2">
+    <meta lastmodifieddate="2009-03-20">
+        <creator>Gexf.net</creator>
+        <description>A hello world! file</description>
+    </meta>
+    <graph mode="static" defaultedgetype="directed">
+        <nodes>
+            <node id="module-1" label="Module 1" />
+            <node id="module-2" label="Module 2" />
+            <node id="database-1" label="SGBD A" />
+            <node id="database-2" label="SGBD B" />
+            <node id="middleware-1" label="QUEUE" />
+        </nodes>
+        <edges>
+            <edge id="edge-0" source="module-1" target="database-1" label="SQL" />
+            <edge id="edge-1" source="module-2" target="database-2" label="SQL" />
+            <edge id="edge-2" source="module-1" target="middleware-1" label="STREAM" />
+            <edge id="edge-3" source="module-2" target="middleware-1" label="STREAM" />
+            <edge id="edge-4" source="module-1" target="module-2" label="REST" />
+        </edges>
+    </graph>
+</gexf>

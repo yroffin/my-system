@@ -34,25 +34,29 @@
       "mappedBy": "nodes"
     },
     "x": {
-      "type": "float"
+      "type": "float",
+      "default": 0
     },
     "y": {
-      "type": "float"
+      "type": "float",
+      "default": 0
     },
     "size": {
-      "type": "float"
+      "type": "float",
+      "default": 10
     },
     "color": {
-      "type": "string"
-    },
-    "external": {
-      "type": "string"
+      "type": "string",
+      "default": "red"
     },
     "tags": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::tag.tag",
       "mappedBy": "nodes"
+    },
+    "uid": {
+      "type": "string"
     }
   }
 }

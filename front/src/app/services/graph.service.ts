@@ -17,4 +17,5 @@ export class GraphService {
             )
             .pipe(map((graph) => graph.results || []));
     }
+
 }
