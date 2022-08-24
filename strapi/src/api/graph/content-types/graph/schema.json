@@ -13,7 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "label": {
-      "type": "string"
+      "type": "string",
+      "unique": true,
+      "required": true
     },
     "edges": {
       "type": "relation",

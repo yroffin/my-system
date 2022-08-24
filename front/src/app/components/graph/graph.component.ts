@@ -47,14 +47,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
         });
       })
       _.each(graphs[0].edges, (edge) => {
-        this.graph.addEdge(edge.source.id, edge.target.id, {
-          label: edge.label,
-          type: "arrow",
-          size: 5,
-          uid: edge.uid,
-          source: edge.source.uid,
-          target: edge.target.uid
-        });
+        if (edge.source && edge.target) {
+          this.graph.addEdge(edge.source.id, edge.target.id, {
+            label: edge.label,
+            type: "arrow",
+            size: 5,
+            uid: edge.uid,
+            source: edge.source.uid,
+            target: edge.target.uid
+          });
+        } else {
+          console.log(edge)
+        }
       })
       // Create the spring layout and start it
       const layout = new ForceSupervisor(this.graph, {
