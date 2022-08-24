@@ -17,6 +17,16 @@ export default {
       }
     }
   },
+  headGraph: async (ctx, next) => {
+    try {
+      ctx.body = await BrowseService.headGraph();
+    } catch (err) {
+      ctx.status = 500;
+      ctx.body = {
+        message: err
+      }
+    }
+  },
   load: async (ctx, next) => {
     try {
       await next();
