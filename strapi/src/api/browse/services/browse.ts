@@ -15,6 +15,12 @@ export default class BrowseService {
         return await strapi.service<CollectionTypeService>('api::module.module').find({});
     }
 
+    public static async headGraph(): Promise<any> {
+        let graphs: any = await strapi.service<CollectionTypeService>('api::graph.graph').find({
+        });
+        return graphs.results
+    }
+
     public static async browseGraph(graphLabel: string): Promise<any> {
         let graphs: any = await strapi.service<CollectionTypeService>('api::graph.graph').find({
             label: graphLabel, populate: {
@@ -22,7 +28,7 @@ export default class BrowseService {
                 edges: true
             }
         });
-        let result = await Promise.all(_.map(graphs.results, async (graph) => {
+        let result = await Promise.all(_.map(graphs.results, async (graph: any) => {
             graph.nodes = await Promise.all(_.map(graph.nodes, async (node) => {
                 let _node: any = await strapi.service<CollectionTypeService>('api::node.node').findOne(node.id, {
                     populate: {
@@ -43,9 +49,7 @@ export default class BrowseService {
             }));
             return graph;
         }));
-        return {
-            results: result
-        }
+        return result
     }
 
     public static async loadGraph(graphLabel: string, data: string): Promise<any> {

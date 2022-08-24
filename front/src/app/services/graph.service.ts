@@ -12,10 +12,17 @@ export class GraphService {
 
     getGraphs(filter: string): Observable<Array<SysGraph>> {
         return this.http
-            .get<PageResultSet<SysGraph>>(
+            .get<Array<SysGraph>>(
                 `http://localhost:1337/api/browse/graph?label=${filter}`
             )
-            .pipe(map((graph) => graph.results || []));
+            .pipe(map((graph) => graph || []));
     }
 
+    getHeadGraphs(filter: string): Observable<Array<SysGraph>> {
+        return this.http
+            .get<Array<SysGraph>>(
+                `http://localhost:1337/api/browse/graph/head?label=${filter}`
+            )
+            .pipe(map((graph) => graph || []));
+    }
 }
