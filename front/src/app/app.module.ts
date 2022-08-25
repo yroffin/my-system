@@ -39,13 +39,15 @@ import { modulesReducer } from './stats/module.reducer';
 import { graphsReducer } from './stats/graph.reducer';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
+import { Graphd3Component } from './components/graphd3/graphd3.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ModuleComponent,
     GraphComponent,
-    GraphSelectorComponent
+    GraphSelectorComponent,
+    Graphd3Component
   ],
   imports: [
     BrowserModule,

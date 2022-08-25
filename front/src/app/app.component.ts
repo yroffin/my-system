@@ -32,7 +32,8 @@ export class AppComponent {
                 items: [
                     { label: 'Browse', icon: 'pi pi-fw pi-book', routerLink: '/browse' },
                     { label: 'Default', icon: 'pi pi-fw pi-trash', routerLink: '/graph/Default' },
-                    { label: 'Another', icon: 'pi pi-fw pi-refresh', routerLink: '/graph/Another' }
+                    { label: 'Another', icon: 'pi pi-fw pi-refresh', routerLink: '/graph/Another' },
+                    { label: 'D3', icon: 'pi pi-fw pi-refresh', routerLink: '/graphd3/Default' }
                 ]
             }
         ];
