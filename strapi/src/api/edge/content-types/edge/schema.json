@@ -33,13 +33,10 @@
       "target": "api::graph.graph",
       "inversedBy": "edges"
     },
-    "tags": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::tag.tag",
-      "mappedBy": "edges"
-    },
     "uid": {
+      "type": "string"
+    },
+    "tag": {
       "type": "string"
     }
   }

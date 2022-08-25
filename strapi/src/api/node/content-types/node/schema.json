@@ -49,13 +49,10 @@
       "type": "string",
       "default": "red"
     },
-    "tags": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::tag.tag",
-      "mappedBy": "nodes"
-    },
     "uid": {
+      "type": "string"
+    },
+    "tag": {
       "type": "string"
     }
   }

@@ -29,11 +29,8 @@
       "target": "api::node.node",
       "inversedBy": "graphs"
     },
-    "tags": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::tag.tag",
-      "mappedBy": "graphs"
+    "tag": {
+      "type": "string"
     }
   }
 }

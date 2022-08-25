@@ -7,6 +7,16 @@ import formidable from 'formidable';
  */
 
 export default {
+  findAllTags: async (ctx, next) => {
+    try {
+      ctx.body = await BrowseService.findAllTags();
+    } catch (err) {
+      ctx.status = 500;
+      ctx.body = {
+        message: err
+      }
+    }
+  },
   graph: async (ctx, next) => {
     try {
       ctx.body = await BrowseService.browseGraph(ctx.query.label);

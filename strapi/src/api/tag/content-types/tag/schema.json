@@ -13,25 +13,22 @@
   "pluginOptions": {},
   "attributes": {
     "label": {
-      "type": "string"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
-    "nodes": {
+    "style": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::node.node",
+      "relation": "manyToOne",
+      "target": "api::style.style",
       "inversedBy": "tags"
     },
-    "edges": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::edge.edge",
-      "inversedBy": "tags"
-    },
-    "graphs": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::graph.graph",
-      "inversedBy": "tags"
+    "selector": {
+      "type": "enumeration",
+      "enum": [
+        "node",
+        "edge"
+      ]
     }
   }
 }

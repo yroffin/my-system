@@ -6,17 +6,17 @@
 </meta>
 <graph mode="static" defaultedgetype="directed">
 <nodes>
-<node id="module-1" label="Module 1" x="0.1350040353643589" y="0.20282605927221042" />
-<node id="module-2" label="Module 2" x="-0.17946644662282407" y="0.14623754883739715" />
-<node id="database-1" label="SGBD A" x="0.38480193059668577" y="0.1591720681500124" />
-<node id="database-2" label="SGBD B" x="-0.4147130083451923" y="0.23192872772559459" />
+<node id="module-1" label="Module 1" x="0.1350040353643589" y="0.20282605927221042"/>
+<node id="module-2" label="Module 2" x="-0.17946644662282407" y="0.14623754883739715"/>
+<node id="database-1" label="SGBD A" x="0.38480193059668577" y="0.1591720681500124"/>
+<node id="database-2" label="SGBD B" x="-0.4147130083451923" y="0.23192872772559459"/>
 <node id="middleware-1" label="QUEUE" x="-0.053466953955008056" y="0.26791094379166847" />
 <node id="gateway-1" label="LoadBalancer" x="-0.010477467353235289" y="0.07759290129557359" />
 </nodes>
 <edges>
-<edge id="edge-0" source="module-1" target="database-1" label="SQL" />
-<edge id="edge-1" source="module-2" target="database-2" label="SQL" />
-<edge id="edge-2" source="module-1" target="middleware-1" label="STREAM" />
+<edge id="edge-0" source="module-1" target="database-1" label="SQL"/>
+<edge id="edge-1" source="module-2" target="database-2" label="SQL"/>
+<edge id="edge-2" source="module-1" target="middleware-1" label="STREAM"/>
 <edge id="edge-3" source="module-2" target="middleware-1" label="STREAM" />
 <edge id="edge-4" source="module-1" target="gateway-1" label="REST" />
 <edge id="edge-4" source="gateway-1" target="module-2" label="REST" />

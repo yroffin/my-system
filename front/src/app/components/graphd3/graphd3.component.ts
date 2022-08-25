@@ -18,6 +18,8 @@ import {
   SelectionType,
   Stylesheet
 } from 'cytoscape'
+import { CoseLayoutOptionsImpl } from './layout-options-impl';
+import { style } from '@angular/animations';
 
 declare var cytoscape: any
 
@@ -33,7 +35,10 @@ export class Graphd3Component implements OnInit, AfterViewInit {
 
   @ViewChild('myGraph') myGraph?: ElementRef;
   subscription: any = null;
-  renderer?: Core;
+
+  cy?: Core
+  boxSelectionEnabled?: boolean
+  layoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
 
   graph: ElementsDefinition = {
     nodes: [],
@@ -51,7 +56,8 @@ export class Graphd3Component implements OnInit, AfterViewInit {
         this.graph.nodes.push({
           data: {
             id: node.uid,
-            name: node.label
+            label: node.label,
+            tag: node.tag
           }
         })
       })
@@ -59,55 +65,86 @@ export class Graphd3Component implements OnInit, AfterViewInit {
         this.graph.edges.push({
           data: {
             id: edge.uid,
-            name: edge.label,
+            label: edge.label,
             source: edge.source.uid,
-            target: edge.target.uid
+            target: edge.target.uid,
+            tag: edge.tag
           }
         })
       })
-      this.renderer?.add(this.graph)
-      this.makeLayout({
-      })
+
+      // refresh render
+      this.cy?.startBatch()
+      this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
+      this.cy?.nodes().remove()
+      this.cy?.edges().remove()
+      if (this.graph.nodes) {
+        this.cy?.add(this.graph.nodes)
+      }
+      if (this.graph.edges) {
+        this.cy?.add(this.graph.edges)
+      }
+      this.cy?.endBatch()
+      if (this.layoutOptions) {
+        this.cy?.layout(this.layoutOptions).run()
+      }
     })
   }
 
   ngOnInit(): void {
-    this.graphsService
-      .getGraphs("Default")
-      .subscribe((graphs) => {
-        this.store.dispatch(retrievedGraphList({ graphs }))
-      });
   }
 
   ngAfterViewInit(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.renderer = cy({
-      container: this.myGraph?.nativeElement,
-      layout: { name: 'preset' },
-      motionBlur: true,
-      selectionType: 'single',
-      boxSelectionEnabled: false
-    });
-  }
+    this.graphsService
+      .getAllTags()
+      .subscribe((tags) => {
+        let styleCss = _.map(tags, (tag) => {
+          return {
+            selector: `${tag.selector}[tag = '${tag.label}']`,
+            css: tag.style?.css ? tag.style?.css : {}
+          }
+        })
 
-  makeLayout(opts: any) {
-    cy.use(popper)
-    let params: any = {
-      name: 'popper',
-      nodeSpacing: 5,
-      edgeLengthVal: 45,
-      animate: true,
-      randomize: false,
-      maxSimulationTime: 1500,
-      avoidOverlap: true,
-      edgeLength: (e: any) => { return params.edgeLengthVal / e.data('weight'); }
-    }
+        let allstyles = []
+        allstyles.push({
+          selector: "node",
+          css: {
+            content: "data(label)",
+            height: "40px",
+            width: "40px",
+            'background-color': 'blue'
+          }
+        });
+        allstyles.push({
+          selector: "edge",
+          css: {
+            content: "data(label)",
+            "target-arrow-shape": "triangle",
+            'width': "5px",
+            'color': 'blue'
+          }
+        });
+        _.each(styleCss, (style) => {
+          allstyles.push(style)
+        })
 
-    for (var i in opts) {
-      params[i] = opts[i];
-    }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        this.cy = cy({
+          container: this.myGraph?.nativeElement,
+          layout: { name: 'preset' },
+          motionBlur: true,
+          selectionType: 'single',
+          boxSelectionEnabled: false,
+          style: allstyles,
+        });
 
-    return this.renderer?.layout(params);
+        this.graphsService
+          .getGraphs("Default")
+          .subscribe((graphs) => {
+            this.store.dispatch(retrievedGraphList({ graphs }))
+          });
+      })
+
   }
 }
 

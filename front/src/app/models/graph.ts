@@ -13,6 +13,7 @@ export interface SysNode {
     size: number;
     color: string;
     uid: string;
+    tag: string;
 }
 
 export interface SysEdge {
@@ -21,4 +22,12 @@ export interface SysEdge {
     source: SysNode;
     target: SysNode;
     uid: string;
+    tag: string;
+}
+
+export interface SysTag {
+    id: string;
+    label: string;
+    selector: string;
+    style: any
 }

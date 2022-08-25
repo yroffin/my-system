@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SysGraph } from '../models/graph';
+import { SysGraph, SysTag } from '../models/graph';
 import { PageResultSet } from '../models/resultset.model';
 
 @Injectable({ providedIn: 'root' })
@@ -24,5 +24,13 @@ export class GraphService {
                 `http://localhost:1337/api/browse/graph/head?label=${filter}`
             )
             .pipe(map((graph) => graph || []));
+    }
+
+    getAllTags(): Observable<Array<SysTag>> {
+        return this.http
+            .get<Array<SysTag>>(
+                `http://localhost:1337/api/browse/tags`
+            )
+            .pipe(map((tag) => tag || []));
     }
 }

@@ -15,6 +15,15 @@ export default class BrowseService {
         return await strapi.service<CollectionTypeService>('api::module.module').find({});
     }
 
+    public static async findAllTags(): Promise<any> {
+        let tags: any = await strapi.service<CollectionTypeService>('api::tag.tag').find({
+            populate: {
+                style: true,
+            }
+        });
+        return tags.results
+    }
+
     public static async headGraph(): Promise<any> {
         let graphs: any = await strapi.service<CollectionTypeService>('api::graph.graph').find({
         });
