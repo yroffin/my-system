@@ -12,7 +12,7 @@ export default {
     {
       method: 'GET',
       path: '/browse/graph',
-      handler: 'browse.graph',
+      handler: 'browse.graphs',
       config: {
         policies: [],
         middlewares: [],
@@ -20,8 +20,8 @@ export default {
     },
     {
       method: 'GET',
-      path: '/browse/graph/head',
-      handler: 'browse.headGraph',
+      path: '/browse/graph/:id',
+      handler: 'browse.graph',
       config: {
         policies: [],
         middlewares: [],
@@ -29,8 +29,8 @@ export default {
     },
     {
       method: 'POST',
-      path: '/browse/graph',
-      handler: 'browse.load',
+      path: '/browse/graph/:id',
+      handler: 'browse.upload',
     }
   ],
 };

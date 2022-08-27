@@ -24,13 +24,43 @@ export default class BrowseService {
         return tags.results
     }
 
-    public static async headGraph(): Promise<any> {
+    public static async browseGraph(entityId: string): Promise<any> {
+        strapi.log.debug(`browseGraph: ${entityId}`)
+        let graph: any = await strapi.service<CollectionTypeService>('api::graph.graph').findOne(entityId, {
+            populate: {
+                nodes: true,
+                edges: true
+            }
+        });
+        strapi.log.debug(`browseGraph: ${graph.id}`)
+        graph.nodes = await Promise.all(_.map(graph.nodes, async (node) => {
+            let _node: any = await strapi.service<CollectionTypeService>('api::node.node').findOne(node.id, {
+                populate: {
+                    tags: true,
+                }
+            });
+            return _node;
+        }));
+        graph.edges = await Promise.all(_.map(graph.edges, async (edge) => {
+            let _edge: any = await strapi.service<CollectionTypeService>('api::edge.edge').findOne(edge.id, {
+                populate: {
+                    tags: true,
+                    source: true,
+                    target: true
+                }
+            });
+            return _edge;
+        }));
+        return graph;
+    }
+
+    public static async headGraphs(): Promise<any> {
         let graphs: any = await strapi.service<CollectionTypeService>('api::graph.graph').find({
         });
         return graphs.results
     }
 
-    public static async browseGraph(graphLabel: string): Promise<any> {
+    public static async browseGraphs(graphLabel: string): Promise<any> {
         strapi.log.debug(`browseGraph: ${graphLabel}`)
         let graphs: any = await strapi.service<CollectionTypeService>('api::graph.graph').find({
             label: graphLabel, populate: {
@@ -63,25 +93,25 @@ export default class BrowseService {
         return result
     }
 
-    public static async loadGraph(graphLabel: string, data: string): Promise<any> {
-        strapi.log.debug(`loadGraph (delete/create): ${graphLabel}`)
+    public static async uploadGraph(id: string, data: string): Promise<any> {
+        strapi.log.debug(`uploadGraph (delete/create): ${id}`)
         let graph: SysGraph = undefined
         try {
-            graph = await BrowseService.loadGraphGexf(graphLabel, data);
+            graph = await BrowseService.loadGraphGexf(id, data);
         } catch (err) {
-            strapi.log.error(`loadGraph: ${err}`)
+            strapi.log.error(`uploadGraph: ${err}`)
             throw err
         }
-        let current = await BrowseService.browseGraph(graphLabel);
-        let deleted = await Promise.all(_.map(current, async (graph) => {
-            strapi.log.debug(`loadGraph: remove graph ${graph.id}`)
+        let current = await BrowseService.browseGraph(id);
+        let deleted = await Promise.all(_.map([current], async (graph) => {
+            strapi.log.debug(`uploadGraph: remove graph ${graph.id}`)
             let deleted = await strapi.entityService.delete('api::graph.graph', graph.id);
             await Promise.all(_.map(graph.nodes, async (node) => {
-                strapi.log.debug(`loadGraph: remove node ${node.id}`)
+                strapi.log.debug(`uploadGraph: remove node ${node.id}`)
                 await strapi.entityService.delete('api::node.node', node.id);
             }))
             await Promise.all(_.map(graph.edges, async (edge) => {
-                strapi.log.debug(`loadGraph: remove edge ${edge.id}`)
+                strapi.log.debug(`uploadGraph: remove edge ${edge.id}`)
                 await strapi.entityService.delete('api::edge.edge', edge.id);
             }))
             return deleted
@@ -91,7 +121,7 @@ export default class BrowseService {
                 label: graph.label
             }
         });
-        strapi.log.debug(`loadGraph: create graph ${newGraph.id}`)
+        strapi.log.debug(`uploadGraph: create graph ${newGraph.id}`)
         let allNodes = {
         }
         let promisedNodes = await Promise.all(_.map(graph.nodes, async (node) => {
@@ -99,13 +129,14 @@ export default class BrowseService {
                 data: {
                     uid: node.id,
                     label: node.label,
+                    tag: node.tag,
                     x: node.x,
                     y: node.y,
                     graphs: newGraph.id
                 }
             });
             allNodes[node.id] = newNode.id;
-            strapi.log.debug(`loadGraph: create node ${newNode.id}`)
+            strapi.log.debug(`uploadGraph: create node ${newNode.id}`)
             return newNode
         }));
         let PromisedEdges = await Promise.all(_.map(graph.edges, async (edge) => {
@@ -113,19 +144,20 @@ export default class BrowseService {
                 data: {
                     uid: edge.id,
                     label: edge.label,
+                    tag: edge.tag,
                     graphs: newGraph.id,
                     source: allNodes[edge.source],
                     target: allNodes[edge.target]
                 },
             });
-            strapi.log.debug(`loadGraph: create edge ${newEdge.id}`)
+            strapi.log.debug(`uploadGraph: create edge ${newEdge.id}`)
             return newEdge
         }));
         return {}
     }
 
-    private static async loadGraphGexf(graphLabel: string, data: string): Promise<SysGraph> {
-        strapi.log.debug(`loadGraphGexf: ${graphLabel}`)
+    private static async loadGraphGexf(id: string, data: string): Promise<SysGraph> {
+        strapi.log.debug(`loadGraphGexf: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
@@ -133,7 +165,7 @@ export default class BrowseService {
                 }
                 let graph: SysGraph = {
                     id: 'default',
-                    label: graphLabel,
+                    label: 'default',
                     nodes: [],
                     edges: []
                 }

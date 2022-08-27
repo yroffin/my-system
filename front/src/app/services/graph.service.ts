@@ -18,12 +18,36 @@ export class GraphService {
             .pipe(map((graph) => graph || []));
     }
 
-    getHeadGraphs(filter: string): Observable<Array<SysGraph>> {
+    getGraph(id: string): Observable<SysGraph> {
         return this.http
-            .get<Array<SysGraph>>(
-                `http://localhost:1337/api/browse/graph/head?label=${filter}`
+            .get<SysGraph>(
+                `http://localhost:1337/api/browse/graph/${id}`
             )
-            .pipe(map((graph) => graph || []));
+            .pipe(map((graph) => graph || {}));
+    }
+
+    uploadgraph(id: string, data: string): Observable<SysGraph> {
+        return this.http
+            .post<SysGraph>(
+                `http://localhost:1337/api/browse/graph/${id}`, data
+            )
+            .pipe(map((graph) => graph || {}));
+    }
+
+    getHeadGraphs(filter?: string): Observable<Array<SysGraph>> {
+        if (filter) {
+            return this.http
+                .get<Array<SysGraph>>(
+                    `http://localhost:1337/api/browse/graph??head=true&label=${filter}`
+                )
+                .pipe(map((graph) => graph || []));
+        } else {
+            return this.http
+                .get<Array<SysGraph>>(
+                    `http://localhost:1337/api/browse/graph?head=true`
+                )
+                .pipe(map((graph) => graph || []));
+        }
     }
 
     getAllTags(): Observable<Array<SysTag>> {

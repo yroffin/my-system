@@ -3,8 +3,8 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
-import { retrievedGraphList } from 'src/app/stats/graph.actions';
-import { selectGraphs } from 'src/app/stats/graph.selectors';
+import { retrievedGraph, retrievedGraphList } from 'src/app/stats/graph.actions';
+import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 
 import * as cy from 'cytoscape'
 import {
@@ -20,39 +20,41 @@ import {
 } from 'cytoscape'
 import { CoseLayoutOptionsImpl } from './layout-options-impl';
 import { style } from '@angular/animations';
+import { ActivatedRoute } from '@angular/router';
+import { ClipboardService } from 'src/app/services/clipboard.service';
+import { SysGraphService } from 'src/app/models/graph';
 
 declare var cytoscape: any
 
-const cola = require('cytoscape-cola');
-const popper = require('cytoscape-popper');
-
 @Component({
-  selector: 'app-graphd3',
-  templateUrl: './graphd3.component.html',
-  styleUrls: ['./graphd3.component.css']
+  selector: 'app-graph-cytoscape',
+  templateUrl: './graph-cytoscape.component.html',
+  styleUrls: ['./graph-cytoscape.component.css']
 })
-export class Graphd3Component implements OnInit, AfterViewInit {
+export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('myGraph') myGraph?: ElementRef;
+  @ViewChild('myCytoscape') myGraph?: ElementRef;
   subscription: any = null;
 
   cy?: Core
   boxSelectionEnabled?: boolean
   layoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
+  id?: string
 
   graph: ElementsDefinition = {
     nodes: [],
     edges: []
   }
+  graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
 
-  constructor(private http: HttpClient, private graphsService: GraphService,
-    private store: Store) {
-    this.graphs$.subscribe(graphs => {
-      if (!graphs || graphs.length === 0) {
+  constructor(private http: HttpClient, private graphsService: GraphService, private clipboardService: ClipboardService,
+    private store: Store, private route: ActivatedRoute) {
+    this.graph$.subscribe(graph => {
+      if (!graph) {
         return
       }
-      _.each(graphs[0].nodes, (node) => {
+      _.each(graph.nodes, (node) => {
         this.graph.nodes.push({
           data: {
             id: node.uid,
@@ -61,7 +63,7 @@ export class Graphd3Component implements OnInit, AfterViewInit {
           }
         })
       })
-      _.each(graphs[0].edges, (edge) => {
+      _.each(graph.edges, (edge) => {
         this.graph.edges.push({
           data: {
             id: edge.uid,
@@ -92,6 +94,9 @@ export class Graphd3Component implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.id = params['id'];
+    });
   }
 
   ngAfterViewInit(): void {
@@ -138,13 +143,25 @@ export class Graphd3Component implements OnInit, AfterViewInit {
           style: allstyles,
         });
 
-        this.graphsService
-          .getGraphs("Default")
-          .subscribe((graphs) => {
-            this.store.dispatch(retrievedGraphList({ graphs }))
-          });
-      })
+        this.route.params.subscribe(params => {
+          this.id = params['id'];
 
+          this.graphsService
+            .getGraph(this.id + "")
+            .subscribe((graph) => {
+              this.store.dispatch(retrievedGraph({ graph }))
+            });
+        });
+
+      })
+  }
+
+  gexf(): void {
+    this.graphsService
+      .getGraph("47")
+      .subscribe((graph) => {
+        this.clipboardService.copyTextToClipboard(SysGraphService.gexf(graph).join('\n'))
+      });
   }
 }
 

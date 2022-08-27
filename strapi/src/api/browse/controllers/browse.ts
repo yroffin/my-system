@@ -19,7 +19,7 @@ export default {
   },
   graph: async (ctx, next) => {
     try {
-      ctx.body = await BrowseService.browseGraph(ctx.query.label);
+      ctx.body = await BrowseService.browseGraph(ctx.params.id);
     } catch (err) {
       ctx.status = 500;
       ctx.body = {
@@ -27,9 +27,13 @@ export default {
       }
     }
   },
-  headGraph: async (ctx, next) => {
+  graphs: async (ctx, next) => {
     try {
-      ctx.body = await BrowseService.headGraph();
+      if (ctx.query.head) {
+        ctx.body = await BrowseService.headGraphs();
+      } else {
+        ctx.body = await BrowseService.browseGraphs(ctx.query.label);
+      }
     } catch (err) {
       ctx.status = 500;
       ctx.body = {
@@ -37,10 +41,10 @@ export default {
       }
     }
   },
-  load: async (ctx, next) => {
+  upload: async (ctx, next) => {
     try {
       await next();
-      ctx.body = await BrowseService.loadGraph(ctx.query.label, ctx.request.body);
+      ctx.body = await BrowseService.uploadGraph(ctx.params.id, ctx.request.body);
     } catch (err) {
       ctx.status = 500;
       console.log(err)

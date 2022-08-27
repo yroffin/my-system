@@ -36,10 +36,10 @@ import { MenubarModule } from 'primeng/menubar';
 import { StoreModule } from '@ngrx/store';
 
 import { modulesReducer } from './stats/module.reducer';
-import { graphsReducer } from './stats/graph.reducer';
+import { graphReducer, graphsReducer } from './stats/graph.reducer';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
-import { Graphd3Component } from './components/graphd3/graphd3.component';
+import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +47,7 @@ import { Graphd3Component } from './components/graphd3/graphd3.component';
     ModuleComponent,
     GraphComponent,
     GraphSelectorComponent,
-    Graphd3Component
+    GraphCytoscapeComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +81,7 @@ import { Graphd3Component } from './components/graphd3/graphd3.component';
     ConfirmDialogModule,
     InputTextareaModule,
     MenubarModule,
-    StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer })
+    StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

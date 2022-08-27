@@ -32,8 +32,6 @@
     "graphology-layout-noverlap": "0.4.2",
     "graphology-layout-forceatlas2": "0.9.2",
     "cytoscape": "3.22.1",
-    "cytoscape-cola": "2.5.1",
-    "cytoscape-popper": "2.0.0",
     "sigma": "2.3.1",
     "lodash": "4.17.21"
   },
