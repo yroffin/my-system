@@ -22,7 +22,8 @@ import { CoseLayoutOptionsImpl } from './layout-options-impl';
 import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
-import { SysGraphService } from 'src/app/models/graph';
+import { SysEdge, SysGraph, SysGraphService, SysNode } from 'src/app/models/graph';
+import { MenuItem } from 'primeng/api';
 
 declare var cytoscape: any
 
@@ -40,6 +41,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   boxSelectionEnabled?: boolean
   layoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
   id?: string
+  items: MenuItem[] = [];
 
   graph: ElementsDefinition = {
     nodes: [],
@@ -60,6 +62,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             id: node.uid,
             label: node.label,
             tag: node.tag
+          },
+          position: {
+            x: node.x,
+            y: node.y
           }
         })
       })
@@ -68,8 +74,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           data: {
             id: edge.uid,
             label: edge.label,
-            source: edge.source.uid,
-            target: edge.target.uid,
+            source: edge.source?.uid || "",
+            target: edge.target?.uid || "",
             tag: edge.tag
           }
         })
@@ -87,9 +93,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         this.cy?.add(this.graph.edges)
       }
       this.cy?.endBatch()
-      if (this.layoutOptions) {
-        this.cy?.layout(this.layoutOptions).run()
-      }
     })
   }
 
@@ -97,17 +100,38 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     this.route.queryParams.subscribe(params => {
       this.id = params['id'];
     });
+
+    this.items = [
+      {
+        label: 'Copy',
+        command: () => {
+          this.gexf()
+        }
+      },
+      {
+        label: 'Organize',
+        command: () => {
+          if (this.layoutOptions) {
+            this.cy?.layout(this.layoutOptions).run()
+          }
+        }
+      }
+    ];
   }
 
   ngAfterViewInit(): void {
     this.graphsService
       .getAllTags()
       .subscribe((tags) => {
-        let styleCss = _.map(tags, (tag) => {
-          return {
+        let styleCss: Array<any> = []
+        _.each(tags, (tag) => {
+          if (tag.selector === null) {
+            return
+          }
+          styleCss.push({
             selector: `${tag.selector}[tag = '${tag.label}']`,
             css: tag.style?.css ? tag.style?.css : {}
-          }
+          })
         })
 
         let allstyles = []
@@ -115,6 +139,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           selector: "node",
           css: {
             content: "data(label)",
+            shape: "ellipse",
             height: "40px",
             width: "40px",
             'background-color': 'blue'
@@ -124,9 +149,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           selector: "edge",
           css: {
             content: "data(label)",
-            "target-arrow-shape": "triangle",
+            "mid-target-arrow-shape": "triangle",
             'width': "5px",
-            'color': 'blue'
+            'mid-target-arrow-color': 'blue',
+            'line-style': 'dotted'
           }
         });
         _.each(styleCss, (style) => {
@@ -157,11 +183,40 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   }
 
   gexf(): void {
-    this.graphsService
-      .getGraph("47")
-      .subscribe((graph) => {
-        this.clipboardService.copyTextToClipboard(SysGraphService.gexf(graph).join('\n'))
-      });
+    let index: any = {}
+    let _graph: SysGraph = {
+      nodes: _.map(this.graph.nodes, (node) => {
+        let x = node.position?.x;
+        let y = node.position?.y;
+        let _node: SysNode = {
+          id: node.data['id'] || "",
+          label: node.data['label'] || "",
+          x: node.position?.x || 0,
+          y: node.position?.y || 0,
+          size: 10,
+          color: "0",
+          tag: node.data['tag'],
+          uid: node.data['id'] || ""
+        }
+        index[node.data['id'] || ""] = _node
+        return _node
+      }),
+      edges: _.map(this.graph.edges, (edge) => {
+        let source = edge.data['source'] || ""
+        let target = edge.data['target'] || ""
+        let _edge: SysEdge = {
+          id: edge.data['id'] || "",
+          label: edge.data['label'] || "",
+          source: index[source],
+          target: index[target],
+          tag: edge.data['tag'],
+          uid: edge.data['id'] || ""
+        }
+        return _edge
+      })
+    }
+    console.log(_graph)
+    this.clipboardService.copyTextToClipboard(SysGraphService.gexf(_graph).join('\n'))
   }
 }
 
