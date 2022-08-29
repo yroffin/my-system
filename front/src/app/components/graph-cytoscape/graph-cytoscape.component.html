@@ -1,6 +1,17 @@
-<button pButton pRipple label="Copy" icon="pi pi-upload" class="p-button-help" (click)="gexf()"></button>
-
 <p-contextMenu [global]="true" [model]="items"></p-contextMenu>
-<div #myCytoscape id="cytoscape" class="cytoscape-container">
 
-</div>
+<p-splitter [style]="{'height': '768px'}">
+    <ng-template pTemplate>
+        <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
+    </ng-template>
+    <ng-template pTemplate>
+        <p-splitter layout="vertical">
+            <ng-template pTemplate>
+                <pre>{{_selectNode | json}}</pre>
+            </ng-template>
+            <ng-template pTemplate>
+                <pre>{{_selectEdge | json}}</pre>
+            </ng-template>
+        </p-splitter>
+    </ng-template>
+</p-splitter>

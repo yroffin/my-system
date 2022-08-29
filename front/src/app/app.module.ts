@@ -8,11 +8,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModuleComponent } from './components/module/module.component';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { CalendarModule } from 'primeng/calendar';
@@ -32,6 +27,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { MenubarModule } from 'primeng/menubar';
+import { SplitterModule } from 'primeng/splitter';
+import { FormsModule } from '@angular/forms';
+import { TagModule } from 'primeng/tag';
 
 import { StoreModule } from '@ngrx/store';
 
@@ -55,11 +53,6 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
     BrowserAnimationsModule,
     HttpClientModule,
     CommonModule,
-    // Material
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
     // PrimeNg
     TableModule,
     CalendarModule,
@@ -80,7 +73,10 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
     InputNumberModule,
     ConfirmDialogModule,
     InputTextareaModule,
+    SplitterModule,
     MenubarModule,
+    FormsModule,
+    TagModule,
     StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [],

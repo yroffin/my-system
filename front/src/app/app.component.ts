@@ -13,20 +13,6 @@ export class AppComponent {
     ngOnInit() {
         this.items = [
             {
-                label: 'File',
-                items: [{
-                    label: 'New',
-                    icon: 'pi pi-fw pi-plus',
-                    items: [
-                        { label: 'Project' },
-                        { label: 'Other' },
-                    ]
-                },
-                { label: 'Open' },
-                { label: 'Quit' }
-                ]
-            },
-            {
                 label: 'Graph',
                 icon: 'pi pi-fw pi-pencil',
                 items: [
