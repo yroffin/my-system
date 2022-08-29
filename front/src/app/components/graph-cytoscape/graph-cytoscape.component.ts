@@ -50,7 +50,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
 
+  _lockedNode: boolean = false;
   _selectNode: any;
+  _lockedEdge: boolean = false;
   _selectEdge: any;
 
   constructor(private http: HttpClient, private graphsService: GraphService, private clipboardService: ClipboardService,
@@ -145,25 +147,29 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             shape: "ellipse",
             height: "40px",
             width: "40px",
-            'background-color': 'blue',
+            'background-color': 'white',
+            "background-fit": 'cover cover',
             "text-border-color": "white",
             "text-outline-color": "grey",
             "text-outline-width": "1px",
             "ghost": "yes",
-            "ghost-offset-x": "2px",
-            "ghost-offset-y": "2px",
-            "ghost-opacity": "1",
-            "background-image": "https://th.bing.com/th/id/R.e7d5f8cd88607764828c1f0b6c21db39?rik=kW8biKqCrwK4PA&riu=http%3a%2f%2fwww.newdesignfile.com%2fpostpic%2f2015%2f02%2fmario-128x128-icon_245367.png&ehk=az2t7m19lsF1oSICVeaXDLuu2Y%2bSJQQ5Uy2dI2g9TtM%3d&risl=&pid=ImgRaw&r=0"
+            "ghost-offset-x": "15px",
+            "ghost-offset-y": "15px",
+            "ghost-opacity": "0.1",
+            "background-image": "https://th.bing.com/th/id/OIP.dW8QPfimoo2vZ8iLvoeuSAHaHa?pid=ImgDet&rs=1"
           }
         });
         allstyles.push({
           selector: "edge",
           css: {
             content: "data(label)",
-            "mid-target-arrow-shape": "triangle",
+            "target-arrow-shape": "triangle",
             'width': "5px",
-            'mid-target-arrow-color': 'blue',
-            "curve-style": "taxi",
+            'line-color': 'black',
+            'target-arrow-color': 'black',
+            'text-margin-x': -20,
+            'text-margin-y': -20,
+            "curve-style": "unbundled-bezier",
             "control-point-distances": 50,
             "control-point-weights": 0.5
           }
@@ -184,14 +190,18 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
         this.cy.on('select', 'node', (event) => {
           this._selectNode = {
-            data: event.target.data()
+            data: event.target.data(),
+            locked: event.target.locked()
           }
+          this._lockedNode = event.target.locked()
         });
 
         this.cy.on('select', 'edge', (event) => {
           this._selectEdge = {
-            data: event.target.data()
+            data: event.target.data(),
+            locked: event.target.locked()
           }
+          this._lockedEdge = event.target.locked()
         });
 
         this.route.params.subscribe(params => {
@@ -205,6 +215,44 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         });
 
       })
+  }
+
+  handleChangeLockNode(event: any): void {
+    let _item = this.cy?.$(`#${this._selectNode.data.id}`)
+    if (event.checked) {
+      _item?.lock()
+      _item?.animate({
+        style: { "opacity": 0.2 }
+      }, {
+        duration: 1000
+      })
+    } else {
+      _item?.animate({
+        style: { "opacity": 1 }
+      }, {
+        duration: 1000
+      })
+      _item?.unlock();
+    }
+  }
+
+  handleChangeLockEdge(event: any): void {
+    let _item = this.cy?.$(`#${this._selectEdge.data.id}`)
+    if (event.checked) {
+      _item?.lock()
+      _item?.animate({
+        style: { "opacity": 0.2 }
+      }, {
+        duration: 1000
+      })
+    } else {
+      _item?.animate({
+        style: { "opacity": 1 }
+      }, {
+        duration: 1000
+      })
+      _item?.unlock();
+    }
   }
 
   gexf(): void {

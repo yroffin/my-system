@@ -7,9 +7,11 @@
     <ng-template pTemplate>
         <p-splitter layout="vertical">
             <ng-template pTemplate>
+                <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
                 <pre>{{_selectNode | json}}</pre>
             </ng-template>
             <ng-template pTemplate>
+                <p-inputSwitch [(ngModel)]="_lockedEdge" (onChange)="handleChangeLockEdge($event)"></p-inputSwitch>
                 <pre>{{_selectEdge | json}}</pre>
             </ng-template>
         </p-splitter>

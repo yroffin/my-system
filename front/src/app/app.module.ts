@@ -30,6 +30,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { SplitterModule } from 'primeng/splitter';
 import { FormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { StoreModule } from '@ngrx/store';
 
@@ -73,6 +74,7 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
     InputNumberModule,
     ConfirmDialogModule,
     InputTextareaModule,
+    InputSwitchModule,
     SplitterModule,
     MenubarModule,
     FormsModule,
