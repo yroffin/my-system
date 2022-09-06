@@ -200,7 +200,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     });
 
     this.route.params.subscribe(params => {
-      this.id = params['id'];
+      this.id = params['label'];
 
       let _graph = this.graphsService.getGraph(this.id + "")
       if (_graph) {

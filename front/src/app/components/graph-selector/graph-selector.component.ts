@@ -88,6 +88,6 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   select(_graph: SysGraph): void {
-    this.router.navigate(['graph', 'cytoscape', _graph.id])
+    this.router.navigate(['graphs', 'cytoscape', _graph.id])
   }
 }
