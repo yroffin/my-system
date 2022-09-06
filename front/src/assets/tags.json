@@ -1,0 +1,46 @@
+[
+    {
+        "selector": "node",
+        "label": "kubernetes:pod",
+        "style": {
+            "css": {
+                "content": "data(label)",
+                "shape": "rectangle",
+                "height": "80px",
+                "width": "80px",
+                "background-image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJFwWA2jwjH5Zc_MrhbUpjUj-dsiHEeA5w4jWEjiiKIDEbxbB-ZrZjzP_Zg-Q3c0yPzGg&usqp=CAU",
+                "ghost": "no"
+            }
+        }
+    },
+    {
+        "selector": "node",
+        "label": "listener",
+        "style": {
+            "css": {
+                "content": "data(label)",
+                "shape": "ellipse",
+                "height": "30px",
+                "width": "30px",
+                "background-color": "yellow",
+                "text-margin-x": -20,
+                "text-margin-y": -20
+            }
+        }
+    },
+    {
+        "selector": "edge",
+        "label": "stream",
+        "style": {
+            "css": {
+                "content": "data(label)",
+                "height": "10px",
+                "width": "10px",
+                "background-color": "yellow",
+                "target-arrow-shape": "triangle",
+                "curve-style": "bezier",
+                "target-arrow-color": "red"
+            }
+        }
+    }
+]

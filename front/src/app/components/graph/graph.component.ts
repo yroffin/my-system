@@ -43,18 +43,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
           label: node.label,
           color: node.color,
           size: node.size,
-          uid: node.uid
+          uid: node.id
         });
       })
       _.each(graphs[0].edges, (edge) => {
         if (edge.source && edge.target) {
-          this.graph.addEdge(edge.source.id, edge.target.id, {
+          this.graph.addEdge(edge.source, edge.target, {
             label: edge.label,
             type: "arrow",
             size: 5,
-            uid: edge.uid,
-            source: edge.source.uid,
-            target: edge.target.uid
+            uid: edge.id,
+            source: edge.source,
+            target: edge.target
           });
         } else {
           console.log(edge)
@@ -69,11 +69,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.graphsService
-      .getGraphs("Default")
-      .subscribe((graphs) => {
-        this.store.dispatch(retrievedGraphList({ graphs }))
-      });
+    let graphs = this.graphsService.getGraphs("Default")
+    this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
   ngAfterViewInit(): void {
@@ -166,19 +163,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let data = reader.result;
-      this.http
-        .post(
-          `http://localhost:1337/api/browse/graph?label=Default`, data
-        ).subscribe(result => {
-          this.graphsService
-            .getGraphs("Default")
-            .subscribe((graphs) => {
-              this.store.dispatch(retrievedGraphList({ graphs }))
-            });
-        });
+      console.info(data)
     });
     reader.readAsText(event.files[0])
-
 
   }
 

@@ -28,8 +28,8 @@ export class SysGraphService {
         _.each(graph?.edges, (edge) => {
             let uid = edge.uid;
             let label = edge.label;
-            let source = edge.source?.uid;
-            let target = edge.target?.uid;
+            let source = edge.source;
+            let target = edge.target;
             let tag = edge.tag;
             if (tag === null) {
                 xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" />`);
@@ -45,10 +45,10 @@ export class SysGraphService {
 }
 
 export interface SysGraph {
-    id?: string;
-    label?: string;
-    nodes?: SysNode[];
-    edges?: SysEdge[];
+    id: string;
+    label: string;
+    nodes: SysNode[];
+    edges: SysEdge[];
 }
 
 export interface SysNode {
@@ -65,8 +65,8 @@ export interface SysNode {
 export interface SysEdge {
     id: string;
     label: string;
-    source?: SysNode;
-    target?: SysNode;
+    source: string;
+    target: string;
     uid: string;
     tag?: string;
 }

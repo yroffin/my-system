@@ -33,6 +33,7 @@ import { TagModule } from 'primeng/tag';
 import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { StoreModule } from '@ngrx/store';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 
 import { modulesReducer } from './stats/module.reducer';
 import { graphReducer, graphsReducer } from './stats/graph.reducer';
@@ -50,6 +51,7 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
   ],
   imports: [
     BrowserModule,
+    NgxWebstorageModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,

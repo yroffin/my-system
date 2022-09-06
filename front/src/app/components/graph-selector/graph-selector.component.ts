@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { FilterService } from 'primeng/api';
 import { SysGraph, SysGraphService } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
+import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
@@ -26,7 +27,12 @@ export class GraphSelectorComponent implements OnInit {
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
 
-  constructor(private http: HttpClient, private router: Router, private graphsService: GraphService, private clipboardService: ClipboardService,
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private graphsService: GraphService,
+    private clipboardService: ClipboardService,
+    private databaseService: DatabaseService,
     private store: Store) {
     this.graph$.subscribe(_graph => {
       if (!_graph) {
@@ -51,11 +57,9 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.graphsService
-      .getHeadGraphs()
-      .subscribe((graphs) => {
-        this.store.dispatch(retrievedGraphList({ graphs }))
-      });
+    let graphs = this.databaseService.findAllGraphs()
+    console.log(graphs)
+    this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
   deleteSelectedGraph(): void {
@@ -63,27 +67,29 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   openNew(): void {
-
+    this.databaseService.store({
+      id: "default",
+      label: "default",
+      edges: [],
+      nodes: []
+    })
   }
 
   uploadHandler(event: any, _graph: SysGraph): void {
     let reader = new FileReader();
-    reader.addEventListener("loadend", () => {
+    reader.addEventListener("loadend", async () => {
       let data: any = reader.result;
-      this.graphsService.uploadgraph(_graph.id + "", data)
-        .subscribe(graph => {
-          console.log(`Graph ${graph.id} loaded`)
-        });
+      console.info(data)
+      let loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, data);
+      console.info(loadedGraph)
+      this.databaseService.store(loadedGraph)
     });
     reader.readAsText(event.files[0])
   }
 
   gexf(_graph: SysGraph): void {
-    this.graphsService
-      .getGraph(_graph.id + "")
-      .subscribe((graph) => {
-        this.clipboardService.copyTextToClipboard(SysGraphService.gexf(graph).join('\n'))
-      });
+    let graph = this.graphsService.getGraph(_graph.id + "")
+    this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(graph).join('\n'))
   }
 
   select(_graph: SysGraph): void {

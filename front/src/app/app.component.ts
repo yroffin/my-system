@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { DatabaseService } from './services/database.service';
 
 @Component({
     selector: 'app-root',
@@ -9,6 +10,10 @@ import { MenuItem } from 'primeng/api';
 export class AppComponent {
     title = 'front';
     items: MenuItem[] = [];
+
+    constructor(private databaseService: DatabaseService) {
+
+    }
 
     ngOnInit() {
         this.items = [
