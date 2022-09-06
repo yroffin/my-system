@@ -22,7 +22,7 @@ import { CoseLayoutOptionsImpl } from './layout-options-impl';
 import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
-import { SysEdge, SysGraph, SysGraphService, SysNode } from 'src/app/models/graph';
+import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem } from 'primeng/api';
 
 declare var cytoscape: any
@@ -286,7 +286,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         return _edge
       })
     }
-    this.clipboardService.copyTextToClipboard(SysGraphService.gexf(_graph).join('\n'))
+    this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(_graph).join('\n'))
   }
 }
 

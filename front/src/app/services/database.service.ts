@@ -48,7 +48,7 @@ export class DatabaseService {
     return undefined
   }
 
-  store(_graph: SysGraph): void {
+  storeGraph(_graph: SysGraph): void {
     let _graphs = this.retrieveGraphs()
     let found = _.find(_graphs, (graph) => {
       return _graph.id === graph.id
@@ -63,5 +63,9 @@ export class DatabaseService {
     }
 
     this.storage.store('graphs', _graphs)
+  }
+
+  storeTags(_tags: Array<SysTag>): void {
+    this.storage.store('tags', _tags)
   }
 }

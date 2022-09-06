@@ -24,11 +24,15 @@ export class GraphService {
     }
 
     saveGraph(_graph: SysGraph): void {
-        this.databaseService.store(_graph)
+        this.databaseService.storeGraph(_graph)
     }
 
     getAllTags(): Array<SysTag> {
         return this.databaseService.findAllTags()
+    }
+
+    saveTags(_tags: Array<SysTag>): void {
+        this.databaseService.storeTags(_tags)
     }
 
     toGexf(graph?: SysGraph): Array<string> {

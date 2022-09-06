@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ModuleComponent } from './components/module/module.component';
 
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
@@ -35,19 +34,20 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 
-import { modulesReducer } from './stats/module.reducer';
 import { graphReducer, graphsReducer } from './stats/graph.reducer';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
 import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
+import { TagComponent } from './components/tag/tag.component';
+import { tagsReducer } from './stats/tag.reducer';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ModuleComponent,
     GraphComponent,
     GraphSelectorComponent,
-    GraphCytoscapeComponent
+    GraphCytoscapeComponent,
+    TagComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +81,7 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
     MenubarModule,
     FormsModule,
     TagModule,
-    StoreModule.forRoot({ modules: modulesReducer, graphs: graphsReducer, graph: graphReducer })
+    StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

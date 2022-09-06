@@ -1,0 +1,6 @@
+<textarea [rows]="30" [cols]="180" pInputTextarea [(ngModel)]="tags"></textarea>
+<br>
+<p-fileUpload name="myfile[]" [customUpload]="true" (uploadHandler)="uploadHandler($event)">
+</p-fileUpload>
+<br>
+<button pButton pRipple label="Save" icon="pi pi-upload" class="p-button-help" (click)="save(tags)"></button>

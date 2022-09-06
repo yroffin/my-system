@@ -3,8 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { FilterService } from 'primeng/api';
-import { SysGraph, SysGraphService } from 'src/app/models/graph';
+import { SysGraph } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
@@ -28,7 +27,6 @@ export class GraphSelectorComponent implements OnInit {
   graphs$ = this.store.select(selectGraphs);
 
   constructor(
-    private http: HttpClient,
     private router: Router,
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
@@ -45,7 +43,6 @@ export class GraphSelectorComponent implements OnInit {
         return
       }
       this.graphs = _.map(_graphs, (graph) => {
-        console.log(graph)
         return {
           id: graph.id,
           label: graph.label,
@@ -58,7 +55,6 @@ export class GraphSelectorComponent implements OnInit {
 
   ngOnInit(): void {
     let graphs = this.databaseService.findAllGraphs()
-    console.log(graphs)
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
@@ -67,7 +63,7 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   openNew(): void {
-    this.databaseService.store({
+    this.databaseService.storeGraph({
       id: "default",
       label: "default",
       edges: [],
@@ -79,10 +75,9 @@ export class GraphSelectorComponent implements OnInit {
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       let data: any = reader.result;
-      console.info(data)
       let loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, data);
       console.info(loadedGraph)
-      this.databaseService.store(loadedGraph)
+      this.databaseService.storeGraph(loadedGraph)
     });
     reader.readAsText(event.files[0])
   }

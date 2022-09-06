@@ -11,7 +11,7 @@ export class AppComponent {
     title = 'front';
     items: MenuItem[] = [];
 
-    constructor(private databaseService: DatabaseService) {
+    constructor() {
 
     }
 
@@ -21,7 +21,14 @@ export class AppComponent {
                 label: 'Graph',
                 icon: 'pi pi-fw pi-pencil',
                 items: [
-                    { label: 'Browse', icon: 'pi pi-fw pi-book', routerLink: '/browse' }
+                    { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' }
+                ]
+            },
+            {
+                label: 'Tag',
+                icon: 'pi pi-fw pi-pencil',
+                items: [
+                    { label: 'Tag(s)', icon: 'pi pi-fw pi-book', routerLink: '/tags' }
                 ]
             }
         ];
