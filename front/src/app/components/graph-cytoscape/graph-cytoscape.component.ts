@@ -18,7 +18,7 @@ import {
   SelectionType,
   Stylesheet
 } from 'cytoscape'
-import { CoseLayoutOptionsImpl } from './layout-options-impl';
+import { CoseLayoutOptionsImpl, DagreLayoutOptionsImpl } from './layout-options-impl';
 import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
@@ -39,7 +39,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   cy?: Core
   boxSelectionEnabled?: boolean
-  layoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
+
+  coseLayoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
+  dagreLayoutOptions?: LayoutOptions = new DagreLayoutOptionsImpl()
+
   id?: string
   items: MenuItem[] = [];
 
@@ -57,7 +60,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       if (!graph) {
         return
       }
-
       // refresh render
       this.cy?.startBatch()
       this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
@@ -110,10 +112,18 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         }
       },
       {
-        label: 'Organize',
+        label: 'Cose Layout',
         command: () => {
-          if (this.layoutOptions) {
-            this.cy?.layout(this.layoutOptions).run()
+          if (this.coseLayoutOptions) {
+            this.cy?.layout(this.coseLayoutOptions).run()
+          }
+        }
+      },
+      {
+        label: 'Dagre Layout',
+        command: () => {
+          if (this.dagreLayoutOptions) {
+            this.cy?.layout(this.dagreLayoutOptions).run()
           }
         }
       }
@@ -256,32 +266,28 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     let _graph: SysGraph = {
       id: _id,
       label: _label,
-      nodes: _.map(__graph.nodes, (node) => {
-        let x = node.position?.x;
-        let y = node.position?.y;
+      nodes: _.map(this.cy?.nodes(), (node) => {
         let _node: SysNode = {
-          id: node.data['id'] || "",
-          label: node.data['label'] || "",
-          x: node.position?.x || 0,
-          y: node.position?.y || 0,
+          id: node.data()['id'] || "",
+          label: node.data()['label'] || "",
+          x: node.position().x || 0,
+          y: node.position().y || 0,
           size: 10,
           color: "0",
-          tag: node.data['tag'],
-          uid: node.data['id'] || ""
+          tag: node.data()['tag']
         }
-        index[node.data['id'] || ""] = _node
+        index[node.data()['id'] || ""] = _node
         return _node
       }),
-      edges: _.map(__graph.edges, (edge) => {
-        let source = edge.data['source'] || ""
-        let target = edge.data['target'] || ""
+      edges: _.map(this.cy?.edges(), (edge) => {
+        let source = edge.data().source
+        let target = edge.data().target
         let _edge: SysEdge = {
-          id: edge.data['id'] || "",
-          label: edge.data['label'] || "",
-          source: index[source],
-          target: index[target],
-          tag: edge.data['tag'],
-          uid: edge.data['id'] || ""
+          id: edge.data()['id'] || "",
+          label: edge.data()['label'] || "",
+          source: source,
+          target: target,
+          tag: edge.data()['tag']
         }
         return _edge
       })

@@ -19,6 +19,11 @@ export class GraphSelectorComponent implements OnInit {
 
   graph?: SysGraph = undefined;
   graphs: Array<SysGraph> = [];
+  newGraph?: string
+
+  displayExport = false
+  exportData: string[] = []
+  exportDataHtml = ""
 
   Delete = "false";
   xml: Array<string> = [];
@@ -58,25 +63,40 @@ export class GraphSelectorComponent implements OnInit {
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
-  deleteSelectedGraph(): void {
+  deleteGraph(_graph: SysGraph): void {
 
   }
 
-  openNew(): void {
-    this.databaseService.storeGraph({
-      id: "default",
-      label: "default",
-      edges: [],
-      nodes: []
-    })
+  openNew(name?: string): void {
+    if (name) {
+      this.databaseService.storeGraph({
+        id: name,
+        label: name,
+        edges: [],
+        nodes: []
+      })
+      let graphs = this.databaseService.findAllGraphs()
+      this.store.dispatch(retrievedGraphList({ graphs }))
+    }
   }
 
   uploadHandler(event: any, _graph: SysGraph): void {
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
-      let data: any = reader.result;
-      let loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, data);
-      console.info(loadedGraph)
+      let data: String = new String(reader.result);
+      console.log(reader)
+      let loadedGraph: SysGraph = {
+        id: _graph.id,
+        label: _graph.label,
+        nodes: [],
+        edges: []
+      }
+      if (data.includes('xmlns="http://gexf')) {
+        loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, _graph.label, data.toString());
+      }
+      if (data.includes("http://graphml.graphdrawing.org")) {
+        loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
+      }
       this.databaseService.storeGraph(loadedGraph)
     });
     reader.readAsText(event.files[0])
@@ -84,7 +104,11 @@ export class GraphSelectorComponent implements OnInit {
 
   gexf(_graph: SysGraph): void {
     let graph = this.graphsService.getGraph(_graph.id + "")
-    this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(graph).join('\n'))
+    console.log(graph)
+    this.exportData = this.graphsService.toGexf(graph)
+    this.exportDataHtml = this.exportData.join('\n')
+    this.clipboardService.copyTextToClipboard(this.exportData.join('\n'))
+    this.displayExport = true
   }
 
   select(_graph: SysGraph): void {

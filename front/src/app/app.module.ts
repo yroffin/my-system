@@ -30,6 +30,7 @@ import { SplitterModule } from 'primeng/splitter';
 import { FormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -81,6 +82,7 @@ import { tagsReducer } from './stats/tag.reducer';
     MenubarModule,
     FormsModule,
     TagModule,
+    OverlayPanelModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [],

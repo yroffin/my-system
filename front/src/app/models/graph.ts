@@ -12,10 +12,9 @@ export interface SysNode {
     label: string;
     x: number;
     y: number;
-    size: number;
-    color: string;
-    uid: string;
-    tag: string;
+    size?: number;
+    color?: string;
+    tag?: string;
 }
 
 export interface SysEdge {
@@ -23,7 +22,6 @@ export interface SysEdge {
     label: string;
     source: string;
     target: string;
-    uid: string;
     tag?: string;
 }
 

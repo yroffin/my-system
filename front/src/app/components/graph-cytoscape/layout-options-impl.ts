@@ -176,7 +176,7 @@ export class CoseLayoutOptionsImpl extends ShapedLayoutOptionsImpl {
     componentSpacing = 40
 
     // Node repulsion (overlapping) multiplier
-    nodeOverlap = 4
+    nodeOverlap = 4000
 
     // Nesting factor (multiplier) to compute ideal edge length for nested edges
     nestingFactor = 1.2

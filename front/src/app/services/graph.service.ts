@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
-import { SysGraph, SysTag } from '../models/graph';
+import { SysEdge, SysGraph, SysNode, SysTag } from '../models/graph';
 import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
+import { keys } from 'lodash';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
@@ -77,16 +78,15 @@ export class GraphService {
         return xml;
     }
 
-    async loadGraphGexf(id: string, data: string): Promise<SysGraph> {
-        console.debug(`loadGraphGexf: ${id}`)
+    async loadGraphGexf(id: string, label: string, data: string): Promise<SysGraph> {
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
                     throw err;
                 }
                 let graph: SysGraph = {
-                    id: 'default',
-                    label: 'default',
+                    id: id,
+                    label: label,
                     nodes: [],
                     edges: []
                 }
@@ -103,6 +103,60 @@ export class GraphService {
                         _.each(edgesHolder.edge, (edge) => {
                             graph.edges.push(edge['$']);
                         });
+                    });
+                })
+                resolve(graph);
+            })
+        })
+    }
+
+    private extractMlData(node: any, field: string) {
+        let key = _.find(node.data, (data) => {
+            if (data['$'].key === field) return data
+        })
+        if (key) return key["_"]
+        else return 0
+    }
+
+    async loadGraphMl(id: string, label: string, data: string): Promise<SysGraph> {
+        console.debug(`loadGraphMl: ${id}`)
+        return new Promise<SysGraph>((resolve) => {
+            parser.parseString(data, (err, result) => {
+                if (err) {
+                    throw err;
+                }
+                let graph: SysGraph = {
+                    id: id,
+                    label: label,
+                    nodes: [],
+                    edges: []
+                }
+                console.log(result)
+                let keys: any = []
+                _.each(result.graphml.graph.key, (key) => {
+                    keys.push({
+                        label: key.id,
+                        type: key['attr.type']
+                    })
+                })
+                _.each(result.graphml.graph, (item) => {
+                    _.each(item.node, (node) => {
+                        let _node: SysNode | any = {
+                            id: node['$'].id,
+                            label: this.extractMlData(node, "tooltip"),
+                            x: parseFloat(this.extractMlData(node, "x")),
+                            y: parseFloat(this.extractMlData(node, "y")),
+                        }
+                        graph.nodes.push(_node);
+                    });
+                    _.each(item.edge, (edge) => {
+                        let _edge: SysEdge = {
+                            id: edge['$'].id,
+                            label: "default",
+                            source: edge['$'].source,
+                            target: edge['$'].target,
+                        }
+                        graph.edges.push(_edge);
                     });
                 })
                 resolve(graph);
