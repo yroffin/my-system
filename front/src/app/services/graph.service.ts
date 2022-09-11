@@ -131,7 +131,6 @@ export class GraphService {
                     nodes: [],
                     edges: []
                 }
-                console.log(result)
                 let keys: any = []
                 _.each(result.graphml.graph.key, (key) => {
                     keys.push({

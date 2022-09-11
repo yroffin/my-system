@@ -27,6 +27,15 @@ export class DatabaseService {
     return JSON.parse(JSON.stringify(this.storage.retrieve('tags')))
   }
 
+  deleteGraph(_graph: SysGraph): Array<SysGraph> {
+    let _graphs = this.retrieveGraphs()
+    _.remove(_graphs, (graph) => {
+      return graph.id === _graph.id
+    })
+    this.storage.store('graphs', _graphs)
+    return _graphs
+  }
+
   findAllTags(): Array<SysTag> {
     let _tags = this.retrieveTags()
     return _tags
