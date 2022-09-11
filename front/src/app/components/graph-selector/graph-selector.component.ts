@@ -21,6 +21,9 @@ export class GraphSelectorComponent implements OnInit {
   graphs: Array<SysGraph> = [];
   newGraph?: string
 
+  displayImport = false
+  selectedGraph?: SysGraph
+
   displayExport = false
   exportData: string[] = []
   exportDataHtml = ""
@@ -68,6 +71,11 @@ export class GraphSelectorComponent implements OnInit {
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
+  showImport(_graph: SysGraph) {
+    this.displayImport = true;
+    this.selectedGraph = _graph;
+  }
+
   openNew(name?: string): void {
     if (name) {
       this.databaseService.storeGraph({
@@ -81,27 +89,30 @@ export class GraphSelectorComponent implements OnInit {
     }
   }
 
-  uploadHandler(event: any, _graph: SysGraph): void {
-    let reader = new FileReader();
-    reader.addEventListener("loadend", async () => {
-      let data: String = new String(reader.result);
-      let loadedGraph: SysGraph = {
-        id: _graph.id,
-        label: _graph.label,
-        nodes: [],
-        edges: []
-      }
-      if (data.includes('xmlns="http://gexf')) {
-        console.log("Load GEXF")
-        loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, _graph.label, data.toString());
-      }
-      if (data.includes("http://graphml.graphdrawing.org")) {
-        console.log("Load GRAPHML")
-        loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
-      }
-      this.databaseService.storeGraph(loadedGraph)
-    });
-    reader.readAsText(event.files[0])
+  uploadHandler(event: any, _graph?: SysGraph): void {
+    if (_graph) {
+      let reader = new FileReader();
+      reader.addEventListener("loadend", async () => {
+        let data: String = new String(reader.result);
+        let loadedGraph: SysGraph = {
+          id: _graph.id,
+          label: _graph.label,
+          nodes: [],
+          edges: []
+        }
+        if (data.includes('xmlns="http://gexf')) {
+          console.log("Load GEXF")
+          loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, _graph.label, data.toString());
+        }
+        if (data.includes("http://graphml.graphdrawing.org")) {
+          console.log("Load GRAPHML")
+          loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
+        }
+        this.databaseService.storeGraph(loadedGraph)
+      });
+      reader.readAsText(event.files[0])
+      this.displayImport = false
+    }
   }
 
   gexf(_graph: SysGraph): void {
