@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
+import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { SysGraph } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { DatabaseService } from 'src/app/services/database.service';
@@ -13,6 +13,7 @@ import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 @Component({
   selector: 'app-graph-selector',
   templateUrl: './graph-selector.component.html',
+  providers: [MessageService],
   styleUrls: ['./graph-selector.component.css']
 })
 export class GraphSelectorComponent implements OnInit {
@@ -20,6 +21,8 @@ export class GraphSelectorComponent implements OnInit {
   graph?: SysGraph = undefined;
   graphs: Array<SysGraph> = [];
   newGraph?: string
+
+  msgs: Message[] = []
 
   displayImport = false
   selectedGraph?: SysGraph
@@ -39,6 +42,8 @@ export class GraphSelectorComponent implements OnInit {
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
     private databaseService: DatabaseService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
     private store: Store) {
     this.graph$.subscribe(_graph => {
       if (!_graph) {
@@ -64,6 +69,19 @@ export class GraphSelectorComponent implements OnInit {
   ngOnInit(): void {
     let graphs = this.databaseService.findAllGraphs()
     this.store.dispatch(retrievedGraphList({ graphs }))
+  }
+
+  confirm(event: Event, _graph: SysGraph) {
+    this.confirmationService.confirm({
+      target: event.target || undefined,
+      message: 'Are you sure that you want to proceed ?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteGraph(_graph)
+      },
+      reject: () => {
+      }
+    });
   }
 
   deleteGraph(_graph: SysGraph): void {
@@ -101,11 +119,15 @@ export class GraphSelectorComponent implements OnInit {
           edges: []
         }
         if (data.includes('xmlns="http://gexf')) {
-          console.log("Load GEXF")
+          this.messageService.add({
+            severity: 'info', summary: 'Info', detail: `Load GEXF file to ${_graph.label}`
+          });
           loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, _graph.label, data.toString());
         }
         if (data.includes("http://graphml.graphdrawing.org")) {
-          console.log("Load GRAPHML")
+          this.messageService.add({
+            severity: 'info', summary: 'Info', detail: `Load GRAPHML file to ${_graph.label}`
+          });
           loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
         }
         this.databaseService.storeGraph(loadedGraph)

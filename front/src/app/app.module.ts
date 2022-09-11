@@ -31,6 +31,7 @@ import { FormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -41,6 +42,7 @@ import { GraphSelectorComponent } from './components/graph-selector/graph-select
 import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
 import { TagComponent } from './components/tag/tag.component';
 import { tagsReducer } from './stats/tag.reducer';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -83,9 +85,10 @@ import { tagsReducer } from './stats/tag.reducer';
     FormsModule,
     TagModule,
     OverlayPanelModule,
+    ConfirmPopupModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
-  providers: [],
+  providers: [ConfirmationService, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -259,10 +259,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   gexf(_id: string, _label: string): void {
     let index: any = {}
-    let __graph: ElementsDefinition = {
-      nodes: [],
-      edges: []
-    }
     let _graph: SysGraph = {
       id: _id,
       label: _label,
