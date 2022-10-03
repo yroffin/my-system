@@ -130,6 +130,11 @@ export class GraphSelectorComponent implements OnInit {
           });
           loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
         }
+        if (loadedGraph.nodes.length == 0) {
+          this.messageService.add({
+            severity: 'warn', summary: 'warn', detail: `No node for ${_graph.label}`
+          });
+        }
         this.databaseService.storeGraph(loadedGraph)
       });
       reader.readAsText(event.files[0])

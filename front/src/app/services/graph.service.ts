@@ -5,11 +5,17 @@ import { SysEdge, SysGraph, SysNode, SysTag } from '../models/graph';
 import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
 import { keys } from 'lodash';
+import { LogService } from './log.service';
+import { Base16Service } from './base16.service';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
 export class GraphService {
-    constructor(private databaseService: DatabaseService) { }
+    constructor(
+        private databaseService: DatabaseService,
+        private base16: Base16Service,
+        private logger: LogService
+    ) { }
 
     getGraphs(_filter: string): Array<SysGraph> {
         let graphs = this.databaseService.findAllGraphs()
@@ -47,7 +53,7 @@ export class GraphService {
         xml.push(`<graph mode="static" defaultedgetype="directed">`);
         xml.push(`<nodes>`);
         _.each(_.sortBy(graph?.nodes, (node) => node.id), (node) => {
-            let uid = node.id;
+            let uid = this.base16.decode(node.id);
             let label = node.label;
             let x = node.x;
             let y = node.y;
@@ -61,10 +67,10 @@ export class GraphService {
         xml.push(`</nodes>`);
         xml.push(`<edges>`);
         _.each(_.sortBy(graph?.edges, (edge) => edge.id), (edge) => {
-            let uid = edge.id;
+            let uid = this.base16.decode(edge.id);
             let label = edge.label;
-            let source = edge.source;
-            let target = edge.target;
+            let source = this.base16.decode(edge.source);
+            let target = this.base16.decode(edge.target);
             let tag = edge.tag === undefined ? null : edge.tag;
             if (tag === null) {
                 xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" />`);
@@ -82,6 +88,7 @@ export class GraphService {
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
+                    this.logger.log(err)
                     throw err;
                 }
                 let graph: SysGraph = {
@@ -94,6 +101,7 @@ export class GraphService {
                     _.each(item.nodes, (nodesHolder) => {
                         _.each(nodesHolder.node, (node) => {
                             let _node = node['$']
+                            _node.id = this.base16.encode(_node.id)
                             _node.x = parseFloat(_node.x)
                             _node.y = parseFloat(_node.y)
                             graph.nodes.push(_node);
@@ -101,10 +109,15 @@ export class GraphService {
                     });
                     _.each(item.edges, (edgesHolder) => {
                         _.each(edgesHolder.edge, (edge) => {
-                            graph.edges.push(edge['$']);
+                            let _edge = edge['$']
+                            _edge.id = this.base16.encode(_edge.id)
+                            _edge.source = this.base16.encode(_edge.source)
+                            _edge.target = this.base16.encode(_edge.target)
+                            graph.edges.push(_edge);
                         });
                     });
                 })
+                this.logger.log(graph)
                 resolve(graph);
             })
         })
