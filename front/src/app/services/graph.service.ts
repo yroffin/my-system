@@ -58,10 +58,22 @@ export class GraphService {
             let x = node.x;
             let y = node.y;
             let tag = node.tag === undefined ? null : node.tag;
+            let parent = undefined;
+            if (node.parent) {
+                parent = this.base16.decode(node.parent)
+            }
             if (tag === null) {
-                xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}"  />`);
+                if (parent) {
+                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" />`);
+                } else {
+                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" />`);
+                }
             } else {
-                xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" tag="${tag}" />`);
+                if (parent) {
+                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" tag="${tag}" />`);
+                } else {
+                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" tag="${tag}" />`);
+                }
             }
         });
         xml.push(`</nodes>`);
@@ -104,6 +116,10 @@ export class GraphService {
                             _node.id = this.base16.encode(_node.id)
                             _node.x = parseFloat(_node.x)
                             _node.y = parseFloat(_node.y)
+                            // Decode parent property
+                            if (_node.parent) {
+                                _node.parent = this.base16.encode(_node.parent)
+                            }
                             graph.nodes.push(_node);
                         });
                     });

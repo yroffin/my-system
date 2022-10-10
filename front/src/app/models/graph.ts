@@ -9,6 +9,7 @@ export interface SysGraph {
 
 export interface SysNode {
     id: string;
+    parent?: string;
     label: string;
     x: number;
     y: number;

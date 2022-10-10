@@ -24,6 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem } from 'primeng/api';
+import { Base16Service } from 'src/app/services/base16.service';
 
 declare var cytoscape: any
 
@@ -54,7 +55,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   _lockedEdge: boolean = false;
   _selectEdge: any;
 
-  constructor(private graphsService: GraphService, private clipboardService: ClipboardService,
+  constructor(
+    private graphsService: GraphService,
+    private clipboardService: ClipboardService,
+    private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
     this.graph$.subscribe(graph => {
       if (!graph) {
@@ -67,7 +71,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.cy?.edges().remove()
       if (graph.nodes) {
         this.cy?.add(_.map(graph.nodes, (node) => {
-          return {
+          let _node: any = {
             data: {
               id: node.id,
               label: node.label,
@@ -78,11 +82,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
               y: node.y
             }
           }
+          // Decode parent property
+          if (node.parent) {
+            _node.data.parent = node.parent
+          }
+          return _node
         }))
       }
       if (graph.edges) {
         this.cy?.add(_.map(graph.edges, (edge) => {
-          return {
+          let _edge = {
             data: {
               id: edge.id,
               label: edge.label,
@@ -91,6 +100,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
               tag: edge.tag
             }
           }
+          return _edge
         }))
       }
       this.cy?.endBatch()
@@ -160,8 +170,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         "ghost": "yes",
         "ghost-offset-x": "15px",
         "ghost-offset-y": "15px",
-        "ghost-opacity": "0.1",
-        "background-image": "https://th.bing.com/th/id/OIP.dW8QPfimoo2vZ8iLvoeuSAHaHa?pid=ImgDet&rs=1"
+        "ghost-opacity": "0.1"
       }
     });
     allstyles.push({
@@ -195,16 +204,27 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
     this.cy.on('select', 'node', (event) => {
       this._selectNode = {
-        data: event.target.data(),
+        data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
+      }
+      this._selectNode.data.id = this.base16.decode(this._selectNode.data.id)
+      if (this._selectNode.data.parent) {
+        this._selectNode.data.parent = this.base16.decode(this._selectNode.data.parent)
       }
       this._lockedNode = event.target.locked()
     });
 
     this.cy.on('select', 'edge', (event) => {
       this._selectEdge = {
-        data: event.target.data(),
+        data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
+      }
+      this._selectEdge.data.id = this.base16.decode(this._selectEdge.data.id)
+      if (this._selectEdge.data.source) {
+        this._selectEdge.data.source = this.base16.decode(this._selectEdge.data.source)
+      }
+      if (this._selectEdge.data.target) {
+        this._selectEdge.data.target = this.base16.decode(this._selectEdge.data.target)
       }
       this._lockedEdge = event.target.locked()
     });
@@ -273,6 +293,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           tag: node.data()['tag']
         }
         index[node.data()['id'] || ""] = _node
+        if (node.data()['parent']) {
+          _node.parent = node.data()['parent']
+        }
         return _node
       }),
       edges: _.map(this.cy?.edges(), (edge) => {
