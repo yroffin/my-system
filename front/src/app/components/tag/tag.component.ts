@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { MenuItem, Message, MessageService } from 'primeng/api';
 import { SysTag } from 'src/app/models/graph';
 import { GraphService } from 'src/app/services/graph.service';
 import { retrievedTagsList } from 'src/app/stats/tag.actions';
@@ -12,10 +13,14 @@ import { selectTags } from 'src/app/stats/tag.selectors';
 })
 export class TagComponent implements OnInit {
 
+  items: MenuItem[] = [];
+  msgs: Message[] = []
+
   tags: string = ""
   tags$ = this.store.select(selectTags);
 
   constructor(
+    private messageService: MessageService,
     private graphsService: GraphService,
     private store: Store
   ) {
@@ -30,6 +35,15 @@ export class TagComponent implements OnInit {
   ngOnInit(): void {
     let tags = this.graphsService.getAllTags()
     this.store.dispatch(retrievedTagsList({ tags }))
+
+    this.items = [
+      {
+        label: 'Save',
+        command: () => {
+          this.save(this.tags)
+        }
+      }
+    ];
   }
 
   uploadHandler(event: any): void {
@@ -43,5 +57,8 @@ export class TagComponent implements OnInit {
 
   save(tags: string): void {
     this.graphsService.saveTags(JSON.parse(tags))
+    this.messageService.add({
+      severity: 'info', summary: 'Info', detail: `Saved`
+    });
   }
 }

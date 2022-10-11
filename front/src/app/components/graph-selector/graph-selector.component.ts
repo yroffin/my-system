@@ -7,6 +7,7 @@ import { SysGraph } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
+import { LogService } from 'src/app/services/log.service';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 
@@ -39,6 +40,7 @@ export class GraphSelectorComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private logger: LogService,
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
     private databaseService: DatabaseService,
@@ -109,6 +111,7 @@ export class GraphSelectorComponent implements OnInit {
 
   uploadHandler(event: any, _graph?: SysGraph): void {
     if (_graph) {
+      this.logger.log(event)
       let reader = new FileReader();
       reader.addEventListener("loadend", async () => {
         let data: String = new String(reader.result);

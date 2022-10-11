@@ -240,6 +240,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeLockNode(event: any): void {
+    if (!this._selectNode) {
+      return
+    }
     let _item = this.cy?.$(`#${this._selectNode.data.id}`)
     if (event.checked) {
       _item?.lock()
@@ -259,6 +262,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeLockEdge(event: any): void {
+    if (!this._selectEdge) {
+      return
+    }
     let _item = this.cy?.$(`#${this._selectEdge.data.id}`)
     if (event.checked) {
       _item?.lock()
