@@ -18,12 +18,16 @@ import {
   SelectionType,
   Stylesheet
 } from 'cytoscape'
-import { CoseLayoutOptionsImpl, DagreLayoutOptionsImpl } from './layout-options-impl';
+
+var snapToGrid = require('cytoscape-snap-to-grid');
+snapToGrid(cy); // register extension
+
+import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
 import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
 
 declare var cytoscape: any
@@ -36,11 +40,18 @@ declare var cytoscape: any
 export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('myCytoscape') myGraph?: ElementRef;
+  @ViewChild('myPng') myPng?: ElementRef;
   subscription: any = null;
 
   cy?: Core
   boxSelectionEnabled?: boolean
+  displayExportPng = false
+  msgs: Message[] = []
 
+  breadFirstLayoutOptions?: LayoutOptions = new BreadthFirstLayoutOptionsImpl()
+  concentricLayoutOptions?: LayoutOptions = new ConcentricLayoutOptionsImpl()
+  circleLayoutOptions?: LayoutOptions = new CircleLayoutOptionsImpl()
+  gridLayoutOptions?: LayoutOptions = new GridLayoutOptionsImpl()
   coseLayoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
   dagreLayoutOptions?: LayoutOptions = new DagreLayoutOptionsImpl()
 
@@ -58,6 +69,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   constructor(
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
+    private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
     this.graph$.subscribe(graph => {
@@ -114,28 +126,124 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
     this.items = [
       {
-        label: 'Copy',
-        command: () => {
-          if (this.id) {
-            this.gexf(this.id, this.id)
+        label: 'Export',
+        items: [{
+          label: 'Clipboard',
+          command: () => {
+            if (this.id) {
+              this.gexf(this.id, this.id)
+              this.messageService.add({
+                severity: 'info', summary: 'Info', detail: `Store GEXF in clipboard`
+              });
+            }
+          }
+        },
+        {
+          label: 'Export PNG',
+          command: () => {
+            // put the png data in an img tag
+            if (document) {
+              let png = this.cy?.png() || ""
+              this.myPng?.nativeElement.setAttribute('src', png);
+            }
+            this.displayExportPng = true
           }
         }
+        ]
       },
       {
-        label: 'Cose Layout',
-        command: () => {
-          if (this.coseLayoutOptions) {
-            this.cy?.layout(this.coseLayoutOptions).run()
-          }
-        }
+        label: 'Layout',
+        items: [
+          {
+            label: 'Bread First Layout',
+            command: () => {
+              if (this.breadFirstLayoutOptions) {
+                this.cy?.layout(this.breadFirstLayoutOptions).run()
+              }
+            }
+          },
+          {
+            label: 'Concentric Layout',
+            command: () => {
+              if (this.concentricLayoutOptions) {
+                this.cy?.layout(this.concentricLayoutOptions).run()
+              }
+            }
+          },
+          {
+            label: 'Circle Layout',
+            command: () => {
+              if (this.circleLayoutOptions) {
+                this.cy?.layout(this.circleLayoutOptions).run()
+              }
+            }
+          },
+          {
+            label: 'Grid Layout',
+            command: () => {
+              if (this.gridLayoutOptions) {
+                this.cy?.layout(this.gridLayoutOptions).run()
+              }
+            }
+          },
+          {
+            label: 'Cose Layout',
+            command: () => {
+              if (this.coseLayoutOptions) {
+                this.cy?.layout(this.coseLayoutOptions).run()
+              }
+            }
+          },
+          {
+            label: 'Dagre Layout',
+            command: () => {
+              if (this.dagreLayoutOptions) {
+                this.cy?.layout(this.dagreLayoutOptions).run()
+              }
+            }
+          },
+        ]
       },
       {
-        label: 'Dagre Layout',
-        command: () => {
-          if (this.dagreLayoutOptions) {
-            this.cy?.layout(this.dagreLayoutOptions).run()
+        label: 'Zoom',
+        items: [
+          {
+            label: '0.1',
+            command: () => {
+              this.cy?.zoom(0.1)
+            }
+          },
+          {
+            label: '0.5',
+            command: () => {
+              this.cy?.zoom(0.5)
+            }
+          },
+          {
+            label: '0.75',
+            command: () => {
+              this.cy?.zoom(0.75)
+            }
+          },
+          {
+            label: '1',
+            command: () => {
+              this.cy?.zoom(1)
+            }
           }
-        }
+        ]
+      },
+      {
+        label: 'Grid',
+        items: [
+          {
+            label: 'Snap to grid',
+            command: () => {
+              let myCy: any = this.cy
+              myCy?.snapToGrid()
+            }
+          }
+        ]
       }
     ];
   }

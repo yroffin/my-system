@@ -1,19 +1,26 @@
-<p-contextMenu [global]="true" [model]="items"></p-contextMenu>
+<p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
+<p-messages [(value)]="msgs" [enableService]="true"></p-messages>
 
-<p-splitter [style]="{'height': '1024px'}">
-    <ng-template pTemplate>
-        <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
-    </ng-template>
-    <ng-template pTemplate>
-        <p-splitter layout="vertical">
-            <ng-template pTemplate>
-                <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
-                <pre>{{_selectNode | json}}</pre>
-            </ng-template>
-            <ng-template pTemplate>
-                <p-inputSwitch [(ngModel)]="_lockedEdge" (onChange)="handleChangeLockEdge($event)"></p-inputSwitch>
-                <pre>{{_selectEdge | json}}</pre>
-            </ng-template>
-        </p-splitter>
-    </ng-template>
-</p-splitter>
+<div #area>
+    <p-splitter [style]="{'height': '1024px'}">
+        <ng-template pTemplate>
+            <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
+        </ng-template>
+        <ng-template pTemplate>
+            <p-splitter layout="vertical">
+                <ng-template pTemplate>
+                    <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
+                    <pre>{{_selectNode | json}}</pre>
+                </ng-template>
+                <ng-template pTemplate>
+                    <p-inputSwitch [(ngModel)]="_lockedEdge" (onChange)="handleChangeLockEdge($event)"></p-inputSwitch>
+                    <pre>{{_selectEdge | json}}</pre>
+                </ng-template>
+            </p-splitter>
+        </ng-template>
+    </p-splitter>
+</div>
+
+<p-dialog [modal]="true" header="Png" [(visible)]="displayExportPng">
+    <img #myPng src=""><img>
+</p-dialog>
