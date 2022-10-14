@@ -11,6 +11,7 @@ export interface SysNode {
     id: string;
     parent?: string;
     label: string;
+    cdata?: string;
     x: number;
     y: number;
     size?: number;
@@ -21,6 +22,7 @@ export interface SysNode {
 export interface SysEdge {
     id: string;
     label: string;
+    cdata?: string;
     source: string;
     target: string;
     tag?: string;

@@ -43,6 +43,7 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
 import { TagComponent } from './components/tag/tag.component';
 import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     MenubarModule,
     FormsModule,
     TagModule,
+    TabViewModule,
     OverlayPanelModule,
     ConfirmPopupModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })

@@ -116,6 +116,7 @@ export class GraphService {
                             _node.id = this.base16.encode(_node.id)
                             _node.x = parseFloat(_node.x)
                             _node.y = parseFloat(_node.y)
+                            _node.cdata = node['_']
                             // Decode parent property
                             if (_node.parent) {
                                 _node.parent = this.base16.encode(_node.parent)
@@ -129,6 +130,7 @@ export class GraphService {
                             _edge.id = this.base16.encode(_edge.id)
                             _edge.source = this.base16.encode(_edge.source)
                             _edge.target = this.base16.encode(_edge.target)
+                            _edge.cdata = edge['_']
                             graph.edges.push(_edge);
                         });
                     });

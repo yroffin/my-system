@@ -6,6 +6,9 @@ import { GraphService } from 'src/app/services/graph.service';
 import { retrievedGraph, retrievedGraphList } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 
+// node.js, the same, but with sugar:
+var md = require('markdown-it')();
+
 import * as cy from 'cytoscape'
 import {
   Core,
@@ -63,8 +66,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   _lockedNode: boolean = false;
   _selectNode: any;
+  _selectNodeCdata: string = "";
   _lockedEdge: boolean = false;
   _selectEdge: any;
+  _selectEdgeCdata: string = "";
 
   constructor(
     private graphsService: GraphService,
@@ -87,6 +92,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             data: {
               id: node.id,
               label: node.label,
+              cdata: node.cdata,
               tag: node.tag
             },
             position: {
@@ -107,6 +113,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             data: {
               id: edge.id,
               label: edge.label,
+              cdata: edge.cdata,
               source: edge.source || "",
               target: edge.target || "",
               tag: edge.tag
@@ -315,6 +322,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
       }
+      this._selectNodeCdata = md.render(this._selectNode.data.cdata)
       this._selectNode.data.id = this.base16.decode(this._selectNode.data.id)
       if (this._selectNode.data.parent) {
         this._selectNode.data.parent = this.base16.decode(this._selectNode.data.parent)
@@ -327,6 +335,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
       }
+      this._selectEdgeCdata = md.render(this._selectEdge.data.cdata)
       this._selectEdge.data.id = this.base16.decode(this._selectEdge.data.id)
       if (this._selectEdge.data.source) {
         this._selectEdge.data.source = this.base16.decode(this._selectEdge.data.source)

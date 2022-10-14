@@ -7,16 +7,22 @@
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
         </ng-template>
         <ng-template pTemplate>
-            <p-splitter layout="vertical">
-                <ng-template pTemplate>
+            <p-tabView>
+                <p-tabPanel header="Node">
                     <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
                     <pre>{{_selectNode | json}}</pre>
-                </ng-template>
-                <ng-template pTemplate>
+                </p-tabPanel>
+                <p-tabPanel header="Node documentation">
+                    <div [innerHTML]="_selectNodeCdata"></div>
+                </p-tabPanel>
+                <p-tabPanel header="Edge">
                     <p-inputSwitch [(ngModel)]="_lockedEdge" (onChange)="handleChangeLockEdge($event)"></p-inputSwitch>
                     <pre>{{_selectEdge | json}}</pre>
-                </ng-template>
-            </p-splitter>
+                </p-tabPanel>
+                <p-tabPanel header="Edge documentation">
+                    <div [innerHTML]="_selectEdgeCdata"></div>
+                </p-tabPanel>
+            </p-tabView>
         </ng-template>
     </p-splitter>
 </div>

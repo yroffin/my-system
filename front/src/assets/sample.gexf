@@ -6,7 +6,28 @@
 </meta>
 <graph mode="static" defaultedgetype="directed">
 <nodes>
-<node id="all/group/group-001" label="sample-ingress" x="159.58708416768445" y="209.23722288316932" tag="all/group" />
+<node id="all/group/group-001" label="sample-ingress" x="159.58708416768445" y="209.23722288316932" tag="all/group">
+<![CDATA[
+# Test
+
+## Sample
+
+simple text
+
+__test__
+
+This is the local project with the fibre optics.
+All the statistical manipulation is performed. Example. '"&<> and submission date 12/12/2020
+
+> Of all the things I've lost 
+> I miss my mind the most. - Mark Twain
+
+* Item 1
+* Item 2
+* Item 3
+
+]]>
+</node>
 <node id="all/group/group-002" label="sample-functions" x="441.44851051493123" y="1162.0620571269965" tag="all/group" />
 <node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" x="69.58890121434128" y="275.80304507727004" tag="azure/aks/deployment/pod" />
 <node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" x="272.08526712102764" y="112.6714006890686" tag="listener" />
@@ -37,7 +58,28 @@
 <edge id="azure/aks/deployment/pod/sample-api:azure/storage/table/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/table/table-001" label="microsoft table" />
 <edge id="azure/aks/ingress/sample-ingress:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/ingress/sample-ingress" target="azure/aks/deployment/pod/sample-api/listener" label="rest" />
 <edge id="azure/function/function-001:azure/service-bus/queue/sample-queue" source="azure/function/function-001" target="azure/service-bus/queue/sample-queue" label="write" />
-<edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh" />
+<edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh">
+<![CDATA[
+# Test
+
+## Sample
+
+simple text
+
+__test__
+
+This is the local project with the fibre optics.
+All the statistical manipulation is performed. Example. '"&<> and submission date 12/12/2020
+
+> Of all the things I've lost 
+> I miss my mind the most. - Mark Twain
+
+* Item 1
+* Item 2
+* Item 3
+
+]]>
+</edge>
 <edge id="azure/gateway/v1/gateway-001:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001" target="azure/aks/ingress/sample-ingress" label="ingress" />
 <edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" />
 <edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="sample-subscription-001-001" />
