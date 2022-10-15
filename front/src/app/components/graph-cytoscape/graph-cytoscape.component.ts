@@ -30,8 +30,9 @@ import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
-import { MenuItem, Message, MessageService } from 'primeng/api';
+import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
+import { LogService } from 'src/app/services/log.service';
 
 declare var cytoscape: any
 
@@ -50,6 +51,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   boxSelectionEnabled?: boolean
   displayExportPng = false
   msgs: Message[] = []
+
+  searchNode = ""
+  graphs: TreeNode[] = [];
+  cols: any[] = [
+    { field: 'label', header: 'Label' }
+  ];
 
   breadFirstLayoutOptions?: LayoutOptions = new BreadthFirstLayoutOptionsImpl()
   concentricLayoutOptions?: LayoutOptions = new ConcentricLayoutOptionsImpl()
@@ -74,6 +81,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   constructor(
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
+    private logger: LogService,
     private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
@@ -87,6 +95,55 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.cy?.nodes().remove()
       this.cy?.edges().remove()
       if (graph.nodes) {
+
+        this.graphs =
+          [
+            {
+              "label": "Nodes",
+              "data": {
+                uid: 1,
+                label: "Nodes"
+              },
+              "expandedIcon": "pi pi-folder-open",
+              "collapsedIcon": "pi pi-folder",
+              "children": _.map(graph.nodes, (node) => {
+                return {
+                  "label": "Node",
+                  "data": {
+                    _id: node.id,
+                    label: node.label
+                  },
+                  "expandedIcon": "pi pi-folder-open",
+                  "collapsedIcon": "pi pi-folder",
+                  "children": []
+                }
+              })
+            },
+            {
+              "label": "Edges",
+              "data": {
+                uid: 1,
+                label: "Edges"
+              },
+              "expandedIcon": "pi pi-folder-open",
+              "collapsedIcon": "pi pi-folder",
+              "children": _.map(graph.edges, (edge) => {
+                return {
+                  "label": "Edge",
+                  "data": {
+                    _id: edge.id,
+                    _source: edge.source,
+                    _target: edge.target,
+                    label: edge.label
+                  },
+                  "expandedIcon": "pi pi-folder-open",
+                  "collapsedIcon": "pi pi-folder",
+                  "children": []
+                }
+              })
+            }
+          ]
+
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
@@ -322,7 +379,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
       }
-      this._selectNodeCdata = md.render(this._selectNode.data.cdata)
+      if (this._selectNode.data.cdata) {
+        this._selectNodeCdata = md.render(this._selectNode.data.cdata)
+      } else {
+        this._selectNodeCdata = "Empty ..."
+      }
       this._selectNode.data.id = this.base16.decode(this._selectNode.data.id)
       if (this._selectNode.data.parent) {
         this._selectNode.data.parent = this.base16.decode(this._selectNode.data.parent)
@@ -335,7 +396,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         data: JSON.parse(JSON.stringify(event.target.data())),
         locked: event.target.locked()
       }
-      this._selectEdgeCdata = md.render(this._selectEdge.data.cdata)
+      if (this._selectEdge.data.cdata) {
+        this._selectEdgeCdata = md.render(this._selectEdge.data.cdata)
+      } else {
+        this._selectEdgeCdata = "Empty ..."
+      }
       this._selectEdge.data.id = this.base16.decode(this._selectEdge.data.id)
       if (this._selectEdge.data.source) {
         this._selectEdge.data.source = this.base16.decode(this._selectEdge.data.source)
@@ -354,6 +419,50 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         this.store.dispatch(retrievedGraph({ graph: _graph }))
       }
     });
+  }
+
+  onSelect(item: any): void {
+    this.logger.log(item)
+    let anims = [
+      {
+        x: 32, y: 32
+      },
+      {
+        x: 0, y: 0
+      }
+    ]
+    if (item._source) {
+      this.animate(this.cy?.$(`#${item._source}`), anims)
+      this.animate(this.cy?.$(`#${item._target}`), anims)
+    } else {
+      this.animate(this.cy?.$(`#${item._id}`), anims)
+    }
+  }
+
+  animate(searchedId: any, positions: any[]): void {
+    if (searchedId) {
+      if (searchedId.length > 0) {
+        let _item = searchedId[0]
+        this.logger.log(_item)
+        let paths: Position[] = _.map(positions, (position) => {
+          return {
+            x: _item.position().x + position.x,
+            y: _item.position().y + position.y
+          }
+        })
+        let fns = _.map(paths, (path) => {
+          return () => {
+            _item
+              .animate({
+                position: path
+              }, {
+                duration: 250
+              })
+          }
+        })
+        _.each(fns, (fn) => fn())
+      }
+    }
   }
 
   handleChangeLockNode(event: any): void {

@@ -2,12 +2,31 @@
 <p-messages [(value)]="msgs" [enableService]="true"></p-messages>
 
 <div #area>
-    <p-splitter [style]="{'height': '1024px'}">
+    <p-splitter [style]="{'height': '1024px'}" [panelSizes]="[70,30]">
         <ng-template pTemplate>
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
         </ng-template>
         <ng-template pTemplate>
             <p-tabView>
+                <p-tabPanel header="Find">
+                    <p-treeTable [value]="graphs" [columns]="cols">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns; let i = index" (click)="onSelect(rowData)">
+                                    <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
+                                    {{rowData[col.field]}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-treeTable>
+                </p-tabPanel>
                 <p-tabPanel header="Node">
                     <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
                     <pre>{{_selectNode | json}}</pre>

@@ -44,6 +44,7 @@ import { TagComponent } from './components/tag/tag.component';
 import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
+import { TreeTableModule } from 'primeng/treetable';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { TabViewModule } from 'primeng/tabview';
     TabViewModule,
     OverlayPanelModule,
     ConfirmPopupModule,
+    TreeTableModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [ConfirmationService, MessageService],
