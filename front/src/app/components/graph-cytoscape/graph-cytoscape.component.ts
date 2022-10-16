@@ -33,6 +33,7 @@ import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
 import { LogService } from 'src/app/services/log.service';
+import { TreeTable } from 'primeng/treetable';
 
 declare var cytoscape: any
 
@@ -45,6 +46,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('myCytoscape') myGraph?: ElementRef;
   @ViewChild('myPng') myPng?: ElementRef;
+  @ViewChild('myTreeTable') myTreeTable?: TreeTable;
   subscription: any = null;
 
   cy?: Core
@@ -71,12 +73,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
 
-  _lockedNode: boolean = false;
-  _selectNode: any;
-  _selectNodeCdata: string = "";
-  _lockedEdge: boolean = false;
-  _selectEdge: any;
-  _selectEdgeCdata: string = "";
+  _lockedElement: boolean = false;
+  _selectElement: any;
+  _selectElementCdata: string = "";
 
   constructor(
     private graphsService: GraphService,
@@ -144,6 +143,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             }
           ]
 
+        this.myTreeTable?.filter("sample", "label", undefined)
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
@@ -375,40 +375,17 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     });
 
     this.cy.on('select', 'node', (event) => {
-      this._selectNode = {
-        data: JSON.parse(JSON.stringify(event.target.data())),
-        locked: event.target.locked()
-      }
-      if (this._selectNode.data.cdata) {
-        this._selectNodeCdata = md.render(this._selectNode.data.cdata)
-      } else {
-        this._selectNodeCdata = "Empty ..."
-      }
-      this._selectNode.data.id = this.base16.decode(this._selectNode.data.id)
-      if (this._selectNode.data.parent) {
-        this._selectNode.data.parent = this.base16.decode(this._selectNode.data.parent)
-      }
-      this._lockedNode = event.target.locked()
+      this.logger.log(event)
+      this.onSelectElement(event)
     });
 
     this.cy.on('select', 'edge', (event) => {
-      this._selectEdge = {
-        data: JSON.parse(JSON.stringify(event.target.data())),
-        locked: event.target.locked()
-      }
-      if (this._selectEdge.data.cdata) {
-        this._selectEdgeCdata = md.render(this._selectEdge.data.cdata)
-      } else {
-        this._selectEdgeCdata = "Empty ..."
-      }
-      this._selectEdge.data.id = this.base16.decode(this._selectEdge.data.id)
-      if (this._selectEdge.data.source) {
-        this._selectEdge.data.source = this.base16.decode(this._selectEdge.data.source)
-      }
-      if (this._selectEdge.data.target) {
-        this._selectEdge.data.target = this.base16.decode(this._selectEdge.data.target)
-      }
-      this._lockedEdge = event.target.locked()
+      this.logger.log(event)
+      this.onSelectElement(event)
+    });
+
+    this.cy.on('select', (event) => {
+      this.logger.log(event)
     });
 
     this.route.params.subscribe(params => {
@@ -420,6 +397,30 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  private onSelectElement(event: any) {
+    this._selectElement = {
+      data: JSON.parse(JSON.stringify(event.target.data())),
+      locked: event.target.locked()
+    }
+    if (this._selectElement.data.cdata) {
+      this._selectElementCdata = md.render(this._selectElement.data.cdata)
+    } else {
+      this._selectElementCdata = ""
+    }
+    this._selectElement.data.id = this.base16.decode(this._selectElement.data.id)
+    if (this._selectElement.data.parent) {
+      this._selectElement.data.parent = this.base16.decode(this._selectElement.data.parent)
+    }
+    if (this._selectElement.data.source) {
+      this._selectElement.data.source = this.base16.decode(this._selectElement.data.source)
+    }
+    if (this._selectElement.data.target) {
+      this._selectElement.data.target = this.base16.decode(this._selectElement.data.target)
+    }
+    this._lockedElement = event.target.locked()
+  };
+
 
   onSelect(item: any): void {
     this.logger.log(item)
@@ -465,33 +466,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  handleChangeLockNode(event: any): void {
-    if (!this._selectNode) {
+  handleChangeLock(event: any): void {
+    if (!this._selectElement) {
       return
     }
-    let _item = this.cy?.$(`#${this._selectNode.data.id}`)
-    if (event.checked) {
-      _item?.lock()
-      _item?.animate({
-        style: { "opacity": 0.2 }
-      }, {
-        duration: 1000
-      })
-    } else {
-      _item?.animate({
-        style: { "opacity": 1 }
-      }, {
-        duration: 1000
-      })
-      _item?.unlock();
-    }
-  }
-
-  handleChangeLockEdge(event: any): void {
-    if (!this._selectEdge) {
-      return
-    }
-    let _item = this.cy?.$(`#${this._selectEdge.data.id}`)
+    let _item = this.cy?.$(`#${this.base16.encode(this._selectElement.data.id)}`)
     if (event.checked) {
       _item?.lock()
       _item?.animate({
@@ -525,6 +504,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           tag: node.data()['tag']
         }
         index[node.data()['id'] || ""] = _node
+        if (node.data()['cdata']) {
+          _node.cdata = node.data()['cdata']
+        }
         if (node.data()['parent']) {
           _node.parent = node.data()['parent']
         }
@@ -538,7 +520,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           label: edge.data()['label'] || "",
           source: source,
           target: target,
+          cdata: edge.data()['cdata'],
           tag: edge.data()['tag']
+        }
+        if (edge.data()['cdata']) {
+          _edge.cdata = edge.data()['cdata']
         }
         return _edge
       })

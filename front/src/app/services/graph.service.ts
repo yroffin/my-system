@@ -62,18 +62,27 @@ export class GraphService {
             if (node.parent) {
                 parent = this.base16.decode(node.parent)
             }
+            let endtag = ` />`
+            if (node.cdata) {
+                endtag = `>`
+            }
             if (tag === null) {
                 if (parent) {
-                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" />`);
+                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" />`);
+                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}"${endtag}`);
                 }
             } else {
                 if (parent) {
-                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" tag="${tag}" />`);
+                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" tag="${tag}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" tag="${tag}" />`);
+                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" tag="${tag}"${endtag}`);
                 }
+            }
+            if (node.cdata) {
+                console.log(node.cdata)
+                xml.push(`<![CDATA[${node.cdata}]]>`);
+                xml.push(`</node>`);
             }
         });
         xml.push(`</nodes>`);
@@ -84,16 +93,36 @@ export class GraphService {
             let source = this.base16.decode(edge.source);
             let target = this.base16.decode(edge.target);
             let tag = edge.tag === undefined ? null : edge.tag;
+            let endtag = ` />`
+            if (edge.cdata) {
+                endtag = `>`
+            }
             if (tag === null) {
-                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" />`);
+                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" tag="${tag}" />`);
+                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" tag="${tag}"${endtag}`);
+            }
+            if (edge.cdata) {
+                xml.push(`<![CDATA[${edge.cdata}]]>`);
+                xml.push(`</edge>`);
             }
         });
         xml.push(`</edges>`);
         xml.push(`</graph>`);
         xml.push(`</gexf>`);
         return xml;
+    }
+
+    private filterCDATA(cdata: string): string | undefined {
+        if (cdata) {
+            let result = ""
+            for (let index = 1; index < cdata.length - 1; index++) {
+                result += cdata.charAt(index)
+            }
+            return result
+        } else {
+            return undefined
+        }
     }
 
     async loadGraphGexf(id: string, label: string, data: string): Promise<SysGraph> {
@@ -116,7 +145,8 @@ export class GraphService {
                             _node.id = this.base16.encode(_node.id)
                             _node.x = parseFloat(_node.x)
                             _node.y = parseFloat(_node.y)
-                            _node.cdata = node['_']
+                            // delete first \n and last \n
+                            _node.cdata = this.filterCDATA(node['_'])
                             // Decode parent property
                             if (_node.parent) {
                                 _node.parent = this.base16.encode(_node.parent)
@@ -130,7 +160,7 @@ export class GraphService {
                             _edge.id = this.base16.encode(_edge.id)
                             _edge.source = this.base16.encode(_edge.source)
                             _edge.target = this.base16.encode(_edge.target)
-                            _edge.cdata = edge['_']
+                            _edge.cdata = this.filterCDATA(edge['_'])
                             graph.edges.push(_edge);
                         });
                     });

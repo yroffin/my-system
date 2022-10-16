@@ -2,14 +2,22 @@
 <p-messages [(value)]="msgs" [enableService]="true"></p-messages>
 
 <div #area>
-    <p-splitter [style]="{'height': '1024px'}" [panelSizes]="[70,30]">
-        <ng-template pTemplate>
+    <div class="flex">
+        <div [style]="{'height': '1024px'}" class="w-10">
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
-        </ng-template>
-        <ng-template pTemplate>
+        </div>
+        <div class="w-2">
             <p-tabView>
                 <p-tabPanel header="Find">
-                    <p-treeTable [value]="graphs" [columns]="cols">
+                    <p-treeTable #myTreeTable [value]="graphs" [columns]="cols" [paginator]="false">
+                        <ng-template pTemplate="caption">
+                            <div style="text-align: right">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText size="20" placeholder="Global Filter"
+                                    (input)="myTreeTable.filterGlobal($any($event).target?.value, 'contains')"
+                                    style="width:auto">
+                            </div>
+                        </ng-template>
                         <ng-template pTemplate="header" let-columns>
                             <tr>
                                 <th *ngFor="let col of columns">
@@ -27,23 +35,17 @@
                         </ng-template>
                     </p-treeTable>
                 </p-tabPanel>
-                <p-tabPanel header="Node">
-                    <p-inputSwitch [(ngModel)]="_lockedNode" (onChange)="handleChangeLockNode($event)"></p-inputSwitch>
-                    <pre>{{_selectNode | json}}</pre>
+                <p-tabPanel header="Node/Edge">
+                    <p-inputSwitch [(ngModel)]="_lockedElement" (onChange)="handleChangeLock($event)"
+                        *ngIf="_selectElement"></p-inputSwitch>
+                    <pre>{{_selectElement | json}}</pre>
                 </p-tabPanel>
-                <p-tabPanel header="Node documentation">
-                    <div [innerHTML]="_selectNodeCdata"></div>
-                </p-tabPanel>
-                <p-tabPanel header="Edge">
-                    <p-inputSwitch [(ngModel)]="_lockedEdge" (onChange)="handleChangeLockEdge($event)"></p-inputSwitch>
-                    <pre>{{_selectEdge | json}}</pre>
-                </p-tabPanel>
-                <p-tabPanel header="Edge documentation">
-                    <div [innerHTML]="_selectEdgeCdata"></div>
+                <p-tabPanel header="Documentation">
+                    <div [innerHTML]="_selectElementCdata"></div>
                 </p-tabPanel>
             </p-tabView>
-        </ng-template>
-    </p-splitter>
+        </div>
+    </div>
 </div>
 
 <p-dialog [modal]="true" header="Png" [(visible)]="displayExportPng">

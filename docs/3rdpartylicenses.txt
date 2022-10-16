@@ -426,6 +426,9 @@ IN THE SOFTWARE.
 ngx-webstorage
 MIT
 
+primeflex
+MIT
+
 primeicons
 MIT
 MIT License
