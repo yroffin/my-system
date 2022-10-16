@@ -52,7 +52,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   cy?: Core
   boxSelectionEnabled?: boolean
   displayExportPng = false
-  msgs: Message[] = []
 
   searchNode = ""
   graphs: TreeNode[] = [];

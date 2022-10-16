@@ -14,7 +14,6 @@ import { selectTags } from 'src/app/stats/tag.selectors';
 export class TagComponent implements OnInit {
 
   items: MenuItem[] = [];
-  msgs: Message[] = []
 
   tags: string = ""
   tags$ = this.store.select(selectTags);

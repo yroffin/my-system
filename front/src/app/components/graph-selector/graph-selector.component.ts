@@ -23,8 +23,6 @@ export class GraphSelectorComponent implements OnInit {
   graphs: Array<SysGraph> = [];
   newGraph?: string
 
-  msgs: Message[] = []
-
   displayImport = false
   selectedGraph?: SysGraph
 

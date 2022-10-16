@@ -90,6 +90,7 @@ import { TreeTableModule } from 'primeng/treetable';
     OverlayPanelModule,
     ConfirmPopupModule,
     TreeTableModule,
+    ToastModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [ConfirmationService, MessageService],

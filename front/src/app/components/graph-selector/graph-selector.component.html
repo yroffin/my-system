@@ -13,7 +13,7 @@
         </ng-template>
     </p-toolbar>
 
-    <p-messages [(value)]="msgs" [enableService]="true"></p-messages>
+    <p-toast></p-toast>
 
     <p-table #dt [value]="graphs" [rows]="10" [paginator]="true" [globalFilterFields]="['label']"
         responsiveLayout="scroll" [rowHover]="true" dataKey="id"
