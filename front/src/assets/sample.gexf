@@ -41,8 +41,8 @@ All the statistical manipulation is performed. Example. '"&<> and submission dat
 <node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" x="-20" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" x="260" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-002" label="sample-topic-002" x="740" y="700" tag="azure/service-bus/topic" />
-<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" x="1340" y="780" tag="azure/service-bus/topic/subscription" />
-<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" x="460" y="780" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" x="860" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" x="580" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/sqlserver/database-001" label="sample-database-001" x="-260" y="260" tag="azure/sqlserver" />
 <node id="azure/storage/container/table-001" label="sample-container-001" x="500" y="260" tag="azure/storage/container" />
 <node id="azure/storage/table/table-001" label="sample-table-001" x="-260" y="420" tag="azure/storage/table" />

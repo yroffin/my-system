@@ -42,6 +42,41 @@ export class GraphService {
         this.databaseService.storeTags(_tags)
     }
 
+    private outputNodes(graph: SysGraph | undefined): any[] {
+        return _.map(_.sortBy(graph?.nodes, (node) => node.id), (node) => {
+            let output: any = {
+                uid: this.base16.decode(node.id),
+                label: node.label,
+                x: node.x,
+                y: node.y,
+                tag: node.tag === undefined ? null : node.tag,
+            }
+            if (node.parent) {
+                output.parent = this.base16.decode(node.parent)
+            }
+            if (node.cdata) {
+                output.cdata = node.cdata
+            }
+            return output
+        })
+    }
+
+    private outputEdges(graph: SysGraph | undefined): any[] {
+        return _.map(_.sortBy(graph?.edges, (edge) => edge.id), (edge) => {
+            let output: any = {
+                uid: this.base16.decode(edge.id),
+                label: edge.label,
+                source: this.base16.decode(edge.source),
+                target: this.base16.decode(edge.target),
+                tag: edge.tag === undefined ? null : edge.tag
+            }
+            if (edge.cdata) {
+                output.cdata = edge.cdata
+            }
+            return output
+        })
+    }
+
     toGexf(graph?: SysGraph): Array<string> {
         let xml = [];
         xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
@@ -52,55 +87,40 @@ export class GraphService {
         xml.push(`</meta>`);
         xml.push(`<graph mode="static" defaultedgetype="directed">`);
         xml.push(`<nodes>`);
-        _.each(_.sortBy(graph?.nodes, (node) => node.id), (node) => {
-            let uid = this.base16.decode(node.id);
-            let label = node.label;
-            let x = node.x;
-            let y = node.y;
-            let tag = node.tag === undefined ? null : node.tag;
-            let parent = undefined;
-            if (node.parent) {
-                parent = this.base16.decode(node.parent)
-            }
+        _.each(this.outputNodes(graph), (node) => {
             let endtag = ` />`
             if (node.cdata) {
                 endtag = `>`
             }
-            if (tag === null) {
-                if (parent) {
-                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}"${endtag}`);
+            if (node.tag === null) {
+                if (node.parent) {
+                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
                 }
             } else {
-                if (parent) {
-                    xml.push(`<node id="${uid}" parent="${parent}" label="${label}" x="${x}" y="${y}" tag="${tag}"${endtag}`);
+                if (node.parent) {
+                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${uid}" label="${label}" x="${x}" y="${y}" tag="${tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 }
             }
             if (node.cdata) {
-                console.log(node.cdata)
                 xml.push(`<![CDATA[${node.cdata}]]>`);
                 xml.push(`</node>`);
             }
         });
         xml.push(`</nodes>`);
         xml.push(`<edges>`);
-        _.each(_.sortBy(graph?.edges, (edge) => edge.id), (edge) => {
-            let uid = this.base16.decode(edge.id);
-            let label = edge.label;
-            let source = this.base16.decode(edge.source);
-            let target = this.base16.decode(edge.target);
-            let tag = edge.tag === undefined ? null : edge.tag;
+        _.each(this.outputEdges(graph), (edge) => {
             let endtag = ` />`
             if (edge.cdata) {
                 endtag = `>`
             }
-            if (tag === null) {
-                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}"${endtag}`);
+            if (edge.tag === null) {
+                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${uid}" source="${source}" target="${target}" label="${label}" tag="${tag}"${endtag}`);
+                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
             }
             if (edge.cdata) {
                 xml.push(`<![CDATA[${edge.cdata}]]>`);
@@ -110,6 +130,54 @@ export class GraphService {
         xml.push(`</edges>`);
         xml.push(`</graph>`);
         xml.push(`</gexf>`);
+        return xml;
+    }
+
+    toGraphml(graph?: SysGraph): Array<string> {
+        let xml = [];
+        xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
+        xml.push(`<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">`);
+        xml.push(`<graph id="G" edgedefault="undirected">`);
+        _.each(this.outputNodes(graph), (node) => {
+            let endtag = ` />`
+            if (node.cdata) {
+                endtag = `>`
+            }
+            if (node.tag === null) {
+                if (node.parent) {
+                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                } else {
+                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                }
+            } else {
+                if (node.parent) {
+                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                } else {
+                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                }
+            }
+            if (node.cdata) {
+                xml.push(`<![CDATA[${node.cdata}]]>`);
+                xml.push(`</node>`);
+            }
+        });
+        _.each(this.outputEdges(graph), (edge) => {
+            let endtag = ` />`
+            if (edge.cdata) {
+                endtag = `>`
+            }
+            if (edge.tag === null) {
+                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
+            } else {
+                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
+            }
+            if (edge.cdata) {
+                xml.push(`<![CDATA[${edge.cdata}]]>`);
+                xml.push(`</edge>`);
+            }
+        });
+        xml.push(`</graph>`);
+        xml.push(`</graphml>`);
         return xml;
     }
 

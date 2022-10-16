@@ -93,57 +93,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
       this.cy?.nodes().remove()
       this.cy?.edges().remove()
+
+      this.graphs = []
+
       if (graph.nodes) {
+        this.graphs.push(this.buildChildNodes(graph))
 
-        this.graphs =
-          [
-            {
-              "label": "Nodes",
-              "data": {
-                uid: 1,
-                label: "Nodes"
-              },
-              "expandedIcon": "pi pi-folder-open",
-              "collapsedIcon": "pi pi-folder",
-              "children": _.map(graph.nodes, (node) => {
-                return {
-                  "label": "Node",
-                  "data": {
-                    _id: node.id,
-                    label: node.label
-                  },
-                  "expandedIcon": "pi pi-folder-open",
-                  "collapsedIcon": "pi pi-folder",
-                  "children": []
-                }
-              })
-            },
-            {
-              "label": "Edges",
-              "data": {
-                uid: 1,
-                label: "Edges"
-              },
-              "expandedIcon": "pi pi-folder-open",
-              "collapsedIcon": "pi pi-folder",
-              "children": _.map(graph.edges, (edge) => {
-                return {
-                  "label": "Edge",
-                  "data": {
-                    _id: edge.id,
-                    _source: edge.source,
-                    _target: edge.target,
-                    label: edge.label
-                  },
-                  "expandedIcon": "pi pi-folder-open",
-                  "collapsedIcon": "pi pi-folder",
-                  "children": []
-                }
-              })
-            }
-          ]
-
-        this.myTreeTable?.filter("sample", "label", undefined)
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
@@ -165,6 +120,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         }))
       }
       if (graph.edges) {
+        this.graphs.push(this.buildChildEdges(graph))
+
         this.cy?.add(_.map(graph.edges, (edge) => {
           let _edge = {
             data: {
@@ -183,6 +140,56 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     })
   }
 
+  buildChildNodes(graph: any): any {
+    return {
+      "label": "Nodes",
+      "data": {
+        uid: 1,
+        label: "Nodes"
+      },
+      "expandedIcon": "pi pi-folder-open",
+      "collapsedIcon": "pi pi-folder",
+      "children": _.map(graph.nodes, (node) => {
+        return {
+          "label": "Node",
+          "data": {
+            _id: node.id,
+            label: node.label
+          },
+          "expandedIcon": "pi pi-folder-open",
+          "collapsedIcon": "pi pi-folder",
+          "children": []
+        }
+      })
+    }
+  }
+
+  buildChildEdges(graph: any): any {
+    return {
+      "label": "Edges",
+      "data": {
+        uid: 2,
+        label: "Edges"
+      },
+      "expandedIcon": "pi pi-folder-open",
+      "collapsedIcon": "pi pi-folder",
+      "children": _.map(graph.edges, (edge) => {
+        return {
+          "label": "Edge",
+          "data": {
+            _id: edge.id,
+            _source: edge.source,
+            _target: edge.target,
+            label: edge.label
+          },
+          "expandedIcon": "pi pi-folder-open",
+          "collapsedIcon": "pi pi-folder",
+          "children": []
+        }
+      })
+    }
+  }
+
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.id = params['id'];
@@ -192,12 +199,23 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       {
         label: 'Export',
         items: [{
-          label: 'Clipboard',
+          label: 'Clipboard/GEXF',
           command: () => {
             if (this.id) {
               this.gexf(this.id, this.id)
               this.messageService.add({
                 severity: 'info', summary: 'Info', detail: `Store GEXF in clipboard`
+              });
+            }
+          }
+        },
+        {
+          label: 'Clipboard/GRAPHML',
+          command: () => {
+            if (this.id) {
+              this.graphml(this.id, this.id)
+              this.messageService.add({
+                severity: 'info', summary: 'Info', detail: `Store GRAPHML in clipboard`
               });
             }
           }
@@ -423,14 +441,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
 
   onSelect(item: any): void {
-    this.logger.log(item)
     let anims = [
-      {
-        x: 32, y: 32
-      },
-      {
-        x: 0, y: 0
-      }
+      { "opacity": 0.2 },
+      { "opacity": 1 }
     ]
     if (item._source) {
       this.animate(this.cy?.$(`#${item._source}`), anims)
@@ -440,22 +453,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  animate(searchedId: any, positions: any[]): void {
+  animate(searchedId: any, styles: any[]): void {
     if (searchedId) {
       if (searchedId.length > 0) {
         let _item = searchedId[0]
-        this.logger.log(_item)
-        let paths: Position[] = _.map(positions, (position) => {
-          return {
-            x: _item.position().x + position.x,
-            y: _item.position().y + position.y
-          }
-        })
-        let fns = _.map(paths, (path) => {
+        let fns = _.map(styles, (style) => {
           return () => {
             _item
               .animate({
-                position: path
+                style: style
               }, {
                 duration: 250
               })
@@ -488,9 +494,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  gexf(_id: string, _label: string): void {
+  toSysGraph(_id: string, _label: string): SysGraph {
     let index: any = {}
-    let _graph: SysGraph = {
+    return {
       id: _id,
       label: _label,
       nodes: _.map(this.cy?.nodes(), (node) => {
@@ -529,7 +535,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         return _edge
       })
     }
+  }
+
+  gexf(_id: string, _label: string): void {
+    let _graph: SysGraph = this.toSysGraph(_id, _label)
     this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(_graph).join('\n'))
+  }
+
+  graphml(_id: string, _label: string): void {
+    let _graph: SysGraph = this.toSysGraph(_id, _label)
+    this.clipboardService.copyTextToClipboard(this.graphsService.toGraphml(_graph).join('\n'))
   }
 }
 
