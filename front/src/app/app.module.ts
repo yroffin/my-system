@@ -45,6 +45,7 @@ import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { TreeTableModule } from 'primeng/treetable';
+import { dropZoneDirective } from './directives/dropzone/dropzone';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,9 @@ import { TreeTableModule } from 'primeng/treetable';
     GraphComponent,
     GraphSelectorComponent,
     GraphCytoscapeComponent,
-    TagComponent
+    TagComponent,
+    // Directive
+    dropZoneDirective
   ],
   imports: [
     BrowserModule,

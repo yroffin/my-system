@@ -109,37 +109,11 @@ export class GraphSelectorComponent implements OnInit {
 
   uploadHandler(event: any, _graph?: SysGraph): void {
     if (_graph) {
-      this.logger.log(event)
-      let reader = new FileReader();
-      reader.addEventListener("loadend", async () => {
-        let data: String = new String(reader.result);
-        let loadedGraph: SysGraph = {
-          id: _graph.id,
-          label: _graph.label,
-          nodes: [],
-          edges: []
-        }
-        if (data.includes('xmlns="http://gexf')) {
-          this.messageService.add({
-            severity: 'info', summary: 'Info', detail: `Load GEXF file to ${_graph.label}`
-          });
-          loadedGraph = await this.graphsService.loadGraphGexf(_graph.id, _graph.label, data.toString());
-        }
-        if (data.includes("http://graphml.graphdrawing.org")) {
-          this.messageService.add({
-            severity: 'info', summary: 'Info', detail: `Load GRAPHML file to ${_graph.label}`
-          });
-          loadedGraph = await this.graphsService.loadGraphMl(_graph.id, _graph.label, data.toString());
-        }
-        if (loadedGraph.nodes.length == 0) {
-          this.messageService.add({
-            severity: 'warn', summary: 'warn', detail: `No node for ${_graph.label}`
-          });
-        }
-        this.databaseService.storeGraph(loadedGraph)
-      });
-      reader.readAsText(event.files[0])
-      this.displayImport = false
+      // Load this graph
+      this.graphsService.uploadHandler(event.files[0], _graph.id, _graph.id).then((loaded) => {
+        this.databaseService.storeGraph(loaded)
+        this.displayImport = false
+      })
     }
   }
 

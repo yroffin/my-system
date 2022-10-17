@@ -7,11 +7,13 @@ import { Parser } from 'xml2js';
 import { keys } from 'lodash';
 import { LogService } from './log.service';
 import { Base16Service } from './base16.service';
+import { MessageService } from 'primeng/api';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
 export class GraphService {
     constructor(
+        private messageService: MessageService,
         private databaseService: DatabaseService,
         private base16: Base16Service,
         private logger: LogService
@@ -289,6 +291,41 @@ export class GraphService {
                 })
                 resolve(graph);
             })
+        })
+    }
+
+    uploadHandler(file: any, id: string, label: string): Promise<SysGraph> {
+        return new Promise<SysGraph>((resolve) => {
+            this.logger.log(file)
+            let reader = new FileReader();
+            reader.addEventListener("loadend", async () => {
+                let data: String = new String(reader.result);
+                let loadedGraph: SysGraph = {
+                    id: id,
+                    label: label,
+                    nodes: [],
+                    edges: []
+                }
+                if (data.includes('xmlns="http://gexf')) {
+                    this.messageService.add({
+                        severity: 'info', summary: 'Info', detail: `Load GEXF file to ${label}`
+                    });
+                    loadedGraph = await this.loadGraphGexf(id, label, data.toString());
+                }
+                if (data.includes("http://graphml.graphdrawing.org")) {
+                    this.messageService.add({
+                        severity: 'info', summary: 'Info', detail: `Load GRAPHML file to ${label}`
+                    });
+                    loadedGraph = await this.loadGraphMl(id, label, data.toString());
+                }
+                if (loadedGraph.nodes.length == 0) {
+                    this.messageService.add({
+                        severity: 'warn', summary: 'warn', detail: `No node for ${label}`
+                    });
+                }
+                resolve(loadedGraph)
+            });
+            reader.readAsText(file)
         })
     }
 }

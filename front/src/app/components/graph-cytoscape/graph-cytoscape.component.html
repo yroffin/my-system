@@ -8,6 +8,11 @@
         </div>
         <div class="w-2">
             <p-tabView>
+                <p-tabPanel header="Drop">
+                    <div class="container" dropZoneDirective (fileDropped)="onFileDropped($event)">
+                        <i class="pi pi-upload" style="font-size: 2rem"></i>
+                    </div>
+                </p-tabPanel>
                 <p-tabPanel header="Find">
                     <p-treeTable #myTreeTable [value]="graphs" [columns]="cols" [paginator]="false">
                         <ng-template pTemplate="caption">

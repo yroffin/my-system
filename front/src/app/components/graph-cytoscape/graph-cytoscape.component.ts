@@ -34,6 +34,7 @@ import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
 import { LogService } from 'src/app/services/log.service';
 import { TreeTable } from 'primeng/treetable';
+import { DatabaseService } from 'src/app/services/database.service';
 
 declare var cytoscape: any
 
@@ -78,6 +79,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private graphsService: GraphService,
+    private databaseService: DatabaseService,
     private clipboardService: ClipboardService,
     private logger: LogService,
     private messageService: MessageService,
@@ -327,6 +329,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         ]
       }
     ];
+  }
+
+  onFileDropped(event: any): void {
+    this.messageService.add({
+      severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
+    });
+    if (this.id) {
+      // Load this graph
+      this.graphsService.uploadHandler(event[0], this.id, this.id).then((loaded) => {
+        this.databaseService.storeGraph(loaded)
+        this.store.dispatch(retrievedGraph({ graph: loaded }))
+      })
+    }
   }
 
   ngAfterViewInit(): void {
