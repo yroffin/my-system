@@ -1,7 +1,7 @@
 # How to build
 
 ```
-docker build --progress plain .
+npm start
 ```
 
 # How to deploy
@@ -9,3 +9,8 @@ docker build --progress plain .
 ```
 ng build --output-path ../docs --base-href /my-system/
 ```
+
+# Demo
+
+Simply go to https://yroffin.github.io/my-system then load sample.gexf as new graph
+And use demo tag style stored in asset (cut and paste if thru tag menu)
