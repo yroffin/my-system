@@ -45,6 +45,7 @@ import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { TreeTableModule } from 'primeng/treetable';
+import { TreeModule } from 'primeng/tree';
 import { dropZoneDirective } from './directives/dropzone/dropzone';
 
 @NgModule({
@@ -92,6 +93,7 @@ import { dropZoneDirective } from './directives/dropzone/dropzone';
     TabViewModule,
     OverlayPanelModule,
     ConfirmPopupModule,
+    TreeModule,
     TreeTableModule,
     ToastModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })

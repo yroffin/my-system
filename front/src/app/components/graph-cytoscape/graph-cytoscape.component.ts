@@ -331,6 +331,74 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  selectedNode: any
+  nodeSelect(event: any): void {
+    let anims = [
+      { "opacity": 0.2 },
+      { "opacity": 1 }
+    ]
+    if (this.selectedNode.data._source) {
+      this.animate(this.cy?.$(`#${this.selectedNode.data._source}`), anims)
+      this.animate(this.cy?.$(`#${this.selectedNode.data._target}`), anims)
+    } else {
+      this.animate(this.cy?.$(`#${this.selectedNode.data._id}`), anims)
+    }
+  }
+
+  buildChildNodes(graph: any): TreeNode {
+    return {
+      "key": "1",
+      "label": "Nodes",
+      "data": {
+        uid: 1,
+        label: "Nodes"
+      },
+      "expandedIcon": "pi pi-folder-open",
+      "collapsedIcon": "pi pi-folder",
+      "children": _.map(graph.nodes, (node) => {
+        return {
+          "key": node.id,
+          "leaf": true,
+          "label": node.label,
+          "data": {
+            _id: node.id,
+            label: node.label
+          },
+          "icon": "pi pi-fw pi-clone",
+          "children": []
+        }
+      })
+    }
+  }
+
+  buildChildEdges(graph: any): TreeNode {
+    return {
+      "key": "1",
+      "label": "Edges",
+      "data": {
+        uid: 2,
+        label: "Edges"
+      },
+      "expandedIcon": "pi pi-folder-open",
+      "collapsedIcon": "pi pi-folder",
+      "children": _.map(graph.edges, (edge) => {
+        return {
+          "key": edge.id,
+          "leaf": true,
+          "label": edge.label,
+          "data": {
+            _id: edge.id,
+            _source: edge.source,
+            _target: edge.target,
+            label: edge.label
+          },
+          "icon": "pi pi-fw pi-share-alt",
+          "children": []
+        }
+      })
+    }
+  }
+
   onFileDropped(event: any): void {
     this.messageService.add({
       severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
