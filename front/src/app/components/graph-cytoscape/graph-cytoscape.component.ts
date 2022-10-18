@@ -141,56 +141,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     })
   }
 
-  buildChildNodes(graph: any): any {
-    return {
-      "label": "Nodes",
-      "data": {
-        uid: 1,
-        label: "Nodes"
-      },
-      "expandedIcon": "pi pi-folder-open",
-      "collapsedIcon": "pi pi-folder",
-      "children": _.map(graph.nodes, (node) => {
-        return {
-          "label": "Node",
-          "data": {
-            _id: node.id,
-            label: node.label
-          },
-          "expandedIcon": "pi pi-folder-open",
-          "collapsedIcon": "pi pi-folder",
-          "children": []
-        }
-      })
-    }
-  }
-
-  buildChildEdges(graph: any): any {
-    return {
-      "label": "Edges",
-      "data": {
-        uid: 2,
-        label: "Edges"
-      },
-      "expandedIcon": "pi pi-folder-open",
-      "collapsedIcon": "pi pi-folder",
-      "children": _.map(graph.edges, (edge) => {
-        return {
-          "label": "Edge",
-          "data": {
-            _id: edge.id,
-            _source: edge.source,
-            _target: edge.target,
-            label: edge.label
-          },
-          "expandedIcon": "pi pi-folder-open",
-          "collapsedIcon": "pi pi-folder",
-          "children": []
-        }
-      })
-    }
-  }
-
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.id = params['id'];
