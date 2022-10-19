@@ -274,6 +274,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/storage/container/table-001" label="sample-container-001" x="500" y="260" tag="azure/storage/container" />
 <node id="azure/storage/table/table-001" label="sample-table-001" x="-260" y="420" tag="azure/storage/table" />
 <node id="azure/vm/vm-001" label="sample-vm-001" x="1180" y="1140" tag="azure/vm" />
+<node id="listener" label="listener" x="927.7513096860442" y="20.2256154808542" tag="listener" />
 </nodes>
 <edges>
 <edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" />
