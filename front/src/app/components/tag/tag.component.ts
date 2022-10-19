@@ -34,30 +34,5 @@ export class TagComponent implements OnInit {
   ngOnInit(): void {
     let tags = this.graphsService.getAllTags()
     this.store.dispatch(retrievedTagsList({ tags }))
-
-    this.items = [
-      {
-        label: 'Save',
-        command: () => {
-          this.save(this.tags)
-        }
-      }
-    ];
-  }
-
-  uploadHandler(event: any): void {
-    let reader = new FileReader();
-    reader.addEventListener("loadend", async () => {
-      let data: any = JSON.parse(reader.result + "");
-      this.store.dispatch(retrievedTagsList({ tags: data }))
-    });
-    reader.readAsText(event.files[0])
-  }
-
-  save(tags: string): void {
-    this.graphsService.saveTags(JSON.parse(tags))
-    this.messageService.add({
-      severity: 'info', summary: 'Info', detail: `Saved`
-    });
   }
 }

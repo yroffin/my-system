@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
 import { retrievedGraph, retrievedGraphList } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
+import { selectTags } from 'src/app/stats/tag.selectors';
 
 // node.js, the same, but with sugar:
 var md = require('markdown-it')();
@@ -35,6 +36,7 @@ import { Base16Service } from 'src/app/services/base16.service';
 import { LogService } from 'src/app/services/log.service';
 import { TreeTable } from 'primeng/treetable';
 import { DatabaseService } from 'src/app/services/database.service';
+import { retrievedTagsList } from 'src/app/stats/tag.actions';
 
 declare var cytoscape: any
 
@@ -53,6 +55,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   cy?: Core
   boxSelectionEnabled?: boolean
   displayExportPng = false
+  displayAddNewNode = false
+  displayAddNewEdge = false
 
   searchNode = ""
   graphs: TreeNode[] = [];
@@ -139,6 +143,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
       this.cy?.endBatch()
     })
+
+    this.tags$.subscribe(_tags => {
+      if (!_tags) {
+        return
+      }
+      this.tags = JSON.stringify(_tags, null, 2)
+      this.cy?.style(this.retrieveStyle())
+    })
   }
 
   ngOnInit(): void {
@@ -147,6 +159,79 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     });
 
     this.items = [
+      {
+        label: 'Add',
+        items: [{
+          label: 'Node',
+          command: () => {
+            this.captureData = {
+              id: "",
+              label: "",
+              cdata: "",
+              tag: "",
+              edge: "",
+              isTarget: false,
+              tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  name: node.data().tag,
+                  code: node.data().id
+                }
+              }), (node) => {
+                return node.name
+              }),
+              edges: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  name: this.base16.decode(node.data().id),
+                  code: node.data().id
+                }
+              }), (node) => {
+                return node.name
+              }),
+              parent: undefined
+            }
+            this.displayAddNewNode = true
+          }
+        },
+        {
+          label: 'Edge',
+          command: () => {
+            this.captureData = {
+              id: "",
+              label: "",
+              cdata: "",
+              tag: "",
+              tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  name: node.data().tag,
+                  code: node.data().id
+                }
+              }), (node) => {
+                return node.name
+              }),
+              source: "",
+              sources: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  name: this.base16.decode(node.data().id),
+                  code: node.data().id
+                }
+              }), (node) => {
+                return node.name
+              }),
+              target: "",
+              targets: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  name: this.base16.decode(node.data().id),
+                  code: node.data().id
+                }
+              }), (node) => {
+                return node.name
+              }),
+              parent: undefined
+            }
+            this.displayAddNewEdge = true
+          }
+        }]
+      },
       {
         label: 'Export',
         items: [{
@@ -281,6 +366,40 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  captureData: any = {}
+  createNewNode(): void {
+    this.displayAddNewNode = false
+    console.log(this.captureData)
+
+    this.cy?.add([{
+      data: {
+        id: this.base16.encode(this.captureData.id),
+        label: this.captureData.label,
+        cdata: this.captureData.cdata,
+        tag: this.captureData.tag.name
+      },
+      position: {
+        x: 0,
+        y: 0
+      }
+    }])
+  }
+
+  createNewEdge(): void {
+    this.displayAddNewEdge = false
+
+    this.cy?.add([{
+      data: {
+        id: this.base16.encode(`${this.captureData.source.name}:${this.captureData.target.name}`),
+        label: this.captureData.label,
+        cdata: this.captureData.cdata,
+        source: this.captureData.source.code,
+        target: this.captureData.target.code,
+        tag: this.captureData.tag.name
+      }
+    }])
+  }
+
   selectedNode: any
   nodeSelect(event: any): void {
     let anims = [
@@ -349,7 +468,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onFileDropped(event: any): void {
+  onFileGexfDropped(event: any): void {
     this.messageService.add({
       severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
     });
@@ -362,7 +481,58 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  tags: string = ""
+  tags$ = this.store.select(selectTags);
+
+  onFileStyleDropped(event: any): void {
+    this.messageService.add({
+      severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
+    });
+    let reader = new FileReader();
+    reader.addEventListener("loadend", async () => {
+      let data: any = JSON.parse(reader.result + "");
+      this.graphsService.saveTags(data)
+      this.store.dispatch(retrievedTagsList({ tags: data }))
+    });
+    reader.readAsText(event[0])
+  }
+
   ngAfterViewInit(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.cy = cy({
+      container: this.myGraph?.nativeElement,
+      layout: { name: 'preset' },
+      motionBlur: true,
+      selectionType: 'single',
+      boxSelectionEnabled: false,
+      style: this.retrieveStyle(),
+    });
+
+    this.cy.on('select', 'node', (event) => {
+      this.logger.log(event)
+      this.onSelectElement(event)
+    });
+
+    this.cy.on('select', 'edge', (event) => {
+      this.logger.log(event)
+      this.onSelectElement(event)
+    });
+
+    this.cy.on('select', (event) => {
+      this.logger.log(event)
+    });
+
+    this.route.params.subscribe(params => {
+      this.id = params['label'];
+
+      let _graph = this.graphsService.getGraph(this.id + "")
+      if (_graph) {
+        this.store.dispatch(retrievedGraph({ graph: _graph }))
+      }
+    });
+  }
+
+  retrieveStyle(): any[] {
     let tags = this.graphsService.getAllTags();
 
     let styleCss: Array<any> = []
@@ -376,7 +546,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       })
     })
 
-    let allstyles = []
+    let allstyles: any[] = []
     allstyles.push({
       selector: "node",
       css: {
@@ -414,38 +584,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       allstyles.push(style)
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.cy = cy({
-      container: this.myGraph?.nativeElement,
-      layout: { name: 'preset' },
-      motionBlur: true,
-      selectionType: 'single',
-      boxSelectionEnabled: false,
-      style: allstyles,
-    });
-
-    this.cy.on('select', 'node', (event) => {
-      this.logger.log(event)
-      this.onSelectElement(event)
-    });
-
-    this.cy.on('select', 'edge', (event) => {
-      this.logger.log(event)
-      this.onSelectElement(event)
-    });
-
-    this.cy.on('select', (event) => {
-      this.logger.log(event)
-    });
-
-    this.route.params.subscribe(params => {
-      this.id = params['label'];
-
-      let _graph = this.graphsService.getGraph(this.id + "")
-      if (_graph) {
-        this.store.dispatch(retrievedGraph({ graph: _graph }))
-      }
-    });
+    return allstyles
   }
 
   private onSelectElement(event: any) {

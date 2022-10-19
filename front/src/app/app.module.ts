@@ -46,7 +46,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { TreeTableModule } from 'primeng/treetable';
 import { TreeModule } from 'primeng/tree';
+import { ListboxModule } from 'primeng/listbox';
 import { dropZoneDirective } from './directives/dropzone/dropzone';
+import { SidebarModule } from 'primeng/sidebar';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -96,6 +99,9 @@ import { dropZoneDirective } from './directives/dropzone/dropzone';
     TreeModule,
     TreeTableModule,
     ToastModule,
+    ListboxModule,
+    SidebarModule,
+    CardModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [ConfirmationService, MessageService],
