@@ -35,4 +35,17 @@ export class TagComponent implements OnInit {
     let tags = this.graphsService.getAllTags()
     this.store.dispatch(retrievedTagsList({ tags }))
   }
+
+  onFileStyleDropped(event: any): void {
+    this.messageService.add({
+      severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
+    });
+    let reader = new FileReader();
+    reader.addEventListener("loadend", async () => {
+      let data: any = JSON.parse(reader.result + "");
+      this.graphsService.saveTags(data)
+      this.store.dispatch(retrievedTagsList({ tags: data }))
+    });
+    reader.readAsText(event[0])
+  }
 }
