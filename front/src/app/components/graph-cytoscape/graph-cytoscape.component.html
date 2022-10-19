@@ -3,10 +3,10 @@
 
 <div #area>
     <div class="flex">
-        <div [style]="{'height': '2048px'}" class="w-10">
+        <div [style]="{'height': '2048px'}" class="w-8">
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
         </div>
-        <div class="w-2">
+        <div class="w-4">
             <p-tabView>
                 <p-tabPanel header="Drop">
                     <p-card dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
