@@ -2,7 +2,17 @@
 <p-toast></p-toast>
 
 <div class="dock-window">
-    <p-dock [model]="dockBasicItems" position="bottom">
+    <p-dock [model]="dockLeftItems" position="left">
+        <ng-template pTemplate="item" let-item>
+            <img [src]="item.icon" [alt]="item.label" width="100%">
+        </ng-template>
+    </p-dock>
+    <p-dock [model]="dockRightItems" position="right">
+        <ng-template pTemplate="item" let-item>
+            <img [src]="item.icon" [alt]="item.label" width="100%">
+        </ng-template>
+    </p-dock>
+    <p-dock [model]="dockBottomItems" position="bottom">
         <ng-template pTemplate="item" let-item>
             <img [src]="item.icon" [alt]="item.label" width="100%">
         </ng-template>
@@ -11,36 +21,37 @@
 
 <div #area>
     <div class="flex">
-        <div [style]="{'height': '2048px'}" class="w-12" dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
+        <div [style]="{'height': '94vh'}" class="w-12" dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
         </div>
     </div>
 </div>
 
 <p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
-    [style]="{width: '60vw'}" [draggable]="true" [resizable]="false">
+    [style]="{width: '30vw', height: '50vw'}" [draggable]="true" [resizable]="false">
     <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
         (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
 </p-dialog>
 
 <p-dialog header="Current selection" [(visible)]="displaySelection" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '30vw'}" [draggable]="false" [resizable]="false">
+    [breakpoints]="{'960px': '50vw'}" [style]="{width: '30vw', height: '50vw'}" [draggable]="true" [resizable]="false">
     <p-inputSwitch [(ngModel)]="_lockedElement" (onChange)="handleChangeLock($event)" *ngIf="_selectElement">
     </p-inputSwitch>
     <pre>{{_selectElement | json}}</pre>
 </p-dialog>
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
-    [style]="{width: '30vw'}" [draggable]="false" [resizable]="false">
+    [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
     <div [innerHTML]="_selectElementCdata"></div>
 </p-dialog>
 
-<p-dialog header="Drag and drop file to update style" [(visible)]="displayStyle" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw'}" [draggable]="false" [resizable]="false">
+<p-dialog header="Drag and drop file to update style" [modal]="true" [(visible)]="displayStyle" [maximizable]="true"
+    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="false" [resizable]="false">
     <pre dropZoneDirective (fileDropped)="onFileStyleDropped($event)">{{tags}}</pre>
 </p-dialog>
 
-<p-dialog header="Png file to export" [modal]="true" header="Png" [(visible)]="displayExportPng">
+<p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
+    [(visible)]="displayExportPng">
     <img #myPng src=""><img>
 </p-dialog>
 

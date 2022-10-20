@@ -53,59 +53,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   displayMarkdown: boolean = false;
   displayStyle: boolean = false;
 
-  dockBasicItems: MenuItem[] = [
-    {
-      label: 'Finder',
-      tooltipOptions: {
-        tooltipLabel: "Find element(s)",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/find.png",
-      command: () => {
-        this.displayFinder = true;
-      }
-    },
-    {
-      label: 'Current selection',
-      tooltipOptions: {
-        tooltipLabel: "Display current selection",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/selection.png",
-      command: () => {
-        this.displaySelection = true;
-      }
-    },
-    {
-      label: 'Display documentation',
-      tooltipOptions: {
-        tooltipLabel: "Display documentation",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/documentation.jpg",
-      command: () => {
-        this.displayMarkdown = true;
-      }
-    },
-    {
-      label: 'Display style',
-      tooltipOptions: {
-        tooltipLabel: "Display style simply drag and drop style file on this view",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/style.jfif",
-      command: () => {
-        this.displayStyle = true;
-      }
-    },
+  dockRightItems: MenuItem[] = [
     {
       label: 'Export GEXF to clipboard',
       tooltipOptions: {
@@ -114,7 +62,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export.png",
+      icon: "assets/dock/export-gexf.png",
       command: () => {
         if (this.id) {
           this.gexf(this.id, this.id)
@@ -132,7 +80,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export.png",
+      icon: "assets/dock/export-graphml.png",
       command: () => {
         if (this.id) {
           this.graphml(this.id, this.id)
@@ -150,21 +98,40 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export.png",
+      icon: "assets/dock/export-png.png",
       command: () => {
         // put the png data in an img tag
         if (document) {
-          let png = this.cy?.png() || ""
+          let png = this.cy?.png({
+            bg: 'white',
+            full: true
+          }) || ""
           this.myPng?.nativeElement.setAttribute('src', png);
         }
         this.displayExportPng = true
+      }
+    }
+  ]
+
+  dockLeftItems: MenuItem[] = [
+    {
+      label: 'Finder',
+      tooltipOptions: {
+        tooltipLabel: "Find element(s)",
+        tooltipPosition: 'right',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/find.png",
+      command: () => {
+        this.displayFinder = true;
       }
     },
     {
       label: 'Add node',
       tooltipOptions: {
         tooltipLabel: "Add node",
-        tooltipPosition: 'top',
+        tooltipPosition: 'right',
         positionTop: -15,
         positionLeft: 15
       },
@@ -202,11 +169,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       label: 'Add edge',
       tooltipOptions: {
         tooltipLabel: "Add edge",
-        tooltipPosition: 'top',
+        tooltipPosition: 'right',
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/node.png",
+      icon: "assets/dock/edge.png",
       command: () => {
         this.captureData = {
           id: "",
@@ -244,7 +211,50 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         this.displayAddNewEdge = true
       }
     }
+  ]
+
+  dockBottomItems: MenuItem[] = [
+    {
+      label: 'Current selection',
+      tooltipOptions: {
+        tooltipLabel: "Display current selection",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/select.webp",
+      command: () => {
+        this.displaySelection = true;
+      }
+    },
+    {
+      label: 'Display documentation',
+      tooltipOptions: {
+        tooltipLabel: "Display documentation",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/document.jfif",
+      command: () => {
+        this.displayMarkdown = true;
+      }
+    },
+    {
+      label: 'Display style',
+      tooltipOptions: {
+        tooltipLabel: "Display style simply drag and drop style file on this view",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/style.png",
+      command: () => {
+        this.displayStyle = true;
+      }
+    }
   ];
+
   responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -519,6 +529,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       { "opacity": 0.2 },
       { "opacity": 1 }
     ]
+    // selected node
+    let selected = this.cy?.$(`#${this.selectedNode.key}`);
+    this.cy?.center(selected)
     if (this.selectedNode.data._source) {
       this.animate(this.cy?.$(`#${this.selectedNode.data._source}`), anims)
       this.animate(this.cy?.$(`#${this.selectedNode.data._target}`), anims)
