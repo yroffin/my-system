@@ -2,6 +2,13 @@
 
 Simple webapp single page to edit graph, i use it to design all my solution and share with my team graph view of system i support
 
+It's based on
+- angular io
+- cytoscapejs
+- primeng ... just the best app framework for angular
+
+PS : all data is stored in browser local storage
+
 # Demo
 
 Simply go to https://yroffin.github.io/my-system then load sample.gexf as new graph
