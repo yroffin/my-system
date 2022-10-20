@@ -3,10 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
-import { TagComponent } from './components/tag/tag.component';
 
 const routes: Routes = [
-  { path: 'tags', component: TagComponent },
   { path: 'graphs', component: GraphSelectorComponent },
   { path: 'graphs/sigma/:label', component: GraphComponent },
   { path: 'graphs/cytoscape/:label', component: GraphCytoscapeComponent }

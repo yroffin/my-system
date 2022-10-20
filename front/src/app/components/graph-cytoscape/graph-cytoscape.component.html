@@ -1,40 +1,46 @@
 <p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
 <p-toast></p-toast>
 
+<div class="dock-window">
+    <p-dock [model]="dockBasicItems" position="bottom">
+        <ng-template pTemplate="item" let-item>
+            <img [src]="item.icon" [alt]="item.label" width="100%">
+        </ng-template>
+    </p-dock>
+</div>
+
 <div #area>
     <div class="flex">
-        <div [style]="{'height': '2048px'}" class="w-8">
+        <div [style]="{'height': '2048px'}" class="w-12" dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
-        </div>
-        <div class="w-4">
-            <p-tabView>
-                <p-tabPanel header="Drop">
-                    <p-card dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
-                        <i class="pi pi-upload"></i>Simply upload new GEXF file here
-                    </p-card>
-                    <br>
-                    <p-card dropZoneDirective (fileDropped)="onFileStyleDropped($event)">
-                        <i class="pi pi-upload"></i> Simply upload new style file here
-                    </p-card>
-                </p-tabPanel>
-                <p-tabPanel header="Find">
-                    <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
-                        (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
-                </p-tabPanel>
-                <p-tabPanel header="Node/Edge">
-                    <p-inputSwitch [(ngModel)]="_lockedElement" (onChange)="handleChangeLock($event)"
-                        *ngIf="_selectElement"></p-inputSwitch>
-                    <pre>{{_selectElement | json}}</pre>
-                </p-tabPanel>
-                <p-tabPanel header="Documentation">
-                    <div [innerHTML]="_selectElementCdata"></div>
-                </p-tabPanel>
-            </p-tabView>
         </div>
     </div>
 </div>
 
-<p-dialog [modal]="true" header="Png" [(visible)]="displayExportPng">
+<p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
+    [style]="{width: '60vw'}" [draggable]="true" [resizable]="false">
+    <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
+        (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
+</p-dialog>
+
+<p-dialog header="Current selection" [(visible)]="displaySelection" [maximizable]="true"
+    [breakpoints]="{'960px': '50vw'}" [style]="{width: '30vw'}" [draggable]="false" [resizable]="false">
+    <p-inputSwitch [(ngModel)]="_lockedElement" (onChange)="handleChangeLock($event)" *ngIf="_selectElement">
+    </p-inputSwitch>
+    <pre>{{_selectElement | json}}</pre>
+</p-dialog>
+
+<p-dialog header="Documentation" [(visible)]="displayMarkdown" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
+    [style]="{width: '30vw'}" [draggable]="false" [resizable]="false">
+    <div [innerHTML]="_selectElementCdata"></div>
+</p-dialog>
+
+<p-dialog header="Drag and drop file to update style" [(visible)]="displayStyle" [maximizable]="true"
+    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw'}" [draggable]="false" [resizable]="false">
+    <pre dropZoneDirective (fileDropped)="onFileStyleDropped($event)">{{tags}}</pre>
+</p-dialog>
+
+<p-dialog header="Png file to export" [modal]="true" header="Png" [(visible)]="displayExportPng">
     <img #myPng src=""><img>
 </p-dialog>
 

@@ -37,6 +37,7 @@ import { LogService } from 'src/app/services/log.service';
 import { TreeTable } from 'primeng/treetable';
 import { DatabaseService } from 'src/app/services/database.service';
 import { retrievedTagsList } from 'src/app/stats/tag.actions';
+import { Subscription } from 'rxjs';
 
 declare var cytoscape: any
 
@@ -46,6 +47,218 @@ declare var cytoscape: any
   styleUrls: ['./graph-cytoscape.component.css']
 })
 export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
+
+  displaySelection: boolean = false;
+  displayFinder: boolean = false;
+  displayMarkdown: boolean = false;
+  displayStyle: boolean = false;
+
+  dockBasicItems: MenuItem[] = [
+    {
+      label: 'Finder',
+      tooltipOptions: {
+        tooltipLabel: "Find element(s)",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/find.png",
+      command: () => {
+        this.displayFinder = true;
+      }
+    },
+    {
+      label: 'Current selection',
+      tooltipOptions: {
+        tooltipLabel: "Display current selection",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/selection.png",
+      command: () => {
+        this.displaySelection = true;
+      }
+    },
+    {
+      label: 'Display documentation',
+      tooltipOptions: {
+        tooltipLabel: "Display documentation",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/documentation.jpg",
+      command: () => {
+        this.displayMarkdown = true;
+      }
+    },
+    {
+      label: 'Display style',
+      tooltipOptions: {
+        tooltipLabel: "Display style simply drag and drop style file on this view",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/style.jfif",
+      command: () => {
+        this.displayStyle = true;
+      }
+    },
+    {
+      label: 'Export GEXF to clipboard',
+      tooltipOptions: {
+        tooltipLabel: "Export GEXF to clipboard",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/export.png",
+      command: () => {
+        if (this.id) {
+          this.gexf(this.id, this.id)
+          this.messageService.add({
+            severity: 'info', summary: 'Info', detail: `Store GEXF in clipboard`
+          });
+        }
+      }
+    },
+    {
+      label: 'Export GRAPHML to clipboard',
+      tooltipOptions: {
+        tooltipLabel: "Export GRAPHML to clipboard",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/export.png",
+      command: () => {
+        if (this.id) {
+          this.graphml(this.id, this.id)
+          this.messageService.add({
+            severity: 'info', summary: 'Info', detail: `Store GRAPHML in clipboard`
+          });
+        }
+      }
+    },
+    {
+      label: 'Export PNG',
+      tooltipOptions: {
+        tooltipLabel: "Export PNG",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/export.png",
+      command: () => {
+        // put the png data in an img tag
+        if (document) {
+          let png = this.cy?.png() || ""
+          this.myPng?.nativeElement.setAttribute('src', png);
+        }
+        this.displayExportPng = true
+      }
+    },
+    {
+      label: 'Add node',
+      tooltipOptions: {
+        tooltipLabel: "Add node",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/node.png",
+      command: () => {
+        this.captureData = {
+          id: "",
+          label: "",
+          cdata: "",
+          tag: "",
+          edge: "",
+          isTarget: false,
+          tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+            return {
+              name: node.data().tag,
+              code: node.data().id
+            }
+          }), (node) => {
+            return node.name
+          }),
+          edges: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+            return {
+              name: this.base16.decode(node.data().id),
+              code: node.data().id
+            }
+          }), (node) => {
+            return node.name
+          }),
+          parent: undefined
+        }
+        this.displayAddNewNode = true
+      }
+    },
+    {
+      label: 'Add edge',
+      tooltipOptions: {
+        tooltipLabel: "Add edge",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/node.png",
+      command: () => {
+        this.captureData = {
+          id: "",
+          label: "",
+          cdata: "",
+          tag: "",
+          tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+            return {
+              name: node.data().tag,
+              code: node.data().id
+            }
+          }), (node) => {
+            return node.name
+          }),
+          source: "",
+          sources: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+            return {
+              name: this.base16.decode(node.data().id),
+              code: node.data().id
+            }
+          }), (node) => {
+            return node.name
+          }),
+          target: "",
+          targets: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+            return {
+              name: this.base16.decode(node.data().id),
+              code: node.data().id
+            }
+          }), (node) => {
+            return node.name
+          }),
+          parent: undefined
+        }
+        this.displayAddNewEdge = true
+      }
+    }
+  ];
+  responsiveOptions: any[] = [
+    {
+      breakpoint: '1024px',
+      numVisible: 3
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 2
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1
+    }
+  ];
 
   @ViewChild('myCytoscape') myGraph?: ElementRef;
   @ViewChild('myPng') myPng?: ElementRef;
@@ -57,6 +270,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   displayExportPng = false
   displayAddNewNode = false
   displayAddNewEdge = false
+  displayTool = true
 
   searchNode = ""
   graphs: TreeNode[] = [];
@@ -158,117 +372,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.id = params['id'];
     });
 
+    let tags = this.graphsService.getAllTags()
+    this.store.dispatch(retrievedTagsList({ tags }))
+
     this.items = [
-      {
-        label: 'Add',
-        items: [{
-          label: 'Node',
-          command: () => {
-            this.captureData = {
-              id: "",
-              label: "",
-              cdata: "",
-              tag: "",
-              edge: "",
-              isTarget: false,
-              tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  name: node.data().tag,
-                  code: node.data().id
-                }
-              }), (node) => {
-                return node.name
-              }),
-              edges: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  name: this.base16.decode(node.data().id),
-                  code: node.data().id
-                }
-              }), (node) => {
-                return node.name
-              }),
-              parent: undefined
-            }
-            this.displayAddNewNode = true
-          }
-        },
-        {
-          label: 'Edge',
-          command: () => {
-            this.captureData = {
-              id: "",
-              label: "",
-              cdata: "",
-              tag: "",
-              tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  name: node.data().tag,
-                  code: node.data().id
-                }
-              }), (node) => {
-                return node.name
-              }),
-              source: "",
-              sources: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  name: this.base16.decode(node.data().id),
-                  code: node.data().id
-                }
-              }), (node) => {
-                return node.name
-              }),
-              target: "",
-              targets: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  name: this.base16.decode(node.data().id),
-                  code: node.data().id
-                }
-              }), (node) => {
-                return node.name
-              }),
-              parent: undefined
-            }
-            this.displayAddNewEdge = true
-          }
-        }]
-      },
-      {
-        label: 'Export',
-        items: [{
-          label: 'Clipboard/GEXF',
-          command: () => {
-            if (this.id) {
-              this.gexf(this.id, this.id)
-              this.messageService.add({
-                severity: 'info', summary: 'Info', detail: `Store GEXF in clipboard`
-              });
-            }
-          }
-        },
-        {
-          label: 'Clipboard/GRAPHML',
-          command: () => {
-            if (this.id) {
-              this.graphml(this.id, this.id)
-              this.messageService.add({
-                severity: 'info', summary: 'Info', detail: `Store GRAPHML in clipboard`
-              });
-            }
-          }
-        },
-        {
-          label: 'Export PNG',
-          command: () => {
-            // put the png data in an img tag
-            if (document) {
-              let png = this.cy?.png() || ""
-              this.myPng?.nativeElement.setAttribute('src', png);
-            }
-            this.displayExportPng = true
-          }
-        }
-        ]
-      },
       {
         label: 'Layout',
         items: [
@@ -364,6 +471,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         ]
       }
     ];
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   captureData: any = {}

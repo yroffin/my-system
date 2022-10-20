@@ -40,7 +40,6 @@ import { graphReducer, graphsReducer } from './stats/graph.reducer';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
 import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
-import { TagComponent } from './components/tag/tag.component';
 import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
@@ -50,6 +49,8 @@ import { ListboxModule } from 'primeng/listbox';
 import { dropZoneDirective } from './directives/dropzone/dropzone';
 import { SidebarModule } from 'primeng/sidebar';
 import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { DockModule } from 'primeng/dock';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,6 @@ import { CardModule } from 'primeng/card';
     GraphComponent,
     GraphSelectorComponent,
     GraphCytoscapeComponent,
-    TagComponent,
     // Directive
     dropZoneDirective
   ],
@@ -102,6 +102,8 @@ import { CardModule } from 'primeng/card';
     ListboxModule,
     SidebarModule,
     CardModule,
+    AccordionModule,
+    DockModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [ConfirmationService, MessageService],

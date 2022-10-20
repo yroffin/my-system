@@ -23,13 +23,6 @@ export class AppComponent {
                 items: [
                     { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' }
                 ]
-            },
-            {
-                label: 'Tag',
-                icon: 'pi pi-fw pi-pencil',
-                items: [
-                    { label: 'Tag(s)', icon: 'pi pi-fw pi-book', routerLink: '/tags' }
-                ]
             }
         ];
     }
