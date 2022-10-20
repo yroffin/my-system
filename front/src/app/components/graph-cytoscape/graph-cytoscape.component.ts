@@ -663,53 +663,25 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
     let styleCss: Array<any> = []
     _.each(tags, (tag) => {
-      if (tag.selector === null) {
-        return
+      if (!tag.label) {
+        styleCss.push({
+          selector: `${tag.selector}]`,
+          css: tag.style?.css ? tag.style?.css : {}
+        })
+      } else {
+        styleCss.push({
+          selector: `${tag.selector}[tag = '${tag.label}']`,
+          css: tag.style?.css ? tag.style?.css : {}
+        })
       }
-      styleCss.push({
-        selector: `${tag.selector}[tag = '${tag.label}']`,
-        css: tag.style?.css ? tag.style?.css : {}
-      })
     })
 
     let allstyles: any[] = []
-    allstyles.push({
-      selector: "node",
-      css: {
-        content: "data(label)",
-        shape: "ellipse",
-        height: "40px",
-        width: "40px",
-        'background-color': 'white',
-        "background-fit": 'cover cover',
-        "text-border-color": "white",
-        "text-outline-color": "grey",
-        "text-outline-width": "1px",
-        "ghost": "yes",
-        "ghost-offset-x": "15px",
-        "ghost-offset-y": "15px",
-        "ghost-opacity": "0.1"
-      }
-    });
-    allstyles.push({
-      selector: "edge",
-      css: {
-        content: "data(label)",
-        "target-arrow-shape": "triangle",
-        'width': "5px",
-        'line-color': 'black',
-        'target-arrow-color': 'black',
-        'text-margin-x': -20,
-        'text-margin-y': -20,
-        "curve-style": "unbundled-bezier",
-        "control-point-distances": 50,
-        "control-point-weights": 0.5
-      }
-    });
     _.each(styleCss, (style) => {
       allstyles.push(style)
     })
 
+    console.log(allstyles)
     return allstyles
   }
 
