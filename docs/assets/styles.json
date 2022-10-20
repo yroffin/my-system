@@ -1,6 +1,42 @@
 [
     {
         "selector": "node",
+        "style": {
+            "css": {
+                "content": "data(label)",
+                "shape": "ellipse",
+                "height": "40px",
+                "width": "40px",
+                "background-color": "white",
+                "background-fit": "cover cover",
+                "text-border-color": "white",
+                "text-outline-color": "grey",
+                "text-outline-width": "2px",
+                "ghost": "yes",
+                "ghost-offset-x": "15px",
+                "ghost-offset-y": "15px",
+                "ghost-opacity": "0.1"
+            }
+        }
+    },
+    {
+        "selector": "edge",
+        "style": {
+            "css": {
+                "content": "data(label)",
+                "target-arrow-shape": "triangle-backcurve",
+                "width": "10px",
+                "text-border-color": "white",
+                "text-outline-color": "grey",
+                "text-outline-width": "2px",
+                "line-color": "red",
+                "target-arrow-color": "black",
+                "curve-style": "bezier"
+            }
+        }
+    },
+    {
+        "selector": "node",
         "label": "all/group",
         "style": {
             "css": {
