@@ -1,14 +1,6 @@
-# How to build
+# About
 
-```
-npm start
-```
-
-# How to deploy
-
-```
-ng build --output-path ../docs --base-href /my-system/
-```
+Simple webapp single page to edit graph, i use it to design all my solution and share with my team graph view of system i support
 
 # Demo
 
@@ -26,3 +18,15 @@ In graph editor simply grad and drop sample.gexf onto graph
 Last actoin could be style import with style editot (like sample.gexf drag and drop style.json file)
 
 ![Alt text](front/demo/style.PNG "style editor")
+
+# How to build
+
+```
+npm start
+```
+
+# How to deploy
+
+```
+ng build --output-path ../docs --base-href /my-system/
+```
