@@ -70,9 +70,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
     HttpClientModule,
     CommonModule,
     LoggerModule.forRoot({
-      serverLoggingUrl: '/api/logs',
-      level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.ERROR
+      level: NgxLoggerLevel.DEBUG
     }),
     // PrimeNg
     TableModule,

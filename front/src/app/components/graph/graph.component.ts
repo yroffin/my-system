@@ -60,7 +60,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             target: edge.target
           });
         } else {
-          this.logger.log(edge)
+          this.logger.info(edge)
         }
       })
       // Create the spring layout and start it

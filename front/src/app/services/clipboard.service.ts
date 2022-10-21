@@ -26,7 +26,7 @@ export class ClipboardService {
     try {
       var successful = document.execCommand('copy');
       var msg = successful ? 'successful' : 'unsuccessful';
-      this.logger.log('Fallback: Copying text command was ' + msg);
+      this.logger.info('Fallback: Copying text command was ' + msg);
     } catch (err) {
       this.logger.error('Fallback: Oops, unable to copy', err);
     }
@@ -40,7 +40,7 @@ export class ClipboardService {
       return;
     }
     navigator.clipboard.writeText(text).then(() => {
-      this.logger.log('Async: Copying to clipboard was successful!');
+      this.logger.info('Async: Copying to clipboard was successful!');
     }, (err) => {
       this.logger.error('Async: Could not copy text: ', err);
     });

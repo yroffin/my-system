@@ -196,10 +196,11 @@ export class GraphService {
     }
 
     async loadGraphGexf(id: string, label: string, data: string): Promise<SysGraph> {
+        this.logger.info(`loadGraphGexf: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
-                    this.logger.log(err)
+                    this.logger.error(err)
                     throw err;
                 }
                 let graph: SysGraph = {
@@ -210,6 +211,7 @@ export class GraphService {
                 }
                 _.each(result.gexf.graph, (item) => {
                     let index: any = {}
+                    this.logger.info("loading nodes")
                     _.each(item.nodes, (nodesHolder) => {
                         _.each(nodesHolder.node, (node) => {
                             let _node = node['$']
@@ -227,6 +229,7 @@ export class GraphService {
                             graph.nodes.push(_node);
                         });
                     });
+                    this.logger.info("loading edges")
                     _.each(item.edges, (edgesHolder) => {
                         _.each(edgesHolder.edge, (edge) => {
                             let _edge: any = {}
@@ -234,11 +237,11 @@ export class GraphService {
                             _edge.source = this.base16.encode(edge['$'].source)
                             _edge.target = this.base16.encode(edge['$'].target)
                             if (!index[_edge.source]) {
-                                this.logger.log(`source unkown ${edge['$'].source}`)
+                                this.logger.error("source unkown", edge['$'])
                                 throw new Error(`source unkown ${edge['$'].source}`)
                             }
                             if (!index[_edge.target]) {
-                                this.logger.log(`target unkown ${edge['$'].target}`)
+                                this.logger.error("target unkown", edge['$'])
                                 throw new Error(`target unkown ${edge['$'].target}`)
                             }
                             _edge.cdata = this.filterCDATA(edge['$']['_'])
@@ -246,7 +249,7 @@ export class GraphService {
                         });
                     });
                 })
-                this.logger.log(graph)
+                this.logger.info(graph)
                 resolve(graph);
             })
         })
@@ -261,7 +264,7 @@ export class GraphService {
     }
 
     async loadGraphMl(id: string, label: string, data: string): Promise<SysGraph> {
-        this.logger.debug(`loadGraphMl: ${id}`)
+        this.logger.info(`loadGraphMl: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
@@ -307,7 +310,6 @@ export class GraphService {
 
     uploadHandler(file: any, id: string, label: string): Promise<SysGraph> {
         return new Promise<SysGraph>((resolve) => {
-            this.logger.log(file)
             let reader = new FileReader();
             reader.addEventListener("loadend", async () => {
                 let data: String = new String(reader.result);

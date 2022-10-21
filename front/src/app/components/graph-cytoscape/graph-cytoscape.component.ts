@@ -633,17 +633,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     });
 
     this.cy.on('select', 'node', (event) => {
-      this.logger.log(event)
       this.onSelectElement(event)
     });
 
     this.cy.on('select', 'edge', (event) => {
-      this.logger.log(event)
       this.onSelectElement(event)
     });
 
     this.cy.on('select', (event) => {
-      this.logger.log(event)
+      this.logger.info(event)
     });
 
     this.route.params.subscribe(params => {
