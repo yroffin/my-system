@@ -644,6 +644,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.logger.info(event)
     });
 
+    this.cy.on('dblclick', (event) => {
+      this.logger.info(event)
+      this.displayMarkdown = true
+    });
+
     this.route.params.subscribe(params => {
       this.id = params['label'];
 
