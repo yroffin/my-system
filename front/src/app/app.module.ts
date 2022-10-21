@@ -51,6 +51,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { DockModule } from 'primeng/dock';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,11 @@ import { DockModule } from 'primeng/dock';
     BrowserAnimationsModule,
     HttpClientModule,
     CommonModule,
+    LoggerModule.forRoot({
+      serverLoggingUrl: '/api/logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR
+    }),
     // PrimeNg
     TableModule,
     CalendarModule,

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClipboardService {
 
-  constructor() { }
+  constructor(
+    private logger: NGXLogger,
+  ) { }
 
   fallbackCopyTextToClipboard(text: string) {
     var textArea = document.createElement("textarea");
@@ -23,9 +26,9 @@ export class ClipboardService {
     try {
       var successful = document.execCommand('copy');
       var msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: Copying text command was ' + msg);
+      this.logger.log('Fallback: Copying text command was ' + msg);
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
+      this.logger.error('Fallback: Oops, unable to copy', err);
     }
 
     document.body.removeChild(textArea);
@@ -36,10 +39,10 @@ export class ClipboardService {
       this.fallbackCopyTextToClipboard(text);
       return;
     }
-    navigator.clipboard.writeText(text).then(function () {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function (err) {
-      console.error('Async: Could not copy text: ', err);
+    navigator.clipboard.writeText(text).then(() => {
+      this.logger.log('Async: Copying to clipboard was successful!');
+    }, (err) => {
+      this.logger.error('Async: Could not copy text: ', err);
     });
   }
 }

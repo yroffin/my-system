@@ -10,7 +10,7 @@ import { selectGraphs } from 'src/app/stats/graph.selectors';
 import * as _ from 'lodash';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
 import { HttpClient } from '@angular/common/http';
-import { MenuItem } from 'primeng/api';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-graph',
@@ -29,7 +29,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   graphs$ = this.store.select(selectGraphs);
 
-  constructor(private http: HttpClient, private graphsService: GraphService,
+  constructor(
+    private http: HttpClient,
+    private logger: NGXLogger,
+    private graphsService: GraphService,
     private store: Store) {
     this.graphs$.subscribe(graphs => {
       if (!graphs || graphs.length === 0) {
@@ -57,7 +60,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             target: edge.target
           });
         } else {
-          console.log(edge)
+          this.logger.log(edge)
         }
       })
       // Create the spring layout and start it
@@ -137,7 +140,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.xml.push(`<nodes>`);
     this.graph.forEachNode(node => {
       let uid = this.graph.getNodeAttribute(node, 'uid');
-      console.log(uid)
       let label = this.graph.getNodeAttribute(node, 'label');
       let x = this.graph.getNodeAttribute(node, 'x');
       let y = this.graph.getNodeAttribute(node, 'y');
@@ -163,7 +165,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let data = reader.result;
-      console.info(data)
     });
     reader.readAsText(event.files[0])
 
@@ -171,7 +172,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:beforeunload', ['$event'])
   ngOnDestroy() {
-    console.log(`on destroy`)
     if (this.subscription != null) {
       this.subscription.unsubscribe()
     }

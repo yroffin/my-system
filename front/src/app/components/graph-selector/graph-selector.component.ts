@@ -7,7 +7,7 @@ import { SysGraph } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
-import { LogService } from 'src/app/services/log.service';
+import { NGXLogger } from 'ngx-logger';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 
@@ -38,7 +38,7 @@ export class GraphSelectorComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private logger: LogService,
+    private logger: NGXLogger,
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
     private databaseService: DatabaseService,
@@ -119,7 +119,6 @@ export class GraphSelectorComponent implements OnInit {
 
   gexf(_graph: SysGraph): void {
     let graph = this.graphsService.getGraph(_graph.id + "")
-    console.log(graph)
     this.exportData = this.graphsService.toGexf(graph)
     this.exportDataHtml = this.exportData.join('\n')
     this.clipboardService.copyTextToClipboard(this.exportData.join('\n'))

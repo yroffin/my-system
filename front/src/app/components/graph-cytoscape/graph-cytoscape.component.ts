@@ -1,9 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
-import { retrievedGraph, retrievedGraphList } from 'src/app/stats/graph.actions';
+import { retrievedGraph } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 import { selectTags } from 'src/app/stats/tag.selectors';
 
@@ -33,7 +32,7 @@ import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
-import { LogService } from 'src/app/services/log.service';
+import { NGXLogger } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
 import { DatabaseService } from 'src/app/services/database.service';
 import { retrievedTagsList } from 'src/app/stats/tag.actions';
@@ -309,7 +308,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     private graphsService: GraphService,
     private databaseService: DatabaseService,
     private clipboardService: ClipboardService,
-    private logger: LogService,
+    private logger: NGXLogger,
     private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
@@ -492,7 +491,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   captureData: any = {}
   createNewNode(): void {
     this.displayAddNewNode = false
-    console.log(this.captureData)
 
     this.cy?.add([{
       data: {
@@ -665,7 +663,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     _.each(tags, (tag) => {
       if (!tag.label) {
         styleCss.push({
-          selector: `${tag.selector}]`,
+          selector: `${tag.selector}`,
           css: tag.style?.css ? tag.style?.css : {}
         })
       } else {
@@ -681,7 +679,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       allstyles.push(style)
     })
 
-    console.log(allstyles)
     return allstyles
   }
 

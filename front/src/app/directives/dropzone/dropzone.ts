@@ -34,7 +34,7 @@ export class dropZoneDirective {
         evt.stopPropagation();
         this.fileOver = false;
         let files = evt.dataTransfer.files;
-        console.log(evt)
+
         if (files.length > 0) {
             this.fileDropped.emit(files);
         }

@@ -4,10 +4,10 @@ import * as _ from 'lodash';
 import { SysEdge, SysGraph, SysNode, SysTag } from '../models/graph';
 import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
-import { keys } from 'lodash';
-import { LogService } from './log.service';
+import { NGXLogger } from 'ngx-logger';
 import { Base16Service } from './base16.service';
 import { MessageService } from 'primeng/api';
+import { _INITIAL_REDUCERS } from '@ngrx/store/src/tokens';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
@@ -16,7 +16,7 @@ export class GraphService {
         private messageService: MessageService,
         private databaseService: DatabaseService,
         private base16: Base16Service,
-        private logger: LogService
+        private logger: NGXLogger
     ) { }
 
     getGraphs(_filter: string): Array<SysGraph> {
@@ -209,10 +209,13 @@ export class GraphService {
                     edges: []
                 }
                 _.each(result.gexf.graph, (item) => {
+                    let index: any = {}
                     _.each(item.nodes, (nodesHolder) => {
                         _.each(nodesHolder.node, (node) => {
                             let _node = node['$']
                             _node.id = this.base16.encode(_node.id)
+                            // store id in index
+                            index[_node.id] = true
                             _node.x = parseFloat(_node.x)
                             _node.y = parseFloat(_node.y)
                             // delete first \n and last \n
@@ -226,11 +229,19 @@ export class GraphService {
                     });
                     _.each(item.edges, (edgesHolder) => {
                         _.each(edgesHolder.edge, (edge) => {
-                            let _edge = edge['$']
-                            _edge.id = this.base16.encode(_edge.id)
-                            _edge.source = this.base16.encode(_edge.source)
-                            _edge.target = this.base16.encode(_edge.target)
-                            _edge.cdata = this.filterCDATA(edge['_'])
+                            let _edge: any = {}
+                            _edge.id = this.base16.encode(edge['$'].id)
+                            _edge.source = this.base16.encode(edge['$'].source)
+                            _edge.target = this.base16.encode(edge['$'].target)
+                            if (!index[_edge.source]) {
+                                this.logger.log(`source unkown ${edge['$'].source}`)
+                                throw new Error(`source unkown ${edge['$'].source}`)
+                            }
+                            if (!index[_edge.target]) {
+                                this.logger.log(`target unkown ${edge['$'].target}`)
+                                throw new Error(`target unkown ${edge['$'].target}`)
+                            }
+                            _edge.cdata = this.filterCDATA(edge['$']['_'])
                             graph.edges.push(_edge);
                         });
                     });
@@ -250,7 +261,7 @@ export class GraphService {
     }
 
     async loadGraphMl(id: string, label: string, data: string): Promise<SysGraph> {
-        console.debug(`loadGraphMl: ${id}`)
+        this.logger.debug(`loadGraphMl: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
