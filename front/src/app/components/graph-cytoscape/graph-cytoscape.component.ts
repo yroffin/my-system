@@ -22,6 +22,9 @@ import {
   Stylesheet
 } from 'cytoscape'
 
+var edgehandles = require('cytoscape-edgehandles');
+cy.use(edgehandles);
+
 var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
@@ -478,6 +481,32 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             }
           }
         ]
+      },
+      {
+        label: 'Handle',
+        items: [
+          {
+            label: 'Enable draw mode',
+            command: () => {
+              let myCy: any = this.cy
+              myCy?.edgehandles().enableDrawMode()
+            }
+          },
+          {
+            label: 'Disable draw mode',
+            command: () => {
+              let myCy: any = this.cy
+              myCy?.edgehandles().disableDrawMode()
+            }
+          },
+          {
+            label: 'Draw edge',
+            command: () => {
+              let myCy: any = this.cy
+              myCy?.edgehandles().start(this.currentSelectedNode)
+            }
+          }
+        ]
       }
     ];
   }
@@ -621,6 +650,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     reader.readAsText(event[0])
   }
 
+  currentSelectedNode: any = undefined
+  currentSelectedEdge: any = undefined
+
   ngAfterViewInit(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.cy = cy({
@@ -633,10 +665,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     });
 
     this.cy.on('select', 'node', (event) => {
+      this.logger.info("Select node", event.target)
+      this.currentSelectedNode = event.target[0]
       this.onSelectElement(event)
     });
 
     this.cy.on('select', 'edge', (event) => {
+      this.logger.info("Select edge", event.target)
+      this.currentSelectedEdge = event.target[0]
       this.onSelectElement(event)
     });
 

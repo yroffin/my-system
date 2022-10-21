@@ -120,9 +120,9 @@ export class GraphService {
                 endtag = `>`
             }
             if (edge.tag === null) {
-                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
+                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
+                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
             }
             if (edge.cdata) {
                 xml.push(`<![CDATA[${edge.cdata}]]>`);
@@ -169,9 +169,9 @@ export class GraphService {
                 endtag = `>`
             }
             if (edge.tag === null) {
-                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
+                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${edge.uid}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
+                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
             }
             if (edge.cdata) {
                 xml.push(`<![CDATA[${edge.cdata}]]>`);
@@ -211,31 +211,38 @@ export class GraphService {
                 }
                 _.each(result.gexf.graph, (item) => {
                     let index: any = {}
-                    this.logger.info("loading nodes")
+                    this.logger.info("loading nodes", item.nodes)
                     _.each(item.nodes, (nodesHolder) => {
                         _.each(nodesHolder.node, (node) => {
-                            let _node = node['$']
-                            _node.id = this.base16.encode(_node.id)
+                            let _node: any = {
+                                id: this.base16.encode(node['$'].id),
+                                x: parseFloat(node['$'].x),
+                                y: parseFloat(node['$'].y),
+                                // delete first \n and last \n
+                                cdata: this.filterCDATA(node['_']),
+                                label: node['$'].label ? node['$'].label : "",
+                                tag: node['$'].tag ? node['$'].tag : ""
+                            }
                             // store id in index
                             index[_node.id] = true
-                            _node.x = parseFloat(_node.x)
-                            _node.y = parseFloat(_node.y)
-                            // delete first \n and last \n
-                            _node.cdata = this.filterCDATA(node['_'])
                             // Decode parent property
-                            if (_node.parent) {
-                                _node.parent = this.base16.encode(_node.parent)
+                            if (node['$'].parent) {
+                                _node.parent = this.base16.encode(node['$'].parent)
                             }
                             graph.nodes.push(_node);
                         });
                     });
-                    this.logger.info("loading edges")
+                    this.logger.info("loading edges", item.edges)
                     _.each(item.edges, (edgesHolder) => {
                         _.each(edgesHolder.edge, (edge) => {
-                            let _edge: any = {}
-                            _edge.id = this.base16.encode(edge['$'].id)
-                            _edge.source = this.base16.encode(edge['$'].source)
-                            _edge.target = this.base16.encode(edge['$'].target)
+                            let _edge: any = {
+                                id: this.base16.encode(edge['$'].id),
+                                source: this.base16.encode(edge['$'].source),
+                                target: this.base16.encode(edge['$'].target),
+                                cdata: this.filterCDATA(edge['_']),
+                                label: edge['$'].label ? edge['$'].label : "",
+                                tag: edge['$'].tag ? edge['$'].tag : ""
+                            }
                             if (!index[_edge.source]) {
                                 this.logger.error("source unkown", edge['$'])
                                 throw new Error(`source unkown ${edge['$'].source}`)
@@ -244,7 +251,6 @@ export class GraphService {
                                 this.logger.error("target unkown", edge['$'])
                                 throw new Error(`target unkown ${edge['$'].target}`)
                             }
-                            _edge.cdata = this.filterCDATA(edge['$']['_'])
                             graph.edges.push(_edge);
                         });
                     });

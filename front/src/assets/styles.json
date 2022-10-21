@@ -3,6 +3,7 @@
         "selector": "node",
         "style": {
             "css": {
+                "content": "data(label)",
                 "shape": "ellipse",
                 "height": "40px",
                 "width": "40px",
@@ -22,6 +23,7 @@
         "selector": "edge",
         "style": {
             "css": {
+                "content": "data(label)",
                 "target-arrow-shape": "triangle-backcurve",
                 "width": "10px",
                 "text-border-color": "white",

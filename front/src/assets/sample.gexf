@@ -273,20 +273,20 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/sqlserver/database-001" label="sample-database-001" x="-740" y="-140" tag="azure/sqlserver" />
 <node id="azure/storage/container/table-001" label="sample-container-001" x="1340" y="260" tag="azure/storage/container" />
 <node id="azure/storage/table/table-001" label="sample-table-001" x="-260" y="420" tag="azure/storage/table" />
-<node id="azure/vm/vm-001" label="sample-vm-001" x="1300" y="1180" tag="azure/vm" />
+<node id="azure/vm/vm-001" label="sample-vm-001" x="1327.6346169473077" y="1180" tag="azure/vm" />
 <node id="listener" label="listener" x="940" y="20" tag="listener" />
 </nodes>
 <edges>
-<edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/redis/redis-001" source="azure/aks/deployment/pod/sample-api" target="azure/redis/redis-001" label="redis" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-001" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-001" label="send" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-002" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-002" label="send" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/sqlserver/database-001" source="azure/aks/deployment/pod/sample-api" target="azure/sqlserver/database-001" label="sql" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/storage/container/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/container/table-001" label="microsoft container" />
-<edge id="azure/aks/deployment/pod/sample-api:azure/storage/table/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/table/table-001" label="microsoft table" />
-<edge id="azure/aks/ingress/sample-ingress:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/ingress/sample-ingress" target="azure/aks/deployment/pod/sample-api/listener" label="rest" />
-<edge id="azure/function/function-001:azure/service-bus/queue/sample-queue" source="azure/function/function-001" target="azure/service-bus/queue/sample-queue" label="write" />
-<edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh">
+<edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/redis/redis-001" source="azure/aks/deployment/pod/sample-api" target="azure/redis/redis-001" label="redis" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-001" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-001" label="send" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-002" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-002" label="send" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/sqlserver/database-001" source="azure/aks/deployment/pod/sample-api" target="azure/sqlserver/database-001" label="sql" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/storage/container/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/container/table-001" label="microsoft container" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/storage/table/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/table/table-001" label="microsoft table" tag="" />
+<edge id="azure/aks/ingress/sample-ingress:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/ingress/sample-ingress" target="azure/aks/deployment/pod/sample-api/listener" label="rest" tag="" />
+<edge id="azure/function/function-001:azure/service-bus/queue/sample-queue" source="azure/function/function-001" target="azure/service-bus/queue/sample-queue" label="write" tag="" />
+<edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh" tag="">
 <![CDATA[
 ---
 __Advertisement :)__
@@ -535,16 +535,18 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 ]]>
 </edge>
-<edge id="azure/gateway/v1/gateway-001:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001" target="azure/aks/ingress/sample-ingress" label="ingress" />
-<edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" />
-<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="sample-subscription-001-001" />
-<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="azure/function/function-001" label="sample-subscription-001-002" />
-<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="copy" />
-<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="copy" />
-<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" target="azure/function/function-002" label="sample-subscription-002-001" />
-<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="azure/function/function-002" label="sample-subscription-002-002" />
-<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="copy" />
-<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" />
+<edge id="azure/gateway/v1/gateway-001:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001" target="azure/aks/ingress/sample-ingress" label="ingress" tag="" />
+<edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="sample-subscription-001-001" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="azure/function/function-001" label="sample-subscription-001-002" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="copy" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="copy" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" target="azure/function/function-002" label="sample-subscription-002-001" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="azure/function/function-002" label="sample-subscription-002-002" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="copy" tag="" />
+<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" tag="" />
+<edge id="azure/storage/container/table-001:azure/service-bus/topic/sample-topic-002" source="azure/storage/container/table-001" target="azure/service-bus/topic/sample-topic-002" label="" tag="" />
+<edge id="azure/vm/vm-001:azure/storage/container/table-001" source="azure/vm/vm-001" target="azure/storage/container/table-001" label="" tag="" />
 </edges>
 </graph>
 </gexf>
