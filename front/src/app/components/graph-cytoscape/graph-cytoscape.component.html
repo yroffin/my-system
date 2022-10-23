@@ -34,15 +34,69 @@
 </p-dialog>
 
 <p-dialog header="Current selection" [(visible)]="displaySelection" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '30vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-    <p-inputSwitch [(ngModel)]="_lockedElement" (onChange)="handleChangeLock($event)" *ngIf="_selectElement">
-    </p-inputSwitch>
-    <pre>{{_selectElement | json}}</pre>
+    [breakpoints]="{'960px': '50vw'}" [style]="{width: '35vw', height: '23vw'}" [draggable]="true" [resizable]="false">
+
+    <div *ngIf="currentSelectedNode" class="grid p-fluid">
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedNode.data().label" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedNode.data().tag" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
+                        (onChange)="handleChangeLock($event)"></p-checkbox>
+                </span>
+                <input type="text" pInputText placeholder="Locked" readonly="true">
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="currentSelectedEdge" class="grid p-fluid">
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data().label" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data().tag" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-cog"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data()._source" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-cog"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data()._target" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+    </div>
 </p-dialog>
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
     [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-    <div [innerHTML]="_selectElementCdata"></div>
+    <div [innerHTML]="selectElementCdata"></div>
 </p-dialog>
 
 <p-dialog header="Drag and drop file to update style" [modal]="true" [(visible)]="displayStyle" [maximizable]="true"

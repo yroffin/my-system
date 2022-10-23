@@ -52,6 +52,8 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { DockModule } from 'primeng/dock';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { AvatarModule } from 'primeng/avatar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -108,6 +110,8 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
     CardModule,
     AccordionModule,
     DockModule,
+    AvatarModule,
+    CheckboxModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
   ],
   providers: [ConfirmationService, MessageService],

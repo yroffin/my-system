@@ -215,34 +215,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   ]
 
+  selectElementCdata: string | undefined
   dockBottomItems: MenuItem[] = [
     {
-      label: 'Current selection',
-      tooltipOptions: {
-        tooltipLabel: "Display current selection",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/select.webp",
-      command: () => {
-        this.displaySelection = true;
-      }
-    },
-    {
-      label: 'Display documentation',
-      tooltipOptions: {
-        tooltipLabel: "Display documentation",
-        tooltipPosition: 'top',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/document.jfif",
-      command: () => {
-        this.displayMarkdown = true;
-      }
-    },
-    {
+      id: "style",
       label: 'Display style',
       tooltipOptions: {
         tooltipLabel: "Display style simply drag and drop style file on this view",
@@ -304,8 +280,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   graphs$ = this.store.select(selectGraphs);
 
   _lockedElement: boolean = false;
-  _selectElement: any;
-  _selectElementCdata: string = "";
 
   constructor(
     private graphsService: GraphService,
@@ -361,6 +335,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
               cdata: edge.cdata,
               source: edge.source || "",
               target: edge.target || "",
+              _source: base16.decode(edge.source || ""),
+              _target: base16.decode(edge.target || ""),
               tag: edge.tag
             }
           }
@@ -483,7 +459,26 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         ]
       },
       {
-        label: 'Handle',
+        label: 'Selection',
+        items: [
+          {
+            id: "selection",
+            label: 'Info',
+            command: () => {
+              this.displaySelection = true;
+            }
+          },
+          {
+            id: "documentation",
+            label: 'Documentation',
+            command: () => {
+              this.displayMarkdown = true;
+            }
+          }
+        ]
+      },
+      {
+        label: 'Edge',
         items: [
           {
             label: 'Enable draw mode',
@@ -500,7 +495,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             }
           },
           {
-            label: 'Draw edge',
+            label: 'Link to another node',
             command: () => {
               let myCy: any = this.cy
               myCy?.edgehandles().start(this.currentSelectedNode)
@@ -666,14 +661,31 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
     this.cy.on('select', 'node', (event) => {
       this.logger.info("Select node", event.target)
+      this.messageService.add({
+        severity: 'info', summary: 'Select node', detail: `${this.base16.decode(event.target.id())}`
+      });
+      this.selectElementCdata = ""
+      this.currentSelectedEdge = undefined
       this.currentSelectedNode = event.target[0]
-      this.onSelectElement(event)
+      // Any documentation
+      if (this.currentSelectedNode.data().cdata) {
+        this.selectElementCdata = md.render(this.currentSelectedNode.data().cdata)
+      }
+      this._lockedElement = this.currentSelectedNode.locked()
     });
 
     this.cy.on('select', 'edge', (event) => {
       this.logger.info("Select edge", event.target)
+      this.messageService.add({
+        severity: 'info', summary: 'Select edge', detail: `${this.base16.decode(event.target.id())}`
+      });
+      this.selectElementCdata = ""
+      this.currentSelectedNode = undefined
       this.currentSelectedEdge = event.target[0]
-      this.onSelectElement(event)
+      // Any documentation
+      if (this.currentSelectedEdge.data().cdata) {
+        this.selectElementCdata = md.render(this.currentSelectedEdge.data().cdata)
+      }
     });
 
     this.cy.on('select', (event) => {
@@ -721,30 +733,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     return allstyles
   }
 
-  private onSelectElement(event: any) {
-    this._selectElement = {
-      data: JSON.parse(JSON.stringify(event.target.data())),
-      locked: event.target.locked()
-    }
-    if (this._selectElement.data.cdata) {
-      this._selectElementCdata = md.render(this._selectElement.data.cdata)
-    } else {
-      this._selectElementCdata = ""
-    }
-    this._selectElement.data.id = this.base16.decode(this._selectElement.data.id)
-    if (this._selectElement.data.parent) {
-      this._selectElement.data.parent = this.base16.decode(this._selectElement.data.parent)
-    }
-    if (this._selectElement.data.source) {
-      this._selectElement.data.source = this.base16.decode(this._selectElement.data.source)
-    }
-    if (this._selectElement.data.target) {
-      this._selectElement.data.target = this.base16.decode(this._selectElement.data.target)
-    }
-    this._lockedElement = event.target.locked()
-  };
-
-
   onSelect(item: any): void {
     let anims = [
       { "opacity": 0.2 },
@@ -778,10 +766,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   }
 
   handleChangeLock(event: any): void {
-    if (!this._selectElement) {
+    if (!this.currentSelectedNode) {
       return
     }
-    let _item = this.cy?.$(`#${this.base16.encode(this._selectElement.data.id)}`)
+    this.logger.info("lock", this.currentSelectedNode.data().id)
+    let _item = this.cy?.$(`#${this.currentSelectedNode.data().id}`)
+    this.logger.info("lock", _item)
     if (event.checked) {
       _item?.lock()
       _item?.animate({
