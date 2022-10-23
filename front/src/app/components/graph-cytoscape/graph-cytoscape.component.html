@@ -128,24 +128,3 @@
         <p-button (click)="createNewNode()" label="Create" styleClass="p-button-text"></p-button>
     </ng-template>
 </p-dialog>
-
-<p-dialog [modal]="true" header="add new node" [(visible)]="displayAddNewEdge" [style]="{width:'70em'}">
-    <h5>Tag</h5>
-    <p-dropdown [options]="captureData.tags" [(ngModel)]="captureData.tag" defaultLabel="Select a tag"
-        optionLabel="name"></p-dropdown>
-    <h5>Source</h5>
-    <p-dropdown [options]="captureData.sources" filterBy="name" [(ngModel)]="captureData.source"
-        defaultLabel="Select a source" optionLabel="name"></p-dropdown>
-    <h5>Target</h5>
-    <p-dropdown [options]="captureData.targets" filterBy="name" [(ngModel)]="captureData.target"
-        defaultLabel="Select a target" optionLabel="name"></p-dropdown>
-    <h5>Label</h5>
-    <span class="p-float-label">
-        <input id="float-input" [(ngModel)]="captureData.label" type="text" pInputText>
-        <label for="float-input">Label</label>
-    </span>
-    <ng-template pTemplate="footer">
-        <p-button (click)="displayAddNewEdge=false" label="Cancel" styleClass="p-button-text"></p-button>
-        <p-button (click)="createNewEdge()" label="Create" styleClass="p-button-text"></p-button>
-    </ng-template>
-</p-dialog>

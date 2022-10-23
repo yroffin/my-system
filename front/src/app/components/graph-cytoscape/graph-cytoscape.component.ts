@@ -140,8 +140,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       icon: "assets/dock/node.png",
       command: () => {
         this.captureData = {
-          id: "",
-          label: "",
+          id: _.uniqueId("default"),
+          label: "default",
           cdata: "",
           tag: "",
           edge: "",
@@ -165,52 +165,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           parent: undefined
         }
         this.displayAddNewNode = true
-      }
-    },
-    {
-      label: 'Add edge',
-      tooltipOptions: {
-        tooltipLabel: "Add edge",
-        tooltipPosition: 'right',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/edge.png",
-      command: () => {
-        this.captureData = {
-          id: "",
-          label: "",
-          cdata: "",
-          tag: "",
-          tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-            return {
-              name: node.data().tag,
-              code: node.data().id
-            }
-          }), (node) => {
-            return node.name
-          }),
-          source: "",
-          sources: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-            return {
-              name: this.base16.decode(node.data().id),
-              code: node.data().id
-            }
-          }), (node) => {
-            return node.name
-          }),
-          target: "",
-          targets: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-            return {
-              name: this.base16.decode(node.data().id),
-              code: node.data().id
-            }
-          }), (node) => {
-            return node.name
-          }),
-          parent: undefined
-        }
-        this.displayAddNewEdge = true
       }
     }
   ]
@@ -257,7 +211,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   boxSelectionEnabled?: boolean
   displayExportPng = false
   displayAddNewNode = false
-  displayAddNewEdge = false
   displayTool = true
 
   searchNode = ""
@@ -526,21 +479,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       position: {
         x: 0,
         y: 0
-      }
-    }])
-  }
-
-  createNewEdge(): void {
-    this.displayAddNewEdge = false
-
-    this.cy?.add([{
-      data: {
-        id: this.base16.encode(`${this.captureData.source.name}:${this.captureData.target.name}`),
-        label: this.captureData.label,
-        cdata: this.captureData.cdata,
-        source: this.captureData.source.code,
-        target: this.captureData.target.code,
-        tag: this.captureData.tag.name
       }
     }])
   }
