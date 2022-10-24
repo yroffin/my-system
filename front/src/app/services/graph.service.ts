@@ -51,6 +51,7 @@ export class GraphService {
                 label: node.label,
                 x: node.x,
                 y: node.y,
+                group: node.group === undefined ? null : node.group,
                 tag: node.tag === undefined ? null : node.tag,
             }
             if (node.parent) {
@@ -96,15 +97,15 @@ export class GraphService {
             }
             if (node.tag === null) {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 }
             } else {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 }
             }
             if (node.cdata) {
@@ -147,15 +148,15 @@ export class GraphService {
             }
             if (node.tag === null) {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 }
             } else {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 }
             }
             if (node.cdata) {
@@ -221,6 +222,7 @@ export class GraphService {
                                 // delete first \n and last \n
                                 cdata: this.filterCDATA(node['_']),
                                 label: node['$'].label ? node['$'].label : "",
+                                group: node['$'].group ? node['$'].group : "",
                                 tag: node['$'].tag ? node['$'].tag : ""
                             }
                             // store id in index

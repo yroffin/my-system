@@ -25,6 +25,9 @@ import {
 var edgehandles = require('cytoscape-edgehandles');
 cy.use(edgehandles);
 
+var automove = require('cytoscape-automove');
+cy.use(automove);
+
 var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
@@ -144,6 +147,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           label: "default",
           cdata: "",
           tag: "",
+          group: "",
           edge: "",
           isTarget: false,
           tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
@@ -229,6 +233,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   id?: string
   items: MenuItem[] = [];
 
+  group: boolean = true;
+  rules: any = [];
+
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
 
@@ -242,6 +249,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
+
     this.graph$.subscribe(graph => {
       if (!graph) {
         return
@@ -263,6 +271,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
               id: node.id,
               label: node.label,
               cdata: node.cdata,
+              group: node.group,
               tag: node.tag
             },
             position: {
@@ -277,6 +286,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           return _node
         }))
       }
+
+
       if (graph.edges) {
         this.graphs.push(this.buildChildEdges(graph))
 
@@ -295,6 +306,28 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           }
           return _edge
         }))
+      }
+
+      if (this.cy) {
+        _.each(this.rules, (rule) => {
+          rule.destroy()
+        })
+
+        this.rules = []
+        let allGroups = _.uniq(_.map(_.filter(graph.nodes, (node) => { return node.group !== "" }), (node) => {
+          return node.group
+        }))
+
+        let myCy: any = this.cy
+
+        _.each(allGroups, (group) => {
+          let selectedGroup = this.cy?.$(`[group = "${group}"]`)
+          this.rules.push(myCy.automove({
+            nodesMatching: selectedGroup,
+            reposition: 'drag',
+            dragWith: selectedGroup,
+          }))
+        })
       }
       this.cy?.endBatch()
     })
@@ -317,6 +350,27 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     this.store.dispatch(retrievedTagsList({ tags }))
 
     this.items = [
+      {
+        label: 'Group',
+        items: [
+          {
+            label: 'Toggle',
+            command: () => {
+              if (this.group) {
+                this.group = false
+                _.each(this.rules, (rule) => {
+                  rule.disable()
+                })
+              } else {
+                this.group = true
+                _.each(this.rules, (rule) => {
+                  rule.enable()
+                })
+              }
+            }
+          }
+        ]
+      },
       {
         label: 'Layout',
         items: [
@@ -380,9 +434,27 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             }
           },
           {
+            label: '0.2',
+            command: () => {
+              this.cy?.zoom(0.2)
+            }
+          },
+          {
+            label: '0.3',
+            command: () => {
+              this.cy?.zoom(0.3)
+            }
+          },
+          {
             label: '0.5',
             command: () => {
               this.cy?.zoom(0.5)
+            }
+          },
+          {
+            label: '0.6',
+            command: () => {
+              this.cy?.zoom(0.6)
             }
           },
           {
@@ -740,6 +812,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           y: node.position().y || 0,
           size: 10,
           color: "0",
+          group: node.data()['group'],
           tag: node.data()['tag']
         }
         index[node.data()['id'] || ""] = _node

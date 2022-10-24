@@ -12,6 +12,7 @@ export interface SysNode {
     parent?: string;
     label: string;
     cdata?: string;
+    group?: string;
     x: number;
     y: number;
     size?: number;

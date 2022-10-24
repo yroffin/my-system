@@ -53,6 +53,13 @@
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-clone"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedNode.data().group" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
                     <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
                         (onChange)="handleChangeLock($event)"></p-checkbox>
