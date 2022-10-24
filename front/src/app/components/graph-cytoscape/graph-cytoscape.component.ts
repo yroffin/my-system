@@ -170,11 +170,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         }
         this.displayAddNewNode = true
       }
-    }
-  ]
-
-  selectElementCdata: string | undefined
-  dockBottomItems: MenuItem[] = [
+    },
     {
       id: "style",
       label: 'Display style',
@@ -189,6 +185,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         this.displayStyle = true;
       }
     }
+  ]
+
+  selectElementCdata: string | undefined
+  dockBottomItems: MenuItem[] = [
   ];
 
   responsiveOptions: any[] = [
@@ -234,6 +234,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   items: MenuItem[] = [];
 
   group: boolean = true;
+  edgehandles: any;
   rules: any = [];
 
   graph$ = this.store.select(selectGraph);
@@ -309,6 +310,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
 
       if (this.cy) {
+        if (this.edgehandles) {
+          this.edgehandles.destroy()
+        }
+
         _.each(this.rules, (rule) => {
           rule.destroy()
         })
@@ -319,6 +324,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         }))
 
         let myCy: any = this.cy
+        this.edgehandles = myCy.edgehandles()
 
         _.each(allGroups, (group) => {
           let selectedGroup = this.cy?.$(`[group = "${group}"]`)
@@ -508,22 +514,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           {
             label: 'Enable draw mode',
             command: () => {
-              let myCy: any = this.cy
-              myCy?.edgehandles().enableDrawMode()
+              this.edgehandles.enableDrawMode()
             }
           },
           {
             label: 'Disable draw mode',
             command: () => {
-              let myCy: any = this.cy
-              myCy?.edgehandles().disableDrawMode()
+              this.edgehandles.disableDrawMode()
             }
           },
           {
             label: 'Link to another node',
             command: () => {
-              let myCy: any = this.cy
-              myCy?.edgehandles().start(this.currentSelectedNode)
+              this.edgehandles.start(this.currentSelectedNode)
             }
           }
         ]
@@ -626,9 +629,21 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onFileDropped(event: any): void {
+    let filename = event[0].name
+    if (this.id && filename.endsWith(".json")) {
+      this.onFileStyleDropped(event)
+      return
+    }
+    if (this.id && filename.endsWith(".gexf")) {
+      this.onFileGexfDropped(event)
+      return
+    }
+  }
+
   onFileGexfDropped(event: any): void {
     this.messageService.add({
-      severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
+      severity: 'info', summary: 'Upload/GEXF', detail: `Filename ${event[0].name}`
     });
     if (this.id) {
       // Load this graph
@@ -644,7 +659,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   onFileStyleDropped(event: any): void {
     this.messageService.add({
-      severity: 'info', summary: 'Upload', detail: `Filename ${event[0].name}`
+      severity: 'info', summary: 'Upload/Style', detail: `Filename ${event[0].name}`
     });
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
@@ -672,7 +687,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     this.cy.on('select', 'node', (event) => {
       this.logger.info("Select node", event.target)
       this.messageService.add({
-        severity: 'info', summary: 'Select node', detail: `${this.base16.decode(event.target.id())}`
+        severity: 'info', summary: `Select node ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
       });
       this.selectElementCdata = ""
       this.currentSelectedEdge = undefined
@@ -687,7 +702,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     this.cy.on('select', 'edge', (event) => {
       this.logger.info("Select edge", event.target)
       this.messageService.add({
-        severity: 'info', summary: 'Select edge', detail: `${this.base16.decode(event.target.id())}`
+        severity: 'info', summary: `Select edge ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
       });
       this.selectElementCdata = ""
       this.currentSelectedNode = undefined
@@ -705,6 +720,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     this.cy.on('dblclick', (event) => {
       this.logger.info(event)
       this.displayMarkdown = true
+    });
+
+    this.cy.on('mouseover', (event) => {
+      this.logger.info(event)
     });
 
     this.route.params.subscribe(params => {

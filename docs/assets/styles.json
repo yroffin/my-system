@@ -25,13 +25,19 @@
             "css": {
                 "content": "data(label)",
                 "target-arrow-shape": "triangle-backcurve",
-                "width": "10px",
+                "width": "5px",
                 "text-border-color": "white",
-                "text-outline-color": "grey",
-                "text-outline-width": "2px",
+                "text-outline-color": "white",
+                "text-outline-width": "10px",
                 "line-color": "red",
+                "line-cap": "round",
+                "line-opacity": 0.5,
+                "text-background-color": "white",
+                "text-background-shape": "round-rectangle",
+                "text-background-opacity ": 1,
                 "target-arrow-color": "black",
-                "curve-style": "bezier"
+                "curve-style": "bezier",
+                "edge-distances": "intersection"
             }
         }
     },

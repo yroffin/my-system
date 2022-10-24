@@ -21,7 +21,7 @@
 
 <div #area>
     <div class="flex">
-        <div [style]="{'height': '94vh'}" class="w-12" dropZoneDirective (fileDropped)="onFileGexfDropped($event)">
+        <div [style]="{'height': '94vh'}" class="w-12" dropZoneDirective (fileDropped)="onFileDropped($event)">
             <div #myCytoscape id="cytoscape" class="cytoscape-container"></div>
         </div>
     </div>
@@ -108,7 +108,7 @@
 
 <p-dialog header="Drag and drop file to update style" [modal]="true" [(visible)]="displayStyle" [maximizable]="true"
     [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="false" [resizable]="false">
-    <pre dropZoneDirective (fileDropped)="onFileStyleDropped($event)">{{tags}}</pre>
+    <pre dropZoneDirective (fileDropped)="onFileDropped($event)">{{tags}}</pre>
 </p-dialog>
 
 <p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
