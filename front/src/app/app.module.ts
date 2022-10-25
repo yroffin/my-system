@@ -54,6 +54,7 @@ import { DockModule } from 'primeng/dock';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { AvatarModule } from 'primeng/avatar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ConverterComponent } from './components/converter/converter.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     GraphSelectorComponent,
     GraphCytoscapeComponent,
     // Directive
-    dropZoneDirective
+    dropZoneDirective,
+    ConverterComponent
   ],
   imports: [
     BrowserModule,

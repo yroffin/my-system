@@ -1,0 +1,9 @@
+<p-toast></p-toast>
+<p-splitter dropZoneDirective (fileDropped)="onFileDropped($event)" [style]="{'height': '256px'}">
+    <ng-template pTemplate>
+        <pre>Drop here</pre>
+    </ng-template>
+    <ng-template pTemplate>
+        <img #myImg alt="drop here" [src]="viewer">
+    </ng-template>
+</p-splitter>

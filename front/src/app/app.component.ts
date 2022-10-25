@@ -19,9 +19,16 @@ export class AppComponent {
         this.items = [
             {
                 label: 'Graph',
-                icon: 'pi pi-fw pi-pencil',
+                icon: 'pi pi-fw pi-box',
                 items: [
                     { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' }
+                ]
+            },
+            {
+                label: 'Converters',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    { label: 'Images(s)', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' }
                 ]
             }
         ];
