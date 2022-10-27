@@ -273,10 +273,10 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" group="" x="580" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/sqlserver/database-001" label="sample-database-001" group="" x="-740" y="-140" tag="azure/sqlserver" />
 <node id="azure/storage/container/table-001" label="sample-container-001" group="group001" x="1540" y="260" tag="azure/storage/container" />
+<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="sample-container-001" group="" x="980" y="60" tag="azure/storage/container" />
 <node id="azure/storage/table/table-001" label="sample-table-001" group="group002" x="-260" y="420" tag="azure/storage/table" />
 <node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1540" y="1180" tag="azure/vm" />
-<node id="listener" label="listener" group="" x="940" y="20" tag="listener" />
-<node id="listener@910f967e-3ef9-4953-af28-5fd60e020be9" label="listener" group="" x="1140" y="20" tag="listener" />
+<node id="listener" label="listener" group="" x="1020" y="380" tag="listener" />
 </nodes>
 <edges>
 <edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" tag="" />
@@ -549,6 +549,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" tag="" />
 <edge id="azure/storage/container/table-001:azure/aks/deployment/pod/sample-api" source="azure/storage/container/table-001" target="azure/aks/deployment/pod/sample-api" label="SAMPLE" tag="" />
 <edge id="azure/storage/container/table-001:azure/service-bus/topic/sample-topic-002" source="azure/storage/container/table-001" target="azure/service-bus/topic/sample-topic-002" label="" tag="" />
+<edge id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68:azure/storage/container/table-001" source="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" target="azure/storage/container/table-001" label="" />
 <edge id="azure/vm/vm-001:azure/storage/container/table-001" source="azure/vm/vm-001" target="azure/storage/container/table-001" label="SAMPLE" tag="" />
 </edges>
 </graph>

@@ -117,6 +117,25 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         }
         this.displayExportPng = true
       }
+    },
+    {
+      label: 'Save',
+      tooltipOptions: {
+        tooltipLabel: "Save current diagram",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/save.png",
+      command: () => {
+        if (this.id) {
+          let _graph: SysGraph = this.toSysGraph(this.id, this.id)
+          this.databaseService.storeGraph(_graph)
+          this.messageService.add({
+            severity: 'info', summary: 'Info', detail: `Save graph`
+          });
+        }
+      }
     }
   ]
 

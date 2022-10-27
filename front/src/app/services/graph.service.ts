@@ -90,7 +90,7 @@ export class GraphService {
         xml.push(`</meta>`);
         xml.push(`<graph mode="static" defaultedgetype="directed">`);
         xml.push(`<nodes>`);
-        _.each(this.outputNodes(graph), (node) => {
+        _.each(_.sortBy(this.outputNodes(graph), "uid"), (node) => {
             let endtag = ` />`
             if (node.cdata) {
                 endtag = `>`
@@ -115,7 +115,11 @@ export class GraphService {
         });
         xml.push(`</nodes>`);
         xml.push(`<edges>`);
-        _.each(this.outputEdges(graph), (edge) => {
+        let sorted = _.map(this.outputEdges(graph), (edge) => {
+            edge.uid = `${edge.source}:${edge.target}`
+            return edge
+        })
+        _.each(_.sortBy(sorted, "uid"), (edge) => {
             let endtag = ` />`
             if (edge.cdata) {
                 endtag = `>`
