@@ -152,14 +152,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           group: "",
           edge: "",
           isTarget: false,
-          tags: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
+          tags: _.uniqBy(_.map(this.cy?.nodes(), (node) => {
             return {
               name: node.data().tag,
               code: node.data().id
             }
-          }), (node) => {
-            return node.name
-          }),
+          }), "name"),
           edges: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
             return {
               name: this.base16.decode(node.data().id),
@@ -378,14 +376,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       label: 'Info',
       command: () => {
         this.displaySelection = true;
-        this.onClearAnySelection()
       }
     },
     {
       label: 'Documentation',
       command: () => {
         this.displayMarkdown = true;
-        this.onClearAnySelection()
       }
     },
     {
@@ -399,23 +395,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   edgeItem = [
     {
-      label: 'Clone',
-      command: () => {
-        this.onClearAnySelection()
-      }
-    },
-    {
       label: 'Info',
       command: () => {
         this.displaySelection = true;
-        this.onClearAnySelection()
       }
     },
     {
       label: 'Documentation',
       command: () => {
         this.displayMarkdown = true;
-        this.onClearAnySelection()
       }
     }
   ];
@@ -427,18 +415,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         {
           label: 'Toggle',
           command: () => {
-            if (this.groupEnabled) {
-              this.groupEnabled = false
-              _.each(this.rules, (rule) => {
-                rule.disable()
-              })
-            } else {
-              this.groupEnabled = true
-              _.each(this.rules, (rule) => {
-                rule.enable()
-              })
-            }
-            this.onClearAnySelection()
+            this.onToggleGroupEnabled()
           }
         }
       ]
@@ -555,14 +532,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         {
           label: 'Toggle',
           command: () => {
-            if (this.drawModeEnabled) {
-              this.edgehandles.disableDrawMode()
-              this.drawModeEnabled = false;
-            } else {
-              this.edgehandles.enableDrawMode()
-              this.drawModeEnabled = true;
-            }
-            this.onClearAnySelection()
+            this.onToggleDrawModeEnabled()
           }
         }
       ]
@@ -573,6 +543,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  onHide(): void {
+    this.onClearAnySelection()
   }
 
   captureData: any = {}
@@ -608,6 +582,32 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     } else {
       this.animate(this.cy?.$(`#${this.selectedNode.data._id}`), anims)
     }
+  }
+
+  onToggleGroupEnabled(): void {
+    if (this.groupEnabled) {
+      this.groupEnabled = false
+      _.each(this.rules, (rule) => {
+        rule.disable()
+      })
+    } else {
+      this.groupEnabled = true
+      _.each(this.rules, (rule) => {
+        rule.enable()
+      })
+    }
+    this.onClearAnySelection()
+  }
+
+  onToggleDrawModeEnabled(): void {
+    if (this.drawModeEnabled) {
+      this.edgehandles.disableDrawMode()
+      this.drawModeEnabled = false;
+    } else {
+      this.edgehandles.enableDrawMode()
+      this.drawModeEnabled = true;
+    }
+    this.onClearAnySelection()
   }
 
   buildChildNodes(graph: any): TreeNode {
@@ -756,6 +756,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       this.onRightClickEdge(event)
     });
 
+    this.cy.on('click', (event) => {
+      this.onClearAnySelection()
+    });
+
     this.cy.on('click', 'node', (event) => {
       this.items = this.nodeItem;
       this.selectorDisplay = this.base16.decode(event.target.id())
@@ -841,8 +845,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
             tag: node.data()?.tag
           },
           position: {
-            x: node.position.x,
-            y: node.position.y
+            x: node.position().x + 50,
+            y: node.position().y + 50
           }
         }
         // Decode parent property

@@ -6,7 +6,7 @@
 </meta>
 <graph mode="static" defaultedgetype="directed">
 <nodes>
-<node id="all/group/group-001" label="sample-ingress" group="" x="235.22174122026644" y="187.89021164426725" tag="all/group">
+<node id="all/group/group-001" label="sample-ingress" group="" x="244.5" y="173.5" tag="all/group">
 <![CDATA[
 ---
 __Advertisement :)__
@@ -255,11 +255,11 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 ]]>
 </node>
-<node id="all/group/group-002" label="sample-functions-001" group="" x="461.75" y="1178" tag="all/group" />
-<node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" group="" x="135.22174122026647" y="273.14021164426725" tag="azure/aks/deployment/pod" />
-<node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" group="" x="335.22174122026644" y="113.14021164426723" tag="listener" />
+<node id="all/group/group-002" label="sample-functions-001" group="" x="460" y="1178" tag="all/group" />
+<node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" group="" x="140" y="260" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" group="" x="340" y="100" tag="listener" />
 <node id="azure/aks/ingress/sample-ingress" label="sample-ingress" group="" x="220" y="-100" tag="azure/aks/ingress" />
-<node id="azure/event-hub/name" label="event-hub" group="" x="-51.166185749877684" y="26.69753081688267" tag="azure/event-hub" />
+<node id="azure/event-hub/name" label="event-hub" group="" x="-60" y="20" tag="azure/event-hub" />
 <node id="azure/function/function-001" parent="all/group/group-002" label="sample-function-001" group="" x="180" y="1180" tag="azure/function" />
 <node id="azure/function/function-002" parent="all/group/group-002" label="sample-function-002" group="" x="740" y="1180" tag="azure/function" />
 <node id="azure/gateway/v1/gateway-001" label="sample-ingress" group="" x="220" y="-340" tag="azure/gateway/v1" />
@@ -276,6 +276,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/storage/table/table-001" label="sample-table-001" group="group002" x="-260" y="420" tag="azure/storage/table" />
 <node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1540" y="1180" tag="azure/vm" />
 <node id="listener" label="listener" group="" x="940" y="20" tag="listener" />
+<node id="listener@910f967e-3ef9-4953-af28-5fd60e020be9" label="listener" group="" x="1140" y="20" tag="listener" />
 </nodes>
 <edges>
 <edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" tag="" />
