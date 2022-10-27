@@ -1,0 +1,10 @@
+<p-panel header="Render" [toggleable]="true">
+    <div class="field-checkbox">
+        <p-inputSwitch [(ngModel)]="preferences.grid" (onChange)="handleChange($event)"></p-inputSwitch>
+        <label for="ny">Apply grid</label>
+    </div>
+    <div class="field-checkbox">
+        <p-inputSwitch [(ngModel)]="preferences.info" (onChange)="handleChange($event)"></p-inputSwitch>
+        <label for="ny">Apply display info</label>
+    </div>
+</p-panel>

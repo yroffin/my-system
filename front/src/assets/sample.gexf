@@ -6,7 +6,7 @@
 </meta>
 <graph mode="static" defaultedgetype="directed">
 <nodes>
-<node id="all/group/group-001" label="sample-ingress" group="" x="229.25" y="194.5" tag="all/group">
+<node id="all/group/group-001" label="sample-ingress" group="" x="235.22174122026644" y="187.89021164426725" tag="all/group">
 <![CDATA[
 ---
 __Advertisement :)__
@@ -255,25 +255,26 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 ]]>
 </node>
-<node id="all/group/group-002" label="sample-functions-001" group="" x="460" y="1170.5" tag="all/group" />
-<node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" group="" x="140" y="260" tag="azure/aks/deployment/pod" />
-<node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" group="" x="340" y="100" tag="listener" />
+<node id="all/group/group-002" label="sample-functions-001" group="" x="461.75" y="1178" tag="all/group" />
+<node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" group="" x="135.22174122026647" y="273.14021164426725" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" group="" x="335.22174122026644" y="113.14021164426723" tag="listener" />
 <node id="azure/aks/ingress/sample-ingress" label="sample-ingress" group="" x="220" y="-100" tag="azure/aks/ingress" />
+<node id="azure/event-hub/name" label="event-hub" group="" x="-51.166185749877684" y="26.69753081688267" tag="azure/event-hub" />
 <node id="azure/function/function-001" parent="all/group/group-002" label="sample-function-001" group="" x="180" y="1180" tag="azure/function" />
 <node id="azure/function/function-002" parent="all/group/group-002" label="sample-function-002" group="" x="740" y="1180" tag="azure/function" />
 <node id="azure/gateway/v1/gateway-001" label="sample-ingress" group="" x="220" y="-340" tag="azure/gateway/v1" />
 <node id="azure/redis/redis-001" label="sample-redis-001" group="group002" x="-100" y="540" tag="azure/redis" />
 <node id="azure/service-bus/queue/sample-queue" label="sample-queue" group="" x="460" y="1500" tag="azure/service-bus/queue" />
 <node id="azure/service-bus/topic/sample-topic-001" label="sample-topic-001" group="" x="140" y="660" tag="azure/service-bus/topic" />
-<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" group="" x="-527.6678631375415" y="910.244758086013" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" group="" x="-540" y="900" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" group="" x="260" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-002" label="sample-topic-002" group="" x="740" y="700" tag="azure/service-bus/topic" />
-<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" group="" x="1174.0297380375812" y="849.9510483827976" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" group="" x="1180" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" group="" x="580" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/sqlserver/database-001" label="sample-database-001" group="" x="-740" y="-140" tag="azure/sqlserver" />
-<node id="azure/storage/container/table-001" label="sample-container-001" group="group001" x="1291.9932836557578" y="262.0002798476767" tag="azure/storage/container" />
+<node id="azure/storage/container/table-001" label="sample-container-001" group="group001" x="1540" y="260" tag="azure/storage/container" />
 <node id="azure/storage/table/table-001" label="sample-table-001" group="group002" x="-260" y="420" tag="azure/storage/table" />
-<node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1279.6279006030654" y="1182.0002798476773" tag="azure/vm" />
+<node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1540" y="1180" tag="azure/vm" />
 <node id="listener" label="listener" group="" x="940" y="20" tag="listener" />
 </nodes>
 <edges>

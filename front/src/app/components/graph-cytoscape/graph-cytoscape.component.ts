@@ -5,6 +5,7 @@ import { GraphService } from 'src/app/services/graph.service';
 import { retrievedGraph } from 'src/app/stats/graph.actions';
 import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
 import { selectTags } from 'src/app/stats/tag.selectors';
+import { v4 as uuidv4 } from 'uuid';
 
 // node.js, the same, but with sugar:
 var md = require('markdown-it')();
@@ -43,6 +44,7 @@ import { TreeTable } from 'primeng/treetable';
 import { DatabaseService } from 'src/app/services/database.service';
 import { retrievedTagsList } from 'src/app/stats/tag.actions';
 import { Subscription } from 'rxjs';
+import { SysPreference } from 'src/app/models/preference';
 
 declare var cytoscape: any
 
@@ -211,6 +213,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   @ViewChild('myTreeTable') myTreeTable?: TreeTable;
   subscription: any = null;
 
+  preferences: SysPreference
+
   cy?: Core
   boxSelectionEnabled?: boolean
   displayExportPng = false
@@ -233,7 +237,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   id?: string
   items: MenuItem[] = [];
 
-  group: boolean = true;
+  groupEnabled: boolean = true;
+  selectorDisplay: string = "";
+  drawModeEnabled: boolean = false;
   edgehandles: any;
   rules: any = [];
 
@@ -250,6 +256,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
+
+    this.preferences = this.databaseService.retrievePreferences()
 
     this.graph$.subscribe(graph => {
       if (!graph) {
@@ -355,184 +363,211 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     let tags = this.graphsService.getAllTags()
     this.store.dispatch(retrievedTagsList({ tags }))
 
-    this.items = [
-      {
-        label: 'Group',
-        items: [
-          {
-            label: 'Toggle',
-            command: () => {
-              if (this.group) {
-                this.group = false
-                _.each(this.rules, (rule) => {
-                  rule.disable()
-                })
-              } else {
-                this.group = true
-                _.each(this.rules, (rule) => {
-                  rule.enable()
-                })
-              }
-            }
-          }
-        ]
-      },
-      {
-        label: 'Layout',
-        items: [
-          {
-            label: 'Bread First Layout',
-            command: () => {
-              if (this.breadFirstLayoutOptions) {
-                this.cy?.layout(this.breadFirstLayoutOptions).run()
-              }
-            }
-          },
-          {
-            label: 'Concentric Layout',
-            command: () => {
-              if (this.concentricLayoutOptions) {
-                this.cy?.layout(this.concentricLayoutOptions).run()
-              }
-            }
-          },
-          {
-            label: 'Circle Layout',
-            command: () => {
-              if (this.circleLayoutOptions) {
-                this.cy?.layout(this.circleLayoutOptions).run()
-              }
-            }
-          },
-          {
-            label: 'Grid Layout',
-            command: () => {
-              if (this.gridLayoutOptions) {
-                this.cy?.layout(this.gridLayoutOptions).run()
-              }
-            }
-          },
-          {
-            label: 'Cose Layout',
-            command: () => {
-              if (this.coseLayoutOptions) {
-                this.cy?.layout(this.coseLayoutOptions).run()
-              }
-            }
-          },
-          {
-            label: 'Dagre Layout',
-            command: () => {
-              if (this.dagreLayoutOptions) {
-                this.cy?.layout(this.dagreLayoutOptions).run()
-              }
-            }
-          },
-        ]
-      },
-      {
-        label: 'Zoom',
-        items: [
-          {
-            label: '0.1',
-            command: () => {
-              this.cy?.zoom(0.1)
-            }
-          },
-          {
-            label: '0.2',
-            command: () => {
-              this.cy?.zoom(0.2)
-            }
-          },
-          {
-            label: '0.3',
-            command: () => {
-              this.cy?.zoom(0.3)
-            }
-          },
-          {
-            label: '0.5',
-            command: () => {
-              this.cy?.zoom(0.5)
-            }
-          },
-          {
-            label: '0.6',
-            command: () => {
-              this.cy?.zoom(0.6)
-            }
-          },
-          {
-            label: '0.75',
-            command: () => {
-              this.cy?.zoom(0.75)
-            }
-          },
-          {
-            label: '1',
-            command: () => {
-              this.cy?.zoom(1)
-            }
-          }
-        ]
-      },
-      {
-        label: 'Grid',
-        items: [
-          {
-            label: 'Snap to grid',
-            command: () => {
-              let myCy: any = this.cy
-              myCy?.snapToGrid()
-            }
-          }
-        ]
-      },
-      {
-        label: 'Selection',
-        items: [
-          {
-            id: "selection",
-            label: 'Info',
-            command: () => {
-              this.displaySelection = true;
-            }
-          },
-          {
-            id: "documentation",
-            label: 'Documentation',
-            command: () => {
-              this.displayMarkdown = true;
-            }
-          }
-        ]
-      },
-      {
-        label: 'Edge',
-        items: [
-          {
-            label: 'Enable draw mode',
-            command: () => {
-              this.edgehandles.enableDrawMode()
-            }
-          },
-          {
-            label: 'Disable draw mode',
-            command: () => {
-              this.edgehandles.disableDrawMode()
-            }
-          },
-          {
-            label: 'Link to another node',
-            command: () => {
-              this.edgehandles.start(this.currentSelectedNode)
-            }
-          }
-        ]
-      }
-    ];
+    this.items = this.coreItem;
   }
+
+  nodeItem = [
+    {
+      label: 'Clone',
+      command: () => {
+        this.onCloneNode(this.currentSelectedNode)
+        this.onClearAnySelection()
+      }
+    },
+    {
+      label: 'Info',
+      command: () => {
+        this.displaySelection = true;
+        this.onClearAnySelection()
+      }
+    },
+    {
+      label: 'Documentation',
+      command: () => {
+        this.displayMarkdown = true;
+        this.onClearAnySelection()
+      }
+    },
+    {
+      label: 'Link to another node',
+      command: () => {
+        this.edgehandles.start(this.currentSelectedNode)
+        this.onClearAnySelection()
+      }
+    }
+  ];
+
+  edgeItem = [
+    {
+      label: 'Clone',
+      command: () => {
+        this.onClearAnySelection()
+      }
+    },
+    {
+      label: 'Info',
+      command: () => {
+        this.displaySelection = true;
+        this.onClearAnySelection()
+      }
+    },
+    {
+      label: 'Documentation',
+      command: () => {
+        this.displayMarkdown = true;
+        this.onClearAnySelection()
+      }
+    }
+  ];
+
+  coreItem = [
+    {
+      label: 'Group',
+      items: [
+        {
+          label: 'Toggle',
+          command: () => {
+            if (this.groupEnabled) {
+              this.groupEnabled = false
+              _.each(this.rules, (rule) => {
+                rule.disable()
+              })
+            } else {
+              this.groupEnabled = true
+              _.each(this.rules, (rule) => {
+                rule.enable()
+              })
+            }
+            this.onClearAnySelection()
+          }
+        }
+      ]
+    },
+    {
+      label: 'Layout',
+      items: [
+        {
+          label: 'Bread First Layout',
+          command: () => {
+            if (this.breadFirstLayoutOptions) {
+              this.cy?.layout(this.breadFirstLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+        {
+          label: 'Concentric Layout',
+          command: () => {
+            if (this.concentricLayoutOptions) {
+              this.cy?.layout(this.concentricLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+        {
+          label: 'Circle Layout',
+          command: () => {
+            if (this.circleLayoutOptions) {
+              this.cy?.layout(this.circleLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+        {
+          label: 'Grid Layout',
+          command: () => {
+            if (this.gridLayoutOptions) {
+              this.cy?.layout(this.gridLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+        {
+          label: 'Cose Layout',
+          command: () => {
+            if (this.coseLayoutOptions) {
+              this.cy?.layout(this.coseLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+        {
+          label: 'Dagre Layout',
+          command: () => {
+            if (this.dagreLayoutOptions) {
+              this.cy?.layout(this.dagreLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+        },
+      ]
+    },
+    {
+      label: 'Zoom',
+      items: [
+        {
+          label: '0.1',
+          command: () => {
+            this.cy?.zoom(0.1)
+          }
+        },
+        {
+          label: '0.2',
+          command: () => {
+            this.cy?.zoom(0.2)
+          }
+        },
+        {
+          label: '0.3',
+          command: () => {
+            this.cy?.zoom(0.3)
+          }
+        },
+        {
+          label: '0.5',
+          command: () => {
+            this.cy?.zoom(0.5)
+          }
+        },
+        {
+          label: '0.6',
+          command: () => {
+            this.cy?.zoom(0.6)
+          }
+        },
+        {
+          label: '0.75',
+          command: () => {
+            this.cy?.zoom(0.75)
+          }
+        },
+        {
+          label: '1',
+          command: () => {
+            this.cy?.zoom(1)
+          }
+        }
+      ]
+    },
+    {
+      label: 'Draw mode',
+      items: [
+        {
+          label: 'Toggle',
+          command: () => {
+            if (this.drawModeEnabled) {
+              this.edgehandles.disableDrawMode()
+              this.drawModeEnabled = false;
+            } else {
+              this.edgehandles.enableDrawMode()
+              this.drawModeEnabled = true;
+            }
+            this.onClearAnySelection()
+          }
+        }
+      ]
+    }
+  ];
 
   ngOnDestroy() {
     if (this.subscription) {
@@ -684,46 +719,57 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       style: this.retrieveStyle(),
     });
 
-    this.cy.on('select', 'node', (event) => {
-      this.logger.info("Select node", event.target)
-      this.messageService.add({
-        severity: 'info', summary: `Select node ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
-      });
-      this.selectElementCdata = ""
-      this.currentSelectedEdge = undefined
-      this.currentSelectedNode = event.target[0]
-      // Any documentation
-      if (this.currentSelectedNode.data().cdata) {
-        this.selectElementCdata = md.render(this.currentSelectedNode.data().cdata)
-      }
-      this._lockedElement = this.currentSelectedNode.locked()
+    if (this.preferences.grid) {
+      let myCy: any = this.cy
+      myCy?.snapToGrid()
+    }
+
+    this.cy.on('mouseover', (event) => {
+      this.logger.debug(event)
     });
 
-    this.cy.on('select', 'edge', (event) => {
-      this.logger.info("Select edge", event.target)
-      this.messageService.add({
-        severity: 'info', summary: `Select edge ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
-      });
-      this.selectElementCdata = ""
-      this.currentSelectedNode = undefined
-      this.currentSelectedEdge = event.target[0]
-      // Any documentation
-      if (this.currentSelectedEdge.data().cdata) {
-        this.selectElementCdata = md.render(this.currentSelectedEdge.data().cdata)
-      }
+    this.cy.on('mouseout', (event) => {
+      this.logger.debug(event)
     });
 
-    this.cy.on('select', (event) => {
-      this.logger.info(event)
+    this.cy.on('dblclick', 'node', (event) => {
+      this.items = this.nodeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onDblClickNode(event)
     });
 
-    this.cy.on('dblclick', (event) => {
-      this.logger.info(event)
-      this.displayMarkdown = true
+    this.cy.on('dblclick', 'edge', (event) => {
+      this.items = this.edgeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onDblClickEdge(event)
+    });
+
+    this.cy.on('cxttap', 'node', (event) => {
+      this.items = this.nodeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onRightClickNode(event)
+    });
+
+    this.cy.on('cxttap', 'edge', (event) => {
+      this.items = this.edgeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onRightClickEdge(event)
+    });
+
+    this.cy.on('click', 'node', (event) => {
+      this.items = this.nodeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onLeftClickNode(event)
+    });
+
+    this.cy.on('click', 'edge', (event) => {
+      this.items = this.edgeItem;
+      this.selectorDisplay = this.base16.decode(event.target.id())
+      this.onLeftClickEdge(event)
     });
 
     this.cy.on('mouseover', (event) => {
-      this.logger.info(event)
+      //this.logger.info(event)
     });
 
     this.route.params.subscribe(params => {
@@ -734,6 +780,90 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         this.store.dispatch(retrievedGraph({ graph: _graph }))
       }
     });
+  }
+
+  onRightClickNode(event: any): void {
+    this.logger.info('[NODE] rclick', event)
+  }
+
+  onRightClickEdge(event: any): void {
+    this.logger.info('[EDGE] rclick', event)
+  }
+
+  onDblClickNode(event: any): void {
+    this.logger.info('[NODE] dblclick', event)
+  }
+
+  onDblClickEdge(event: any): void {
+    this.logger.info('[EDGE] dblclick', event)
+  }
+
+  onLeftClickNode(event: any): void {
+    this.logger.info('[NODE] lclick', event)
+    this.selectorDisplay = this.base16.decode(event.target.id())
+    this.messageService.add({
+      severity: 'info', summary: `Select node ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
+    });
+    this.selectElementCdata = ""
+    this.currentSelectedEdge = undefined
+    this.currentSelectedNode = event.target[0]
+    // Any documentation
+    if (this.currentSelectedNode.data().cdata) {
+      this.selectElementCdata = md.render(this.currentSelectedNode.data().cdata)
+    }
+    this._lockedElement = this.currentSelectedNode.locked()
+  }
+
+  onLeftClickEdge(event: any): void {
+    this.logger.info('[EDGE] lclick', event)
+    this.selectorDisplay = this.base16.decode(event.target.id())
+    this.messageService.add({
+      severity: 'info', summary: `Select edge ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
+    });
+    this.selectElementCdata = ""
+    this.currentSelectedNode = undefined
+    this.currentSelectedEdge = event.target[0]
+    // Any documentation
+    if (this.currentSelectedEdge.data().cdata) {
+      this.selectElementCdata = md.render(this.currentSelectedEdge.data().cdata)
+    }
+  }
+
+  onCloneNode(nodes: any): void {
+    if (nodes.length === 1 && nodes[0].isNode()) {
+      this.cy?.add(_.map(nodes, (node) => {
+        let id = `${this.base16.decode(node.data()?.id)}@${uuidv4()}`
+        let _node: any = {
+          data: {
+            id: this.base16.encode(id),
+            label: node.data()?.label,
+            group: "",
+            tag: node.data()?.tag
+          },
+          position: {
+            x: node.position.x,
+            y: node.position.y
+          }
+        }
+        // Decode parent property
+        if (node.data()?.parent) {
+          _node.data.parent = node.data()?.parent
+        }
+        this.logger.info("Clone node", _node)
+        return _node
+      }))
+    }
+  }
+
+  onCloneEdge(edge: any): void {
+  }
+
+  onClearAnySelection(): void {
+    this.logger.info("Clear selection")
+    this.selectorDisplay = ""
+    this.currentSelectedEdge = undefined
+    this.currentSelectedNode = undefined
+    this.items = this.coreItem;
   }
 
   retrieveStyle(): any[] {

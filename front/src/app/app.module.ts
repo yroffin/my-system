@@ -55,6 +55,9 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { AvatarModule } from 'primeng/avatar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConverterComponent } from './components/converter/converter.component';
+import { PreferenceComponent } from './components/preference/preference.component';
+import { PreferencesReducer } from './stats/preference.reducer';
+import { PanelModule } from 'primeng/panel';
 
 @NgModule({
   declarations: [
@@ -64,7 +67,8 @@ import { ConverterComponent } from './components/converter/converter.component';
     GraphCytoscapeComponent,
     // Directive
     dropZoneDirective,
-    ConverterComponent
+    ConverterComponent,
+    PreferenceComponent
   ],
   imports: [
     BrowserModule,
@@ -114,7 +118,8 @@ import { ConverterComponent } from './components/converter/converter.component';
     DockModule,
     AvatarModule,
     CheckboxModule,
-    StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer })
+    PanelModule,
+    StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer, preferences: PreferencesReducer })
   ],
   providers: [ConfirmationService, MessageService],
   bootstrap: [AppComponent]

@@ -1,6 +1,21 @@
 <p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
 <p-toast></p-toast>
 
+
+<span *ngIf="preferences.info" class="cytoscape-selector">
+    <span class="field-checkbox">
+        <p-checkbox [(ngModel)]="groupEnabled" [binary]="true" inputId="binary"></p-checkbox>
+        <label for="binary">Group</label>
+    </span>
+    <span class="field-checkbox">
+        <p-checkbox [(ngModel)]="drawModeEnabled" [binary]="true" inputId="binary"></p-checkbox>
+        <label for="binary">Draw mode</label>
+    </span>
+    <span class="field-checkbox">
+        <p>{{selectorDisplay}}</p>
+    </span>
+</span>
+
 <div class="dock-window">
     <p-dock [model]="dockLeftItems" position="left">
         <ng-template pTemplate="item" let-item>

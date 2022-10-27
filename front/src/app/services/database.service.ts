@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import * as _ from 'lodash';
 import { SysGraph, SysTag } from '../models/graph';
+import { SysPreference } from '../models/preference';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,20 @@ export class DatabaseService {
     if (!_tags) {
       this.storage.store('tags', [])
     }
+    let _preferences = this.retrievePreferences()
+    if (!_preferences) {
+      this.storage.store('preferences', {
+        grid: false
+      })
+    }
   }
 
   private retrieveGraphs(): Array<SysGraph> {
     return JSON.parse(JSON.stringify(this.storage.retrieve('graphs')))
+  }
+
+  retrievePreferences(): SysPreference {
+    return JSON.parse(JSON.stringify(this.storage.retrieve('preferences')))
   }
 
   private retrieveTags(): Array<SysTag> {
@@ -72,6 +83,10 @@ export class DatabaseService {
     }
 
     this.storage.store('graphs', _graphs)
+  }
+
+  storePreferences(_preferences: SysPreference): void {
+    this.storage.store('preferences', _preferences)
   }
 
   storeTags(_tags: Array<SysTag>): void {

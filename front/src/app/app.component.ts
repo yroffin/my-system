@@ -25,10 +25,11 @@ export class AppComponent {
                 ]
             },
             {
-                label: 'Converters',
+                label: 'Misc',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    { label: 'Images(s)', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' }
+                    { label: 'Preferences', icon: 'pi pi-fw pi-database', routerLink: '/preferences' },
+                    { label: 'Images', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' }
                 ]
             }
         ];

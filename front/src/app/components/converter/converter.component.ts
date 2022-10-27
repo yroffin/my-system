@@ -28,10 +28,21 @@ export class ConverterComponent implements OnInit {
   onFileDropped(event: any): void {
     // Convert to base64
     this.converterService.uploadHandler(event[0]).then((loaded) => {
-      this.messageService.add({
-        severity: 'info', summary: 'Copied to clipboard', detail: `Filename ${event[0].name}`
-      });
+      this.logger.info(loaded)
+
+      if (loaded.startsWith("PHN2Z")) {
+        this.messageService.add({
+          severity: 'info', summary: 'Copied to clipboard/SVG', detail: `Filename ${event[0].name}`
+        });
+        this.viewer = "data:image/svg+xml;base64," + loaded
+        this.clipboardService.copyTextToClipboard("data:image/svg+xml;base64," + loaded)
+      }
+
       if (loaded.startsWith("iVBOR")) {
+        this.messageService.add({
+          severity: 'info', summary: 'Copied to clipboard/PNG', detail: `Filename ${event[0].name}`
+        });
+        this.viewer = "data:image/png;base64," + loaded
         this.clipboardService.copyTextToClipboard("data:image/png;base64," + loaded)
       }
     })
