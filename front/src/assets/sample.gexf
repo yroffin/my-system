@@ -263,6 +263,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/function/function-001" parent="all/group/group-002" label="sample-function-001" group="" x="180" y="1180" tag="azure/function" />
 <node id="azure/function/function-002" parent="all/group/group-002" label="sample-function-002" group="" x="740" y="1180" tag="azure/function" />
 <node id="azure/gateway/v1/gateway-001" label="sample-ingress" group="" x="220" y="-340" tag="azure/gateway/v1" />
+<node id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" label="sample-ingress" group="" x="380" y="-340" tag="azure/gateway/v1" />
 <node id="azure/redis/redis-001" label="sample-redis-001" group="group002" x="-100" y="540" tag="azure/redis" />
 <node id="azure/service-bus/queue/sample-queue" label="sample-queue" group="" x="460" y="1500" tag="azure/service-bus/queue" />
 <node id="azure/service-bus/topic/sample-topic-001" label="sample-topic-001" group="" x="140" y="660" tag="azure/service-bus/topic" />
@@ -272,8 +273,8 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" group="" x="1180" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" group="" x="580" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/sqlserver/database-001" label="sample-database-001" group="" x="-740" y="-140" tag="azure/sqlserver" />
-<node id="azure/storage/container/table-001" label="sample-container-001" group="group001" x="1540" y="260" tag="azure/storage/container" />
-<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="sample-container-001" group="" x="980" y="60" tag="azure/storage/container" />
+<node id="azure/storage/container/table-001" label="sample-container-001" group="test" x="1540" y="260" tag="azure/service-bus/topic/subscription" />
+<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="sample-container-002" group="test" x="980" y="20" tag="azure/aks/deployment/pod" />
 <node id="azure/storage/table/table-001" label="sample-table-001" group="group002" x="-260" y="420" tag="azure/storage/table" />
 <node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1540" y="1180" tag="azure/vm" />
 <node id="listener" label="listener" group="" x="1020" y="380" tag="listener" />
@@ -538,6 +539,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 ]]>
 </edge>
 <edge id="azure/gateway/v1/gateway-001:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001" target="azure/aks/ingress/sample-ingress" label="ingress" tag="" />
+<edge id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" target="azure/aks/ingress/sample-ingress" label="TOP" tag="message-queue" />
 <edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="sample-subscription-001-001" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="azure/function/function-001" label="sample-subscription-001-002" tag="" />
@@ -547,8 +549,8 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="azure/function/function-002" label="sample-subscription-002-002" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="copy" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" tag="" />
-<edge id="azure/storage/container/table-001:azure/aks/deployment/pod/sample-api" source="azure/storage/container/table-001" target="azure/aks/deployment/pod/sample-api" label="SAMPLE" tag="" />
-<edge id="azure/storage/container/table-001:azure/service-bus/topic/sample-topic-002" source="azure/storage/container/table-001" target="azure/service-bus/topic/sample-topic-002" label="" tag="" />
+<edge id="azure/storage/container/table-001:azure/aks/deployment/pod/sample-api" source="azure/storage/container/table-001" target="azure/aks/deployment/pod/sample-api" label="SAMPLE001" tag="message-queue" />
+<edge id="azure/storage/container/table-001:azure/service-bus/topic/sample-topic-002" source="azure/storage/container/table-001" target="azure/service-bus/topic/sample-topic-002" label="TEST" tag="message-queue" />
 <edge id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68:azure/storage/container/table-001" source="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" target="azure/storage/container/table-001" label="" />
 <edge id="azure/vm/vm-001:azure/storage/container/table-001" source="azure/vm/vm-001" target="azure/storage/container/table-001" label="SAMPLE" tag="" />
 </edges>

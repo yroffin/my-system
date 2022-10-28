@@ -36,7 +36,7 @@ import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayou
 import { style } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
-import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
+import { SysEdge, SysGraph, SysNode, SysTag } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
 import { NGXLogger } from 'ngx-logger';
@@ -55,7 +55,9 @@ declare var cytoscape: any
 })
 export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
-  displaySelection: boolean = false;
+  displaySelectionNode: boolean = false;
+  displaySelectionEdge: boolean = false;
+
   displayFinder: boolean = false;
   displayMarkdown: boolean = false;
   displayStyle: boolean = false;
@@ -361,6 +363,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         })
       }
       this.cy?.endBatch()
+      this.cy?.fit()
     })
 
     this.tags$.subscribe(_tags => {
@@ -394,7 +397,33 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     {
       label: 'Info',
       command: () => {
-        this.displaySelection = true;
+        // Check if any selection
+        if (!this.currentSelectedNode) {
+          return
+        }
+
+        // Retrieve all tags
+        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+          return tag.label
+        }))
+        allTags.unshift('');
+
+        // Capture data will be used to apply update
+        this.captureData = {
+          id: this.currentSelectedNode.data().id,
+          label: this.currentSelectedNode.data().label,
+          tag: this.currentSelectedNode.data().tag,
+          group: this.currentSelectedNode.data().group,
+          tags: allTags
+        }
+
+        // Async init to update current selection
+        setTimeout(() => {
+          this.captureData.tag = this.currentSelectedNode.data().tag
+        }, 100)
+
+        // Display dialog box
+        this.displaySelectionNode = true;
       }
     },
     {
@@ -412,11 +441,56 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     }
   ];
 
+  applyNodeUpdate(captureData: any): void {
+    this.cy?.$(`#${captureData.id}`)
+      .data('group', captureData.group)
+      .data('label', captureData.label)
+      .data('tag', captureData.tag);
+    this.displaySelectionNode = false
+  }
+
   edgeItem = [
+    {
+      label: 'Drop',
+      command: () => {
+        // Check if any selection
+        if (!this.currentSelectedEdge) {
+          return
+        }
+
+        // Drop selection
+        this.cy?.$(`#${this.currentSelectedEdge.data().id}`).remove()
+      }
+    },
     {
       label: 'Info',
       command: () => {
-        this.displaySelection = true;
+        // Check if any selection
+        if (!this.currentSelectedEdge) {
+          return
+        }
+
+        // Retrieve all tags
+        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
+          return tag.label
+        }))
+        allTags.unshift('');
+
+        // Capture data will be used to apply update
+        this.captureData = {
+          id: this.currentSelectedEdge.data().id,
+          label: this.currentSelectedEdge.data().label,
+          tag: this.currentSelectedEdge.data().tag,
+          tags: allTags
+        }
+
+        // Async init to update current selection
+        setTimeout(() => {
+          this.captureData.tag = this.currentSelectedEdge.data().tag
+        }, 100)
+
+        // Display dialog box
+        this.displaySelectionEdge = true;
       }
     },
     {
@@ -426,6 +500,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
     }
   ];
+
+  applyEdgeUpdate(captureData: any): void {
+    this.cy?.$(`#${captureData.id}`)
+      .data('label', captureData.label)
+      .data('tag', captureData.tag);
+    this.displaySelectionEdge = false
+  }
 
   coreItem = [
     {

@@ -50,30 +50,25 @@
         (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
 </p-dialog>
 
-<p-dialog header="Current selection" [(visible)]="displaySelection" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [breakpoints]="{'960px': '50vw'}" [style]="{width: '35vw', height: '23vw'}" [draggable]="true"
-    [resizable]="false">
+<p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
+    [maximizable]="true" [style]="{width: '35vw', height: '27vw'}" [draggable]="true" [resizable]="false">
 
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
         <div class="col-12">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
-                <input type="text" [(ngModel)]="currentSelectedNode.data().label" pInputText placeholder=""
-                    readonly="true">
+                <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
-                <input type="text" [(ngModel)]="currentSelectedNode.data().tag" pInputText placeholder=""
-                    readonly="true">
-            </div>
+            <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                defaultLabel="Select a tag">
+            </p-dropdown>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-clone"></i></span>
-                <input type="text" [(ngModel)]="currentSelectedNode.data().group" pInputText placeholder=""
-                    readonly="true">
+                <input type="text" [(ngModel)]="captureData.group" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
@@ -86,21 +81,26 @@
             </div>
         </div>
     </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyNodeUpdate(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
 
+<p-dialog header="Current edge" [(visible)]="displaySelectionEdge" [modal]="true" (onHide)="onHide()"
+    [maximizable]="true" [breakpoints]="{'960px': '50vw'}" [style]="{width: '35vw', height: '25vw'}" [draggable]="true"
+    [resizable]="false">
     <div *ngIf="currentSelectedEdge" class="grid p-fluid">
         <div class="col-12">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
-                <input type="text" [(ngModel)]="currentSelectedEdge.data().label" pInputText placeholder=""
-                    readonly="true">
+                <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
-                <input type="text" [(ngModel)]="currentSelectedEdge.data().tag" pInputText placeholder=""
-                    readonly="true">
-            </div>
+            <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                defaultLabel="Select a tag">
+            </p-dropdown>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
@@ -117,6 +117,10 @@
             </div>
         </div>
     </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyEdgeUpdate(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
 </p-dialog>
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
