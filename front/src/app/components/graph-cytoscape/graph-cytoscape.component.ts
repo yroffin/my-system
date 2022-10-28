@@ -388,6 +388,18 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
   nodeItem = [
     {
+      label: 'Drop',
+      command: () => {
+        // Check if any selection
+        if (!this.currentSelectedNode) {
+          return
+        }
+
+        // Drop selection
+        this.cy?.$(`#${this.currentSelectedNode.data().id}`).remove()
+      }
+    },
+    {
       label: 'Clone',
       command: () => {
         this.onCloneNode(this.currentSelectedNode)
