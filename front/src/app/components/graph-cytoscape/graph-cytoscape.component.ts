@@ -230,7 +230,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   @ViewChild('myCytoscape') myGraph?: ElementRef;
   @ViewChild('myPng') myPng?: ElementRef;
   @ViewChild('myTreeTable') myTreeTable?: TreeTable;
-  subscription: any = null;
+  subscriptions: any = [];
 
   preferences: SysPreference
 
@@ -278,7 +278,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
 
     this.preferences = this.databaseService.retrievePreferences()
 
-    this.graph$.subscribe(graph => {
+    this.subscriptions.push(this.graph$.subscribe(graph => {
       if (!graph) {
         return
       }
@@ -364,15 +364,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
       this.cy?.endBatch()
       this.cy?.fit()
-    })
+    }))
 
-    this.tags$.subscribe(_tags => {
+    this.subscriptions.push(this.tags$.subscribe(_tags => {
       if (!_tags) {
         return
       }
       this.tags = JSON.stringify(_tags, null, 2)
       this.cy?.style(this.retrieveStyle())
-    })
+    }))
   }
 
   ngOnInit(): void {
@@ -529,6 +529,45 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
           command: () => {
             this.onToggleGroupEnabled()
           }
+        },
+        {
+          label: 'Statistics',
+          command: () => {
+            // Build all group
+            let allGroups = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
+              return node.data().group
+            }), (node) => node && node !== ""));
+
+            // Group by them
+            let groupBy: any = {}
+            _.each(allGroups, (group) => {
+              if (groupBy[group]) {
+                groupBy[group] += 1
+              } else {
+                groupBy[group] = 1
+              }
+            })
+
+            // Build statistic
+            this.dataGroupStatistics = {
+              datasets: [{
+                data: _.map(groupBy, (k, v) => k),
+                backgroundColor: _.map(groupBy, (k, v) => {
+                  switch (k) {
+                    case 1: return "#42A5F5";
+                    case 2: return "#66BB6A";
+                    case 3: return "#FFA726";
+                    case 4: return "#26C6DA";
+                    default: return "#7E57C2";
+                  }
+                }),
+                label: 'My dataset'
+              }],
+              labels: _.map(groupBy, (k, v) => v)
+            }
+
+            this.displayGroupStatistic = true
+          }
         }
       ]
     },
@@ -652,8 +691,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.subscriptions) {
+      _.each(this.subscriptions, (subscription) => {
+        subscription.unsubscribe();
+      })
     }
   }
 
@@ -1116,6 +1157,65 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   graphml(_id: string, _label: string): void {
     let _graph: SysGraph = this.toSysGraph(_id, _label)
     this.clipboardService.copyTextToClipboard(this.graphsService.toGraphml(_graph).join('\n'))
+  }
+
+  dataGroupStatistics: any = {
+    datasets: [{
+      data: [
+      ],
+      backgroundColor: [
+      ],
+      label: 'Dataset'
+    }],
+    labels: [
+    ]
+  };
+  displayGroupStatistic: boolean = false;
+  chartOptions: any;
+  config: any = {
+    dark: false
+  };
+
+  updateChartOptions() {
+    this.chartOptions = this.config && this.config.dark ? this.getDarkTheme() : this.getLightTheme();
+  }
+
+  getLightTheme() {
+    return {
+      plugins: {
+        legend: {
+          labels: {
+            color: '#495057'
+          }
+        }
+      },
+      scales: {
+        r: {
+          grid: {
+            color: '#ebedef'
+          }
+        }
+      }
+    };
+  }
+
+  getDarkTheme() {
+    return {
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ebedef'
+          }
+        }
+      },
+      scales: {
+        r: {
+          grid: {
+            color: 'rgba(255,255,255,0.2)'
+          }
+        }
+      }
+    };
   }
 }
 

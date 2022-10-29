@@ -128,6 +128,12 @@
     <div [innerHTML]="selectElementCdata"></div>
 </p-dialog>
 
+<p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
+    [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <p-chart type="polarArea" [data]="dataGroupStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
+    </p-chart>
+</p-dialog>
+
 <p-dialog header="Drag and drop file to update style" [modal]="true" [(visible)]="displayStyle" [maximizable]="true"
     [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="false" [resizable]="false">
     <pre dropZoneDirective (fileDropped)="onFileDropped($event)">{{tags}}</pre>

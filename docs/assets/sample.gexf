@@ -255,7 +255,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 ]]>
 </node>
-<node id="all/group/group-002" label="sample-functions-003" group="" x="460" y="1180" tag="azure/function" />
+<node id="all/group/group-002" label="sample-functions-003" group="" x="460" y="940" tag="azure/function" />
 <node id="azure/aks/deployment/pod/sample-api" label="sample-api" group="application A" x="100" y="260" tag="azure/aks/deployment/pod" />
 <node id="azure/aks/deployment/pod/sample-api/listener" label="sample-api" group="application A" x="300" y="100" tag="listener" />
 <node id="azure/aks/ingress/sample-ingress" label="sample-ingress" group="" x="220" y="-100" tag="azure/aks/ingress" />
@@ -265,7 +265,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/gateway/v1/gateway-001" label="sample-ingress" group="" x="220" y="-340" tag="azure/gateway/v1" />
 <node id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" label="sample-ingress" group="" x="420" y="-340" tag="azure/gateway/v1" />
 <node id="azure/redis/redis-001" label="sample-redis-001" group="group002" x="-100" y="540" tag="azure/redis" />
-<node id="azure/service-bus/queue/sample-queue" label="sample-queue" group="" x="460" y="1500" tag="azure/service-bus/queue" />
+<node id="azure/service-bus/queue/sample-queue" label="sample-queue" group="" x="460" y="1180" tag="azure/service-bus/queue" />
 <node id="azure/service-bus/topic/sample-topic-001" label="sample-topic-001" group="" x="180" y="660" tag="azure/service-bus/topic" />
 <node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" group="" x="100" y="900" tag="azure/service-bus/topic/subscription" />
 <node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" group="" x="260" y="860" tag="azure/service-bus/topic/subscription" />
@@ -274,7 +274,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" group="" x="620" y="860" tag="azure/service-bus/topic/subscription" />
 <node id="azure/sqlserver/database-001" label="sample-database-001" group="" x="-140" y="180" tag="azure/sqlserver" />
 <node id="azure/storage/container/table-001" label="sample-container-001" group="test" x="1060" y="260" tag="azure/aks/deployment/pod" />
-<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="sample-container-002" group="test" x="999.2267952686911" y="87.13508054952877" tag="azure/event-hub" />
+<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="Hub IOT" group="test" x="980" y="100" tag="azure/hub-iot" />
 <node id="azure/storage/table/table-001" label="sample-table-001" group="group002" x="-260" y="420" tag="azure/storage/container" />
 <node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="1060" y="1180" tag="azure/vm" />
 <node id="listener" label="listener" group="" x="1260" y="260" tag="listener" />
