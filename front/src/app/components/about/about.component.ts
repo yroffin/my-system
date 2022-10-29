@@ -33,6 +33,7 @@ export class AboutComponent implements OnInit {
 
   ### Bugs
 
+  - Add favicon.ico (replace default angular favicon.ico)
   - Generate error in console while mis selecting any node
 
   `)
