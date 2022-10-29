@@ -3,7 +3,6 @@
         "selector": "node",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "ellipse",
                 "height": "51px",
                 "width": "51px",
@@ -25,7 +24,6 @@
         "selector": "edge",
         "style": {
             "css": {
-                "content": "data(label)",
                 "target-arrow-shape": "triangle-backcurve",
                 "width": "5px",
                 "text-border-color": "white",
@@ -48,7 +46,6 @@
         "label": "azure/aks/deployment/pod",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "height": "49px",
                 "width": "51px",
@@ -63,7 +60,6 @@
         "label": "listener",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "32px",
                 "height": "32px",
@@ -78,7 +74,6 @@
         "label": "azure/event-hub",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "68px",
                 "height": "61px",
@@ -93,7 +88,6 @@
         "label": "azure/aks/ingress",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "51px",
                 "height": "49px",
@@ -108,7 +102,6 @@
         "label": "azure/function",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "69px",
                 "height": "61px",
@@ -123,7 +116,6 @@
         "label": "azure/gateway/v1",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "65px",
                 "height": "65px",
@@ -138,7 +130,6 @@
         "label": "azure/redis",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "51px",
                 "height": "43px",
@@ -153,7 +144,6 @@
         "label": "azure/service-bus/queue",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "75px",
                 "height": "49px",
@@ -168,7 +158,6 @@
         "label": "azure/service-bus/topic",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "69px",
                 "height": "61px",
@@ -183,7 +172,6 @@
         "label": "azure/service-bus/topic/subscription",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "height": "64px",
                 "width": "64px",
@@ -198,7 +186,6 @@
         "label": "azure/sqlserver",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "height": "65px",
                 "width": "49px",
@@ -213,7 +200,6 @@
         "label": "azure/storage/container",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "65px",
                 "height": "53px",
@@ -228,7 +214,6 @@
         "label": "azure/storage/table",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "65px",
                 "height": "53px",
@@ -243,7 +228,6 @@
         "label": "azure/hub-iot",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "51px",
                 "height": "47px",
@@ -258,7 +242,6 @@
         "label": "azure/vm",
         "style": {
             "css": {
-                "content": "data(label)",
                 "shape": "rectangle",
                 "width": "51px",
                 "height": "47px",
@@ -273,7 +256,6 @@
         "label": "message-queue",
         "style": {
             "css": {
-                "content": "data(label)",
                 "height": "10px",
                 "width": "10px",
                 "background-color": "yellow",

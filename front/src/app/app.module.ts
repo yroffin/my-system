@@ -59,6 +59,7 @@ import { PreferenceComponent } from './components/preference/preference.componen
 import { PreferencesReducer } from './stats/preference.reducer';
 import { PanelModule } from 'primeng/panel';
 import { ChartModule } from 'primeng/chart';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { ChartModule } from 'primeng/chart';
     // Directive
     dropZoneDirective,
     ConverterComponent,
-    PreferenceComponent
+    PreferenceComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
