@@ -58,6 +58,7 @@ import { ConverterComponent } from './components/converter/converter.component';
 import { PreferenceComponent } from './components/preference/preference.component';
 import { PreferencesReducer } from './stats/preference.reducer';
 import { PanelModule } from 'primeng/panel';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -119,6 +120,7 @@ import { PanelModule } from 'primeng/panel';
     AvatarModule,
     CheckboxModule,
     PanelModule,
+    ChartModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer, preferences: PreferencesReducer })
   ],
   providers: [ConfirmationService, MessageService],
