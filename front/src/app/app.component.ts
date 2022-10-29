@@ -29,7 +29,8 @@ export class AppComponent {
                 icon: 'pi pi-fw pi-cog',
                 items: [
                     { label: 'Preferences', icon: 'pi pi-fw pi-database', routerLink: '/preferences' },
-                    { label: 'Images', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' }
+                    { label: 'Images', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' },
+                    { label: 'About', icon: 'pi pi-fw pi-at', routerLink: '/about' }
                 ]
             }
         ];

@@ -389,6 +389,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   nodeItem = [
     {
       label: 'Drop',
+      icon: 'pi pi-trash',
       command: () => {
         // Check if any selection
         if (!this.currentSelectedNode) {
@@ -401,13 +402,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     },
     {
       label: 'Clone',
+      icon: 'pi pi-clone',
       command: () => {
         this.onCloneNode(this.currentSelectedNode)
         this.onClearAnySelection()
       }
     },
     {
-      label: 'Info',
+      label: 'Edit',
+      icon: 'pi pi-book',
       command: () => {
         // Check if any selection
         if (!this.currentSelectedNode) {
@@ -440,12 +443,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     },
     {
       label: 'Documentation',
+      icon: 'pi pi-eye',
       command: () => {
         this.displayMarkdown = true;
       }
     },
     {
-      label: 'Link to another node',
+      label: 'Link to node',
+      icon: 'pi pi-upload',
       command: () => {
         this.edgehandles.start(this.currentSelectedNode)
         this.onClearAnySelection()
@@ -464,6 +469,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   edgeItem = [
     {
       label: 'Drop',
+      icon: 'pi pi-trash',
       command: () => {
         // Check if any selection
         if (!this.currentSelectedEdge) {
@@ -475,7 +481,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
       }
     },
     {
-      label: 'Info',
+      label: 'Edit',
+      icon: 'pi pi-book',
       command: () => {
         // Check if any selection
         if (!this.currentSelectedEdge) {
@@ -507,6 +514,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     },
     {
       label: 'Documentation',
+      icon: 'pi pi-eye',
       command: () => {
         this.displayMarkdown = true;
       }
@@ -523,15 +531,18 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
   coreItem = [
     {
       label: 'Group',
+      icon: 'pi pi-share-alt',
       items: [
         {
           label: 'Toggle',
+          icon: 'pi pi-undo',
           command: () => {
             this.onToggleGroupEnabled()
           }
         },
         {
           label: 'Statistics',
+          icon: 'pi pi-chart-pie',
           command: () => {
             // Build all group
             let allGroups = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
@@ -573,9 +584,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     },
     {
       label: 'Layout',
+      icon: 'pi pi-sitemap',
       items: [
         {
           label: 'Bread First Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.breadFirstLayoutOptions) {
               this.cy?.layout(this.breadFirstLayoutOptions).run()
@@ -585,6 +598,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         },
         {
           label: 'Concentric Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.concentricLayoutOptions) {
               this.cy?.layout(this.concentricLayoutOptions).run()
@@ -594,6 +608,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         },
         {
           label: 'Circle Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.circleLayoutOptions) {
               this.cy?.layout(this.circleLayoutOptions).run()
@@ -603,6 +618,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         },
         {
           label: 'Grid Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.gridLayoutOptions) {
               this.cy?.layout(this.gridLayoutOptions).run()
@@ -612,6 +628,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         },
         {
           label: 'Cose Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.coseLayoutOptions) {
               this.cy?.layout(this.coseLayoutOptions).run()
@@ -621,6 +638,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
         },
         {
           label: 'Dagre Layout',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             if (this.dagreLayoutOptions) {
               this.cy?.layout(this.dagreLayoutOptions).run()
@@ -632,56 +650,73 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     },
     {
       label: 'Zoom',
+      icon: 'pi pi-circle',
       items: [
         {
           label: '0.1',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.1)
           }
         },
         {
           label: '0.2',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.2)
           }
         },
         {
           label: '0.3',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.3)
           }
         },
         {
           label: '0.5',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.5)
           }
         },
         {
           label: '0.6',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.6)
           }
         },
         {
           label: '0.75',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(0.75)
           }
         },
         {
           label: '1',
+          icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.zoom(1)
+          }
+        },
+        {
+          label: 'fit',
+          icon: 'pi pi-ellipsis-h',
+          command: () => {
+            this.cy?.fit()
           }
         }
       ]
     },
     {
       label: 'Draw mode',
+      icon: 'pi pi-share-alt',
       items: [
         {
           label: 'Toggle',
+          icon: 'pi pi-undo',
           command: () => {
             this.onToggleDrawModeEnabled()
           }
@@ -1029,10 +1064,26 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
     let styleCss: Array<any> = []
     _.each(tags, (tag) => {
       if (!tag.label) {
-        styleCss.push({
+        let data = {
           selector: `${tag.selector}`,
           css: tag.style?.css ? tag.style?.css : {}
-        })
+        }
+        // If content is not defined add a default function
+        // Displaying label and group
+        // add a star when node has documentation
+        if (data.css.content === undefined) {
+          data.css.content = (element: any) => {
+            let cdata = element.data().cdata ? '*' : ''
+            if (element.data().label && element.data().group) {
+              return `${element.data().label} (${element.data().group}) ${cdata}`
+            }
+            if (element.data().label) {
+              return `${element.data().label} ${cdata}`
+            }
+            return ""
+          }
+        }
+        styleCss.push(data)
       } else {
         styleCss.push({
           selector: `${tag.selector}[tag = '${tag.label}']`,
