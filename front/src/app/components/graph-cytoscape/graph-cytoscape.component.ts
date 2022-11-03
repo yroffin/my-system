@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
@@ -53,7 +53,7 @@ declare var cytoscape: any
   templateUrl: './graph-cytoscape.component.html',
   styleUrls: ['./graph-cytoscape.component.css']
 })
-export class GraphCytoscapeComponent implements OnInit, AfterViewInit {
+export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;

@@ -60,6 +60,7 @@ import { PreferencesReducer } from './stats/preference.reducer';
 import { PanelModule } from 'primeng/panel';
 import { ChartModule } from 'primeng/chart';
 import { AboutComponent } from './components/about/about.component';
+import { ThreejsComponent } from './components/threejs/threejs.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { AboutComponent } from './components/about/about.component';
     dropZoneDirective,
     ConverterComponent,
     PreferenceComponent,
-    AboutComponent
+    AboutComponent,
+    ThreejsComponent
   ],
   imports: [
     BrowserModule,

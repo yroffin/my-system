@@ -22,6 +22,14 @@ export class AboutComponent implements OnInit {
 
   I used it on my own to design my system
 
+  ## November 2022
+
+  ### Features releases
+
+  - Add 3d view of graph
+
+  ### Bugs
+
   ## October 2022
 
   ### Features releases
