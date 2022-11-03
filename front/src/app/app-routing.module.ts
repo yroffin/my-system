@@ -6,11 +6,13 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
 import { ConverterComponent } from './components/converter/converter.component';
 import { PreferenceComponent } from './components/preference/preference.component';
 import { AboutComponent } from './components/about/about.component';
+import { ThreejsComponent } from './components/threejs/threejs.component';
 
 const routes: Routes = [
   { path: 'graphs', component: GraphSelectorComponent },
   { path: 'graphs/sigma/:label', component: GraphComponent },
   { path: 'graphs/cytoscape/:label', component: GraphCytoscapeComponent },
+  { path: 'graphs/threejs/:label', component: ThreejsComponent },
   { path: 'converters/images', component: ConverterComponent },
   { path: 'preferences', component: PreferenceComponent },
   { path: 'about', component: AboutComponent }

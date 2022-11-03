@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { MenuItem } from 'primeng/api';
-import { DatabaseService } from './services/database.service';
 
 @Component({
     selector: 'app-root',
@@ -8,11 +8,12 @@ import { DatabaseService } from './services/database.service';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title = 'front';
+    titlee = `MySystem 1.1.0a : ${new Date()}`;
     items: MenuItem[] = [];
 
-    constructor() {
-
+    constructor(
+        private title: Title) {
+        this.title.setTitle(`MySystem 1.1.0a`)
     }
 
     ngOnInit() {

@@ -125,7 +125,11 @@ export class GraphSelectorComponent implements OnInit {
     this.displayExport = true
   }
 
-  select(_graph: SysGraph): void {
+  selectCytoscape(_graph: SysGraph): void {
     this.router.navigate(['graphs', 'cytoscape', _graph.id])
+  }
+
+  selectThreejs(_graph: SysGraph): void {
+    this.router.navigate(['graphs', 'threejs', _graph.id])
   }
 }
