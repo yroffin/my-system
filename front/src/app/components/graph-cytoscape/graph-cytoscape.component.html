@@ -51,7 +51,7 @@
 </p-dialog>
 
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [style]="{width: '40vw', height: '37vw'}" [draggable]="true" [resizable]="false">
+    [maximizable]="true" [style]="{width: '40vw', height: '42vw'}" [draggable]="true" [resizable]="false">
 
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
         <div class="col-12">
@@ -67,6 +67,15 @@
                 <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
                         tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-link" pTooltip="Alias for"
+                        tooltipPosition="top"></i></span>
+                <p-dropdown scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
+                    [style]="{width: '100%'}" defaultLabel="Select an alias">
+                </p-dropdown>
             </div>
         </div>
         <div class="col-12">

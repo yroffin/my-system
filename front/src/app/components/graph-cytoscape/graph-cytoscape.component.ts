@@ -203,6 +203,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   searchNode = ""
   graphs: TreeNode[] = [];
+  allNodes: string[] = [];
+
   cols: any[] = [
     { field: 'label', header: 'Label' }
   ];
@@ -254,12 +256,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       if (graph.nodes) {
         this.graphs.push(this.buildChildNodes(graph))
 
+        // Capture all node id (for alias)
+        this.allNodes = _.map(graph.nodes, (node) => {
+          return this.base16.decode(node.id)
+        })
+        this.allNodes.unshift('');
+
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
               id: node.id,
               label: node.label,
               cdata: node.cdata,
+              alias: node.alias,
               group: node.group,
               tag: node.tag
             },
@@ -392,6 +401,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           id: this.currentSelectedNode.data().id,
           clone: this.base16.decode(clone),
           label: this.currentSelectedNode.data().label,
+          alias: this.currentSelectedNode.data().alias,
           tag: this.currentSelectedNode.data().tag,
           group: this.currentSelectedNode.data().group,
           tags: allTags
@@ -420,12 +430,30 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.edgehandles.start(this.currentSelectedNode)
         this.onClearAnySelection()
       }
+    },
+    {
+      label: 'Goto to alias',
+      icon: 'pi pi-arrow-right',
+      command: () => {
+        this.onSelectAlias(this.currentSelectedNode)
+      }
     }
   ];
+
+  // Go to alias
+  onSelectAlias(currentSelectedNode: any): void {
+    if (currentSelectedNode.data() && currentSelectedNode.data().alias) {
+      // selected node
+      let selected = this.cy?.$(`#${this.base16.encode(currentSelectedNode.data().alias)}`);
+      this.logger.info("Alias", currentSelectedNode.data().alias, selected)
+      this.cy?.center(selected)
+    }
+  }
 
   applyNodeUpdate(captureData: any): void {
     this.cy?.$(`#${captureData.id}`)
       .data('clone', this.base16.encode(captureData.clone))
+      .data('alias', captureData.alias)
       .data('group', captureData.group)
       .data('label', captureData.label)
       .data('tag', captureData.tag);
@@ -1077,8 +1105,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         if (data.css.content === undefined) {
           data.css.content = (element: any) => {
             let cdata = element.data().cdata ? '*' : ''
+            let alias = element.data().alias ? '...' : ''
             if (element.data().label && element.data().group) {
-              return `${element.data().label} (${element.data().group}) ${cdata}`
+              return `${element.data().label} (${element.data().group}) ${cdata} ${alias}`
             }
             if (element.data().label) {
               return `${element.data().label} ${cdata}`
@@ -1177,6 +1206,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           tag: node.data()['tag']
         }
         index[node.data()['id'] || ""] = _node
+        if (node.data()['alias']) {
+          _node.alias = node.data()['alias']
+        }
         if (node.data()['cdata']) {
           _node.cdata = node.data()['cdata']
         }

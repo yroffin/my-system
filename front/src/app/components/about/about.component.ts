@@ -26,6 +26,7 @@ export class AboutComponent implements OnInit {
 
   ### Features releases
 
+  - Add alias option on node
   - Modify inline documentation
   - Rework any node id on next save
   - Add 3d view of graph
