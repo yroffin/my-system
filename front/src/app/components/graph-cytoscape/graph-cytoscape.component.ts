@@ -423,9 +423,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }))
         allTags.unshift('');
 
+        // any clone
+        let clone = this.currentSelectedNode.data().clone ? this.currentSelectedNode.data().clone : this.currentSelectedNode.data().id
+
         // Capture data will be used to apply update
         this.captureData = {
           id: this.currentSelectedNode.data().id,
+          clone: this.base16.decode(clone),
           label: this.currentSelectedNode.data().label,
           tag: this.currentSelectedNode.data().tag,
           group: this.currentSelectedNode.data().group,
@@ -460,6 +464,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   applyNodeUpdate(captureData: any): void {
     this.cy?.$(`#${captureData.id}`)
+      .data('clone', this.base16.encode(captureData.clone))
       .data('group', captureData.group)
       .data('label', captureData.label)
       .data('tag', captureData.tag);
@@ -1024,7 +1029,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   onCloneNode(nodes: any): void {
     if (nodes.length === 1 && nodes[0].isNode()) {
       this.cy?.add(_.map(nodes, (node) => {
-        let id = `${this.base16.decode(node.data()?.id)}@${uuidv4()}`
+        // Ignore the @ (due to other clone ... but not only)
+        let idwithout = this.base16.decode(node.data()?.id).split('@')[0]
+        let id = `${idwithout}@${uuidv4()}`
         let _node: any = {
           data: {
             id: this.base16.encode(id),
@@ -1163,7 +1170,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       label: _label,
       nodes: _.map(this.cy?.nodes(), (node) => {
         let _node: SysNode = {
-          id: node.data()['id'] || "",
+          // Clone data can override the original id
+          id: node.data()['clone'] || node.data()['id'] || "",
           label: node.data()['label'] || "",
           x: node.position().x || 0,
           y: node.position().y || 0,
