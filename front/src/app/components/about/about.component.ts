@@ -26,9 +26,13 @@ export class AboutComponent implements OnInit {
 
   ### Features releases
 
+  - Modify inline documentation
+  - Rework any node id on next save
   - Add 3d view of graph
 
   ### Bugs
+  
+  - Rewrite with a new GUID cloned node (without infinte @.. append)
 
   ## October 2022
 
