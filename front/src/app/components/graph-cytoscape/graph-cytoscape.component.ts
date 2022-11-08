@@ -1110,7 +1110,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
               return `${element.data().label} (${element.data().group}) ${cdata} ${alias}`
             }
             if (element.data().label) {
-              return `${element.data().label} ${cdata}`
+              return `${element.data().label} ${cdata} ${alias}`
             }
             return ""
           }
