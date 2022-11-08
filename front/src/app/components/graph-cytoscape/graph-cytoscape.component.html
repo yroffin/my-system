@@ -44,36 +44,58 @@
     </div>
 </div>
 
-<p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true" [breakpoints]="{'960px': '50vw'}"
-    [style]="{width: '30vw', height: '50vw'}" [draggable]="true" [resizable]="false">
+<p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true"
+    [style]="{width: '35vw', height: '55vw'}" [draggable]="true" [resizable]="false">
     <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
         (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
 </p-dialog>
 
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [style]="{width: '35vw', height: '27vw'}" [draggable]="true" [resizable]="false">
+    [maximizable]="true" [style]="{width: '40vw', height: '42vw'}" [draggable]="true" [resizable]="false">
 
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
+                <span class="p-inputgroup-addon"><i class="pi pi-bookmark"
+                        pTooltip="Internal ID to override current ID on next save or diagram export"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
+                        tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
-            <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                defaultLabel="Select a tag">
-            </p-dropdown>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-link" pTooltip="Alias for"
+                        tooltipPosition="top"></i></span>
+                <p-dropdown scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
+                    [style]="{width: '100%'}" defaultLabel="Select an alias">
+                </p-dropdown>
+            </div>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-clone"></i></span>
+                <span class="p-inputgroup-addon"><i class="pi pi-tags" pTooltip="Tags" tooltipPosition="top"></i></span>
+                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                    [style]="{width: '100%'}" defaultLabel="Select a tag">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-clone" pTooltip="Group"
+                        tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.group" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon">
+                <span class="p-inputgroup-addon" pTooltip="Locked item ?" tooltipPosition="top">
                     <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
                         (onChange)="handleChangeLock($event)"></p-checkbox>
                 </span>
@@ -88,30 +110,35 @@
 </p-dialog>
 
 <p-dialog header="Current edge" [(visible)]="displaySelectionEdge" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [breakpoints]="{'960px': '50vw'}" [style]="{width: '35vw', height: '25vw'}" [draggable]="true"
-    [resizable]="false">
+    [maximizable]="true" [style]="{width: '40vw', height: '32vw'}" [draggable]="true" [resizable]="false">
     <div *ngIf="currentSelectedEdge" class="grid p-fluid">
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
+                        tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
             </div>
         </div>
         <div class="col-12">
-            <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                defaultLabel="Select a tag">
-            </p-dropdown>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tags" pTooltip="Tags" tooltipPosition="top"></i></span>
+                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                    [style]="{width: '100%'}" defaultLabel="Select a tag">
+                </p-dropdown>
+            </div>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-cog"></i></span>
+                <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Source"
+                        tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="currentSelectedEdge.data()._source" pInputText placeholder=""
                     readonly="true">
             </div>
         </div>
         <div class="col-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-cog"></i></span>
+                <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Target"
+                        tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="currentSelectedEdge.data()._target" pInputText placeholder=""
                     readonly="true">
             </div>
@@ -124,8 +151,28 @@
 </p-dialog>
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-    <div [innerHTML]="selectElementCdata"></div>
+    [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
+    <p-tabView>
+        <p-tabPanel header="Preview">
+            <div [innerHTML]="captureData.selectElementCdata"></div>
+        </p-tabPanel>
+        <p-tabPanel header="Edit">
+            <textarea [style]="{width: '100%', height: '28vw'}" pInputTextarea
+                [(ngModel)]="captureData.selectElementRawCdata"></textarea>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="previewNewCData(captureData)" label="Preview" styleClass="p-button-text">
+        </p-button>
+        <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
+    [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <p-chart type="polarArea" [data]="dataGroupStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
+    </p-chart>
 </p-dialog>
 
 <p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
@@ -142,24 +189,4 @@
 <p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
     [(visible)]="displayExportPng">
     <img #myPng src=""><img>
-</p-dialog>
-
-<p-dialog [modal]="true" header="Add new node" [(visible)]="displayAddNewNode" [style]="{width:'70em'}">
-    <h5>Tag</h5>
-    <p-dropdown [options]="captureData.tags" [(ngModel)]="captureData.tag" defaultLabel="Select a tag"
-        optionLabel="name"></p-dropdown>
-    <h5>Id</h5>
-    <span class="p-float-label">
-        <input id="float-input" [(ngModel)]="captureData.id" type="text" pInputText>
-        <label for="float-input">Id</label>
-    </span>
-    <h5>Label</h5>
-    <span class="p-float-label">
-        <input id="float-input" [(ngModel)]="captureData.label" type="text" pInputText>
-        <label for="float-input">Label</label>
-    </span>
-    <ng-template pTemplate="footer">
-        <p-button (click)="displayAddNewNode=false" label="Cancel" styleClass="p-button-text"></p-button>
-        <p-button (click)="createNewNode()" label="Create" styleClass="p-button-text"></p-button>
-    </ng-template>
 </p-dialog>

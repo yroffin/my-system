@@ -60,6 +60,9 @@ export class GraphService {
             if (node.cdata) {
                 output.cdata = node.cdata
             }
+            if (node.alias) {
+                output.alias = node.alias
+            }
             return output
         })
     }
@@ -81,6 +84,7 @@ export class GraphService {
     }
 
     toGexf(graph?: SysGraph): Array<string> {
+        this.logger.info("alias", graph)
         let xml = [];
         xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
         xml.push(`<gexf xmlns="http://gexf.net/1.2" version="1.2">`);
@@ -95,17 +99,21 @@ export class GraphService {
             if (node.cdata) {
                 endtag = `>`
             }
+            // Alias
+            if (node.alias === undefined || node.alias === null) {
+                node.alias = ""
+            }
             if (node.tag === null) {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${parent}" label="${node.label}" alias="${node.alias}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" alias="${node.alias}" group="${node.group}" x="${node.x}" y="${node.y}"${endtag}`);
                 }
             } else {
                 if (node.parent) {
-                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" parent="${node.parent}" label="${node.label}" alias="${node.alias}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 } else {
-                    xml.push(`<node id="${node.uid}" label="${node.label}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
+                    xml.push(`<node id="${node.uid}" label="${node.label}" alias="${node.alias}" group="${node.group}" x="${node.x}" y="${node.y}" tag="${node.tag}"${endtag}`);
                 }
             }
             if (node.cdata) {
@@ -225,6 +233,8 @@ export class GraphService {
                                 y: parseFloat(node['$'].y),
                                 // delete first \n and last \n
                                 cdata: this.filterCDATA(node['_']),
+                                // Alias
+                                alias: node['$'].alias ? node['$'].alias : "",
                                 label: node['$'].label ? node['$'].label : "",
                                 group: node['$'].group ? node['$'].group : "",
                                 tag: node['$'].tag ? node['$'].tag : ""

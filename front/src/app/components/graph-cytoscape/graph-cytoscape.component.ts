@@ -156,43 +156,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       }
     },
     {
-      label: 'Add node',
-      tooltipOptions: {
-        tooltipLabel: "Add node",
-        tooltipPosition: 'right',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/node.png",
-      command: () => {
-        this.captureData = {
-          id: _.uniqueId("default"),
-          label: "default",
-          cdata: "",
-          tag: "",
-          group: "",
-          edge: "",
-          isTarget: false,
-          tags: _.uniqBy(_.map(this.cy?.nodes(), (node) => {
-            return {
-              name: node.data().tag,
-              code: node.data().id
-            }
-          }), "name"),
-          edges: _.sortedUniqBy(_.map(this.cy?.nodes(), (node) => {
-            return {
-              name: this.base16.decode(node.data().id),
-              code: node.data().id
-            }
-          }), (node) => {
-            return node.name
-          }),
-          parent: undefined
-        }
-        this.displayAddNewNode = true
-      }
-    },
-    {
       id: "style",
       label: 'Display style',
       tooltipOptions: {
@@ -208,7 +171,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   ]
 
-  selectElementCdata: string | undefined
   dockBottomItems: MenuItem[] = [
   ];
 
@@ -237,11 +199,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   cy?: Core
   boxSelectionEnabled?: boolean
   displayExportPng = false
-  displayAddNewNode = false
   displayTool = true
 
   searchNode = ""
   graphs: TreeNode[] = [];
+  allNodes: string[] = [];
+
   cols: any[] = [
     { field: 'label', header: 'Label' }
   ];
@@ -293,12 +256,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       if (graph.nodes) {
         this.graphs.push(this.buildChildNodes(graph))
 
+        // Capture all node id (for alias)
+        this.allNodes = _.map(graph.nodes, (node) => {
+          return this.base16.decode(node.id)
+        })
+        this.allNodes.unshift('');
+
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
               id: node.id,
               label: node.label,
               cdata: node.cdata,
+              alias: node.alias,
               group: node.group,
               tag: node.tag
             },
@@ -423,10 +393,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }))
         allTags.unshift('');
 
+        // any clone
+        let clone = this.currentSelectedNode.data().clone ? this.currentSelectedNode.data().clone : this.currentSelectedNode.data().id
+
         // Capture data will be used to apply update
         this.captureData = {
           id: this.currentSelectedNode.data().id,
+          clone: this.base16.decode(clone),
           label: this.currentSelectedNode.data().label,
+          alias: this.currentSelectedNode.data().alias,
           tag: this.currentSelectedNode.data().tag,
           group: this.currentSelectedNode.data().group,
           tags: allTags
@@ -455,11 +430,30 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.edgehandles.start(this.currentSelectedNode)
         this.onClearAnySelection()
       }
+    },
+    {
+      label: 'Goto to alias',
+      icon: 'pi pi-arrow-right',
+      command: () => {
+        this.onSelectAlias(this.currentSelectedNode)
+      }
     }
   ];
 
+  // Go to alias
+  onSelectAlias(currentSelectedNode: any): void {
+    if (currentSelectedNode.data() && currentSelectedNode.data().alias) {
+      // selected node
+      let selected = this.cy?.$(`#${this.base16.encode(currentSelectedNode.data().alias)}`);
+      this.logger.info("Alias", currentSelectedNode.data().alias, selected)
+      this.cy?.center(selected)
+    }
+  }
+
   applyNodeUpdate(captureData: any): void {
     this.cy?.$(`#${captureData.id}`)
+      .data('clone', this.base16.encode(captureData.clone))
+      .data('alias', captureData.alias)
       .data('group', captureData.group)
       .data('label', captureData.label)
       .data('tag', captureData.tag);
@@ -529,6 +523,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   coreItem = [
+    {
+      label: 'Add new node',
+      icon: 'pi pi-plus',
+      command: () => {
+        this.createNewNode()
+      }
+    },
     {
       label: 'Group',
       icon: 'pi pi-share-alt',
@@ -739,14 +740,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   captureData: any = {}
   createNewNode(): void {
-    this.displayAddNewNode = false
-
     this.cy?.add([{
       data: {
-        id: this.base16.encode(this.captureData.id),
-        label: this.captureData.label,
-        cdata: this.captureData.cdata,
-        tag: this.captureData.tag.name
+        id: this.base16.encode(`default@${uuidv4()}`),
+        label: "default",
+        cdata: "TODO ...",
+        tag: ""
       },
       position: {
         x: 0,
@@ -996,12 +995,21 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.messageService.add({
       severity: 'info', summary: `Select node ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
     });
-    this.selectElementCdata = ""
     this.currentSelectedEdge = undefined
     this.currentSelectedNode = event.target[0]
     // Any documentation
     if (this.currentSelectedNode.data().cdata) {
-      this.selectElementCdata = md.render(this.currentSelectedNode.data().cdata)
+      this.captureData = {
+        selectElementId: this.currentSelectedNode.data().id,
+        selectElementCdata: md.render(this.currentSelectedNode.data().cdata),
+        selectElementRawCdata: this.currentSelectedNode.data().cdata
+      }
+    } else {
+      this.captureData = {
+        selectElementId: this.currentSelectedNode.data().id,
+        selectElementCdata: "",
+        selectElementRawCdata: this.currentSelectedNode.data().cdata
+      }
     }
     this._lockedElement = this.currentSelectedNode.locked()
   }
@@ -1012,23 +1020,46 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.messageService.add({
       severity: 'info', summary: `Select edge ${event.target.data().label}`, detail: `${this.base16.decode(event.target.id())}`
     });
-    this.selectElementCdata = ""
     this.currentSelectedNode = undefined
     this.currentSelectedEdge = event.target[0]
     // Any documentation
     if (this.currentSelectedEdge.data().cdata) {
-      this.selectElementCdata = md.render(this.currentSelectedEdge.data().cdata)
+      this.captureData = {
+        selectElementId: this.currentSelectedEdge.data().id,
+        selectElementCdata: md.render(this.currentSelectedEdge.data().cdata),
+        selectElementRawCdata: this.currentSelectedEdge.data().cdata
+      }
+    } else {
+      this.captureData = {
+        selectElementId: this.currentSelectedEdge.data().id,
+        selectElementCdata: "",
+        selectElementRawCdata: this.currentSelectedEdge.data().cdata
+      }
     }
+  }
+
+  previewNewCData(captureData: any): void {
+    captureData.selectElementCdata = md.render(captureData.selectElementRawCdata)
+  }
+
+  applyNewCData(captureData: any): void {
+    this.logger.info("Apply new data on id", this.base16.decode(captureData.selectElementId))
+    this.cy?.$(`#${captureData.selectElementId}`)
+      .data('cdata', captureData.selectElementRawCdata)
+    this.displayMarkdown = false
   }
 
   onCloneNode(nodes: any): void {
     if (nodes.length === 1 && nodes[0].isNode()) {
       this.cy?.add(_.map(nodes, (node) => {
-        let id = `${this.base16.decode(node.data()?.id)}@${uuidv4()}`
+        // Ignore the @ (due to other clone ... but not only)
+        let idwithout = this.base16.decode(node.data()?.id).split('@')[0]
+        let id = `${idwithout}@${uuidv4()}`
         let _node: any = {
           data: {
             id: this.base16.encode(id),
             label: node.data()?.label,
+            cdata: "TODO ...",
             group: "",
             tag: node.data()?.tag
           },
@@ -1074,8 +1105,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         if (data.css.content === undefined) {
           data.css.content = (element: any) => {
             let cdata = element.data().cdata ? '*' : ''
+            let alias = element.data().alias ? '...' : ''
             if (element.data().label && element.data().group) {
-              return `${element.data().label} (${element.data().group}) ${cdata}`
+              return `${element.data().label} (${element.data().group}) ${cdata} ${alias}`
             }
             if (element.data().label) {
               return `${element.data().label} ${cdata}`
@@ -1163,7 +1195,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       label: _label,
       nodes: _.map(this.cy?.nodes(), (node) => {
         let _node: SysNode = {
-          id: node.data()['id'] || "",
+          // Clone data can override the original id
+          id: node.data()['clone'] || node.data()['id'] || "",
           label: node.data()['label'] || "",
           x: node.position().x || 0,
           y: node.position().y || 0,
@@ -1173,6 +1206,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           tag: node.data()['tag']
         }
         index[node.data()['id'] || ""] = _node
+        if (node.data()['alias']) {
+          _node.alias = node.data()['alias']
+        }
         if (node.data()['cdata']) {
           _node.cdata = node.data()['cdata']
         }
