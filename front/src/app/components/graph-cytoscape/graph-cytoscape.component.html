@@ -51,8 +51,7 @@
 </p-dialog>
 
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [style]="{width: '40vw', height: '42vw'}" [draggable]="true" [resizable]="false">
-
+    [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
         <div class="col-12">
             <div class="p-inputgroup">
@@ -167,12 +166,6 @@
         <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text">
         </p-button>
     </ng-template>
-</p-dialog>
-
-<p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
-    [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
-    <p-chart type="polarArea" [data]="dataGroupStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
-    </p-chart>
 </p-dialog>
 
 <p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
