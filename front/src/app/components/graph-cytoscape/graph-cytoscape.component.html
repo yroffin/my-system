@@ -142,8 +142,22 @@
 </p-dialog>
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-    <div [innerHTML]="selectElementCdata"></div>
+    [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
+    <p-tabView>
+        <p-tabPanel header="Preview">
+            <div [innerHTML]="captureData.selectElementCdata"></div>
+        </p-tabPanel>
+        <p-tabPanel header="Edit">
+            <textarea [style]="{width: '100%', height: '28vw'}" pInputTextarea
+                [(ngModel)]="captureData.selectElementRawCdata"></textarea>
+        </p-tabPanel>
+    </p-tabView>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="previewNewCData(captureData)" label="Preview" styleClass="p-button-text">
+        </p-button>
+        <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
 </p-dialog>
 
 <p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
@@ -160,24 +174,4 @@
 <p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
     [(visible)]="displayExportPng">
     <img #myPng src=""><img>
-</p-dialog>
-
-<p-dialog [modal]="true" header="Add new node" [(visible)]="displayAddNewNode" [style]="{width:'70em'}">
-    <h5>Tag</h5>
-    <p-dropdown [options]="captureData.tags" [(ngModel)]="captureData.tag" defaultLabel="Select a tag"
-        optionLabel="name"></p-dropdown>
-    <h5>Id</h5>
-    <span class="p-float-label">
-        <input id="float-input" [(ngModel)]="captureData.id" type="text" pInputText>
-        <label for="float-input">Id</label>
-    </span>
-    <h5>Label</h5>
-    <span class="p-float-label">
-        <input id="float-input" [(ngModel)]="captureData.label" type="text" pInputText>
-        <label for="float-input">Label</label>
-    </span>
-    <ng-template pTemplate="footer">
-        <p-button (click)="displayAddNewNode=false" label="Cancel" styleClass="p-button-text"></p-button>
-        <p-button (click)="createNewNode()" label="Create" styleClass="p-button-text"></p-button>
-    </ng-template>
 </p-dialog>
