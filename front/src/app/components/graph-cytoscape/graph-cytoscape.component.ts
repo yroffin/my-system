@@ -203,7 +203,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   searchNode = ""
   graphs: TreeNode[] = [];
-  allNodes: string[] = [];
+  allNodes: any[] = [];
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -258,7 +258,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Capture all node id (for alias)
         this.allNodes = _.map(graph.nodes, (node) => {
-          return this.base16.decode(node.id)
+          return {
+            label: this.base16.decode(node.id),
+            value: this.base16.decode(node.id)
+          }
         })
         this.allNodes.unshift('');
 
@@ -389,9 +392,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Retrieve all tags
         let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
-          return tag.label
+          return {
+            label: tag.label,
+            value: tag.label
+          }
         }))
-        allTags.unshift('');
+        allTags.unshift({
+          label: '',
+          value: ''
+        });
 
         // any clone
         let clone = this.currentSelectedNode.data().clone ? this.currentSelectedNode.data().clone : this.currentSelectedNode.data().id
@@ -494,10 +503,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
-          return tag.label
+        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+          return {
+            label: tag.label,
+            value: tag.label
+          }
         }))
-        allTags.unshift('');
+        allTags.unshift({
+          label: '',
+          value: ''
+        });
 
         // Capture data will be used to apply update
         this.captureData = {

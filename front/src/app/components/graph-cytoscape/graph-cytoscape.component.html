@@ -69,19 +69,18 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-link" pTooltip="Alias for"
-                        tooltipPosition="top"></i></span>
-                <p-dropdown scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
-                    [style]="{width: '100%'}" defaultLabel="Select an alias">
+            <div pTooltip="Alias" tooltipPosition="top">
+                <p-dropdown class="p-col" scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
+                    [style]="{width: '100%'}" defaultLabel="Select an alias" [filter]="true" [showClear]="true"
+                    filterBy="label">
                 </p-dropdown>
             </div>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-tags" pTooltip="Tags" tooltipPosition="top"></i></span>
+            <div pTooltip="Tags" tooltipPosition="top">
                 <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                    [style]="{width: '100%'}" defaultLabel="Select a tag">
+                    [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
+                    filterBy="label">
                 </p-dropdown>
             </div>
         </div>
@@ -119,10 +118,10 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-tags" pTooltip="Tags" tooltipPosition="top"></i></span>
+            <div pTooltip="Tags" tooltipPosition="top">
                 <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                    [style]="{width: '100%'}" defaultLabel="Select a tag">
+                    [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
+                    filterBy="label">
                 </p-dropdown>
             </div>
         </div>
