@@ -1188,6 +1188,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  resolveClonedId(_id: string): string | undefined {
+    let node = this.cy?.$(`#${_id}`)[0]
+    return node?.data()['clone'] || node?.data()['id'] || undefined
+  }
+
   toSysGraph(_id: string, _label: string): SysGraph {
     let index: any = {}
     return {
@@ -1218,8 +1223,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         return _node
       }),
       edges: _.map(this.cy?.edges(), (edge) => {
-        let source = edge.data().source
-        let target = edge.data().target
+        // If one node is an edited clone pay attention du take the cloned id
+        let source = this.resolveClonedId(edge.data().source)
+        let target = this.resolveClonedId(edge.data().target)
+        if (source === undefined || target === undefined) {
+          this.logger.error("Internal error while resolving source and target")
+          throw new String("Internal error while resolving source and target")
+        }
         let _edge: SysEdge = {
           id: edge.data()['id'] || "",
           label: edge.data()['label'] || "",
