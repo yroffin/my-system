@@ -57,6 +57,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;
+  displayAlias: boolean = false;
 
   displayFinder: boolean = false;
   displayMarkdown: boolean = false;
@@ -204,6 +205,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   searchNode = ""
   graphs: TreeNode[] = [];
   allNodes: any[] = [];
+  allAlias: any[] = [];
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -263,7 +265,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             value: this.base16.decode(node.id)
           }
         })
-        this.allNodes.unshift('');
+        this.allNodes.unshift({
+          label: '',
+          value: ''
+        });
 
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
@@ -556,6 +561,41 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       }
     },
     {
+      label: 'Show alias',
+      icon: 'pi pi-angle-double-right',
+      command: () => {
+        // Scan all nodes
+        this.allAlias = _.filter(_.map(this.cy?.elements('node'), (node) => {
+          return {
+            alias: node.data()['alias'],
+            label: node.data()['label'],
+            id: this.base16.decode(node.data()['id']),
+          }
+        }), (alias) => {
+          return alias.alias
+        });
+
+        // Find target node
+        _.each(this.allAlias, (current) => {
+          let target = this.cy?.$(`#${this.base16.encode(current.alias)}`)
+          if (target) {
+            current.target = {
+              id: current.alias,
+              label: target[0].data()['label']
+            }
+          }
+        });
+
+        this.allAlias = _.sortBy(this.allAlias, (current) => {
+          return current.alias
+        })
+
+        this.logger.info(this.allAlias)
+
+        this.displayAlias = true
+      }
+    },
+    {
       label: 'Group',
       icon: 'pi pi-share-alt',
       items: [
@@ -750,6 +790,15 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       ]
     }
   ];
+
+  // Go to alias
+  onSelectCurrentAlias(_id: any): void {
+    // selected node
+    let selected = this.cy?.$(`#${this.base16.encode(_id)}`);
+    this.logger.info("Alias", _id)
+    this.cy?.center(selected)
+    this.displayAlias = false
+  }
 
   ngOnDestroy() {
     if (this.subscriptions) {

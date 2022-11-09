@@ -8,12 +8,11 @@ import { MenuItem } from 'primeng/api';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    titlee = `MySystem 1.1.0a : ${new Date()}`;
     items: MenuItem[] = [];
 
     constructor(
         private title: Title) {
-        this.title.setTitle(`MySystem 1.1.0a`)
+        this.title.setTitle(`MySystem 1.1.0b`)
     }
 
     ngOnInit() {
