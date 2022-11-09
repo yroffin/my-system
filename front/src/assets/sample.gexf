@@ -561,4 +561,4 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <edge id="azure/vm/vm-001:listener" source="azure/vm/vm-001" target="listener" label="" tag="" />
 </edges>
 </graph>
-</graphml>
+</gexf>
