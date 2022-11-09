@@ -451,6 +451,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   applyNodeUpdate(captureData: any): void {
+    // Clone target must be unique
+    if (captureData.clone !== undefined && captureData.clone != "") {
+      let found = this.cy?.$(`#${this.base16.encode(captureData.clone)}`)
+      if (captureData.id !== this.base16.encode(captureData.clone) && found && found.length > 0) {
+        this.messageService.add({
+          severity: 'error', summary: 'While checking unicity of', detail: captureData.clone
+        });
+        return
+      }
+    }
     this.cy?.$(`#${captureData.id}`)
       .data('clone', this.base16.encode(captureData.clone))
       .data('alias', captureData.alias)

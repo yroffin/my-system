@@ -6,7 +6,7 @@
 </meta>
 <graph mode="static" defaultedgetype="directed">
 <nodes>
-<node id="all/group/group-001" label="sample-ingress" group="sample-002" x="340" y="-100" tag="azure/aks/ingress">
+<node id="all/group/group-001" label="sample-ingress" alias="" group="sample-002" x="340" y="-100" tag="azure/aks/ingress">
 <![CDATA[
 ---
 __Advertisement :)__
@@ -255,34 +255,37 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 ]]>
 </node>
-<node id="all/group/group-002" label="sample-functions-003" group="" x="460" y="820" tag="azure/function" />
-<node id="all/group/group-002@73383f9c-4657-4691-af6f-c9500f11682d" label="database 002" group="" x="460" y="660" tag="azure/sqlserver" />
-<node id="azure/aks/deployment/pod/sample-api" label="sample-pod-001" group="sample-001" x="180" y="300" tag="azure/aks/deployment/pod" />
-<node id="azure/aks/deployment/pod/sample-api/listener" label="http rest on port 8080" group="application A" x="180" y="100" tag="listener" />
-<node id="azure/aks/ingress/sample-ingress" label="sample-ingress" group="sample-002" x="60" y="-100" tag="azure/aks/ingress" />
-<node id="azure/event-hub/name" label="event-hub" group="sample-003" x="1100" y="-100" tag="azure/event-hub" />
-<node id="azure/function/function-001" label="store object A and object B" group="all/group/group-002" x="180" y="1180" tag="azure/function" />
-<node id="azure/function/function-002" label="transform object C" group="all/group/group-002" x="740" y="1180" tag="azure/function" />
-<node id="azure/gateway/v1/gateway-001" label="sample-ingress" group="sample-002" x="60" y="-340" tag="azure/gateway/v1" />
-<node id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" label="sample-ingress" group="sample-002" x="340" y="-340" tag="azure/gateway/v1" />
-<node id="azure/redis/redis-001" label="sample-redis-001" group="sample-001" x="-100" y="460" tag="azure/redis" />
-<node id="azure/service-bus/queue/sample-queue" label="object C" group="group002" x="460" y="1180" tag="azure/service-bus/queue" />
-<node id="azure/service-bus/topic/sample-topic-001" label="object A and object B" group="" x="180" y="660" tag="azure/service-bus/topic" />
-<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" group="group009" x="100" y="900" tag="azure/service-bus/topic/subscription" />
-<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" group="" x="260" y="860" tag="azure/service-bus/topic/subscription" />
-<node id="azure/service-bus/topic/sample-topic-002" label="sample-topic-002" group="" x="660" y="460" tag="azure/service-bus/topic" />
-<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" group="" x="860" y="940" tag="azure/service-bus/topic/subscription" />
-<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" group="group005" x="660" y="900" tag="azure/service-bus/topic/subscription" />
-<node id="azure/sqlserver/database-001" label="database-001" group="sample-001" x="-100" y="180" tag="azure/sqlserver" />
-<node id="azure/storage/container/table-001" label="sample-pod-002" group="sample-003" x="980" y="100" tag="azure/aks/deployment/pod" />
-<node id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" label="Hub IOT" group="sample-003" x="900" y="-60" tag="azure/hub-iot" />
-<node id="azure/storage/table/table-001" label="container for data 001" group="sample-001" x="-140" y="300" tag="azure/storage/container" />
-<node id="azure/vm/vm-001" label="sample-vm-001" group="group001" x="980" y="1220" tag="azure/vm" />
-<node id="listener" label="http rest port 8080" group="sample-003" x="980" y="260" tag="listener" />
+<node id="all/group/group-002" label="sample-functions-003" alias="" group="" x="460" y="820" tag="azure/function" />
+<node id="all/group/group-002@instane2" label="database 002" alias="" group="" x="460" y="660" tag="azure/sqlserver" />
+<node id="azure/aks/deployment/pod/sample-api" label="sample-pod-001" alias="" group="sample-001" x="180" y="300" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/deployment/pod/sample-api/listener" label="http rest on port 8080" alias="" group="application A" x="180" y="100" tag="listener" />
+<node id="azure/aks/deployment/pod/sample-api/listener@bis" label="sample-pod-002" alias="" group="sample-003" x="980" y="100" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/ingress/sample-ingress" label="sample-ingress" alias="" group="sample-002" x="60" y="-100" tag="azure/aks/ingress" />
+<node id="azure/event-hub/name" label="event-hub" alias="" group="sample-003" x="1100" y="-100" tag="azure/event-hub" />
+<node id="azure/function/function-001" label="store object A and object B" alias="" group="all/group/group-002" x="180" y="1180" tag="azure/function" />
+<node id="azure/function/function-002" label="transform object C" alias="" group="all/group/group-002" x="740" y="1180" tag="azure/function" />
+<node id="azure/gateway/v1/gateway-001" label="sample-ingress" alias="" group="sample-002" x="60" y="-340" tag="azure/gateway/v1" />
+<node id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" label="sample-ingress" alias="" group="sample-002" x="340" y="-340" tag="azure/gateway/v1" />
+<node id="azure/redis/redis-001" label="sample-redis-001" alias="" group="sample-001" x="-100" y="460" tag="azure/redis" />
+<node id="azure/service-bus/queue/sample-queue" label="object C" alias="" group="group002" x="460" y="1180" tag="azure/service-bus/queue" />
+<node id="azure/service-bus/topic/sample-topic-001" label="object A and object B" alias="" group="" x="180" y="660" tag="azure/service-bus/topic" />
+<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" alias="" group="group009" x="100" y="900" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" alias="" group="" x="260" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002" label="sample-topic-002" alias="" group="" x="660" y="460" tag="azure/service-bus/topic" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" alias="" group="" x="860" y="940" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" alias="" group="group005" x="660" y="900" tag="azure/service-bus/topic/subscription" />
+<node id="azure/sqlserver/database-001" label="database-001" alias="" group="sample-001" x="-100" y="180" tag="azure/sqlserver" />
+<node id="azure/storage/container/table-001@xxx" label="Hub IOT" alias="" group="sample-003" x="900" y="-60" tag="azure/hub-iot" />
+<node id="azure/storage/table/table-001" label="container for data 001" alias="" group="sample-001" x="-140" y="300" tag="azure/storage/container" />
+<node id="azure/vm/vm-001" label="sample-vm-001" alias="" group="group001" x="980" y="1220" tag="azure/vm" />
+<node id="listener" label="http rest port 8080" alias="" group="sample-003" x="980" y="260" tag="listener" />
 </nodes>
 <edges>
 <edge id="all/group/group-001:azure/aks/deployment/pod/sample-api/listener" source="all/group/group-001" target="azure/aks/deployment/pod/sample-api/listener" label="/api/v2/produce" tag="" />
-<edge id="all/group/group-002:all/group/group-002@73383f9c-4657-4691-af6f-c9500f11682d" source="all/group/group-002" target="all/group/group-002@73383f9c-4657-4691-af6f-c9500f11682d" label="" />
+<edge id="all/group/group-002:all/group/group-002@instane2" source="all/group/group-002" target="all/group/group-002@instane2" label="" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api/listener@bis:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api/listener@bis" target="azure/aks/deployment/pod/sample-api/listener" label="consume" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api/listener@bis:azure/service-bus/topic/sample-topic-002" source="azure/aks/deployment/pod/sample-api/listener@bis" target="azure/service-bus/topic/sample-topic-002" label="write" tag="" />
+<edge id="azure/aks/deployment/pod/sample-api/listener@bis:listener" source="azure/aks/deployment/pod/sample-api/listener@bis" target="listener" label="provide" tag="" />
 <edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" tag="" />
 <edge id="azure/aks/deployment/pod/sample-api:azure/redis/redis-001" source="azure/aks/deployment/pod/sample-api" target="azure/redis/redis-001" label="redis" tag="" />
 <edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-001" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-001" label="send" tag="" />
@@ -290,7 +293,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <edge id="azure/aks/deployment/pod/sample-api:azure/sqlserver/database-001" source="azure/aks/deployment/pod/sample-api" target="azure/sqlserver/database-001" label="sql" tag="" />
 <edge id="azure/aks/deployment/pod/sample-api:azure/storage/table/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/table/table-001" label="store" tag="" />
 <edge id="azure/aks/ingress/sample-ingress:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/ingress/sample-ingress" target="azure/aks/deployment/pod/sample-api/listener" label="/api/v1/produce" tag="" />
-<edge id="azure/event-hub/name:azure/storage/container/table-001" source="azure/event-hub/name" target="azure/storage/container/table-001" label="" />
+<edge id="azure/event-hub/name:azure/aks/deployment/pod/sample-api/listener@bis" source="azure/event-hub/name" target="azure/aks/deployment/pod/sample-api/listener@bis" label="" tag="" />
 <edge id="azure/function/function-001:azure/service-bus/queue/sample-queue" source="azure/function/function-001" target="azure/service-bus/queue/sample-queue" label="write" tag="message-queue" />
 <edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh" tag="">
 <![CDATA[
@@ -545,20 +548,17 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 <edge id="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09:all/group/group-001" source="azure/gateway/v1/gateway-001@420eac33-f9ec-41eb-b042-81134e31ae09" target="all/group/group-001" label="/api/v2/produce" tag="" />
 <edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" tag="message-queue" />
 <edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="consume object A" tag="" />
-<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:all/group/group-002" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="all/group/group-002" label="" />
+<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:all/group/group-002" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="all/group/group-002" label="" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="copy" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="copy" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" target="azure/function/function-002" label="consume object F" tag="" />
-<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:all/group/group-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="all/group/group-002" label="" />
+<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:all/group/group-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="all/group/group-002" label="" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="azure/function/function-002" label="consume object E" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="copy" tag="" />
 <edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" tag="" />
-<edge id="azure/storage/container/table-001:azure/aks/deployment/pod/sample-api/listener" source="azure/storage/container/table-001" target="azure/aks/deployment/pod/sample-api/listener" label="consume" tag="" />
-<edge id="azure/storage/container/table-001:azure/service-bus/topic/sample-topic-002" source="azure/storage/container/table-001" target="azure/service-bus/topic/sample-topic-002" label="write" tag="" />
-<edge id="azure/storage/container/table-001:listener" source="azure/storage/container/table-001" target="listener" label="provide" tag="" />
-<edge id="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68:azure/storage/container/table-001" source="azure/storage/container/table-001@c71c72ee-0249-469c-ae3a-6e8ffd913b68" target="azure/storage/container/table-001" label="" tag="" />
+<edge id="azure/storage/container/table-001@xxx:azure/aks/deployment/pod/sample-api/listener@bis" source="azure/storage/container/table-001@xxx" target="azure/aks/deployment/pod/sample-api/listener@bis" label="" tag="" />
 <edge id="azure/storage/table/table-001:azure/aks/deployment/pod/sample-api" source="azure/storage/table/table-001" target="azure/aks/deployment/pod/sample-api" label="read" tag="" />
-<edge id="azure/vm/vm-001:listener" source="azure/vm/vm-001" target="listener" label="" />
+<edge id="azure/vm/vm-001:listener" source="azure/vm/vm-001" target="listener" label="" tag="" />
 </edges>
 </graph>
 </graphml>
