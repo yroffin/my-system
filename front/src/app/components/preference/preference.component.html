@@ -7,4 +7,20 @@
         <p-inputSwitch [(ngModel)]="preferences.info" (onChange)="handleChange($event)"></p-inputSwitch>
         <label for="ny">Apply display info</label>
     </div>
+    <div class="field-checkbox">
+        <p-inputSwitch [(ngModel)]="preferences.full" (onChange)="handleChange($event)"></p-inputSwitch>
+        <label for="ny">Export full graph</label>
+    </div>
+    <div class="field-checkbox">
+        <span class="p-float-label">
+            <input type="text" id="inputtext" pInputText [(ngModel)]="preferences.maxWidth" (keyup)="handleChange($event)">
+            <label for="inputtext">Max width for image export</label>
+        </span>
+    </div>
+    <div class="field-checkbox">
+        <span class="p-float-label">
+            <input type="text" id="inputtext" pInputText [(ngModel)]="preferences.maxHeight" (keyup)="handleChange($event)">
+            <label for="inputtext">Max height for image export</label>
+        </span>
+    </div>
 </p-panel>

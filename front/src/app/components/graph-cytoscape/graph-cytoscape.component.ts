@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ANALYZE_FOR_ENTRY_COMPONENTS, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
@@ -114,8 +114,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         if (document) {
           let png = this.cy?.png({
             bg: 'white',
-            full: true
+            full: this.preferences.full,
+            maxWidth: this.preferences.maxWidth ? Number(this.preferences.maxWidth) : 1024,
+            maxHeight: this.preferences.maxHeight ? Number(this.preferences.maxHeight) : 768
           }) || ""
+          this.logger.info(`PNG ${this.preferences.full} ${this.preferences.maxWidth} ${this.preferences.maxHeight}`)
           this.myPng?.nativeElement.setAttribute('src', png);
         }
         this.displayExportPng = true
