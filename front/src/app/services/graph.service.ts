@@ -83,6 +83,30 @@ export class GraphService {
         })
     }
 
+
+    // Build a unniq instance of each edge key
+    private computeInstance(hash: any, key: string): any {
+        if (hash[key]) {
+            hash[key].count ++
+        } else {
+            hash[key] = {
+                count: 1
+            }
+        }
+        return hash[key]
+    }
+
+    // Build a unniq instance of each edge key
+    // Ignore 0 index
+    private buildId(hash: any, edge: any): string {
+        let uniqInstance = this.computeInstance(hash, `${edge.source}:${edge.target}`)
+        let labelInstance = ""
+        if(uniqInstance.count > 1) {
+            labelInstance = `@${uniqInstance.count - 1}`
+        }
+        return `${edge.source}:${edge.target}${labelInstance}`
+    }
+
     toGexf(graph?: SysGraph): Array<string> {
         this.logger.info("alias", graph)
         let xml = [];
@@ -127,15 +151,16 @@ export class GraphService {
             edge.uid = `${edge.source}:${edge.target}`
             return edge
         })
+        let dict: any = {}
         _.each(_.sortBy(sorted, "uid"), (edge) => {
             let endtag = ` />`
             if (edge.cdata) {
                 endtag = `>`
             }
             if (edge.tag === null) {
-                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
+                xml.push(`<edge id="${this.buildId(dict, edge)}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
+                xml.push(`<edge id="${this.buildId(dict, edge)}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
             }
             if (edge.cdata) {
                 xml.push(`<![CDATA[${edge.cdata}]]>`);
@@ -176,15 +201,16 @@ export class GraphService {
                 xml.push(`</node>`);
             }
         });
+        let dict: any = {}
         _.each(this.outputEdges(graph), (edge) => {
             let endtag = ` />`
             if (edge.cdata) {
                 endtag = `>`
             }
             if (edge.tag === null) {
-                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
+                xml.push(`<edge id="${this.buildId(dict, edge)}" source="${edge.source}" target="${edge.target}" label="${edge.label}"${endtag}`);
             } else {
-                xml.push(`<edge id="${edge.source}:${edge.target}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
+                xml.push(`<edge id="${this.buildId(dict, edge)}" source="${edge.source}" target="${edge.target}" label="${edge.label}" tag="${edge.tag}"${endtag}`);
             }
             if (edge.cdata) {
                 xml.push(`<![CDATA[${edge.cdata}]]>`);
