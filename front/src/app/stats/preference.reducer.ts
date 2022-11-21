@@ -4,7 +4,10 @@ import { retrievedPreferences } from './preference.actions';
 
 export const initialPreferencesState: SysPreference = {
     grid: false,
-    info: false
+    info: false,
+    full: true,
+    maxHeight: 16384,
+    maxWidth: 16384
 };
 
 export const PreferencesReducer = createReducer(
