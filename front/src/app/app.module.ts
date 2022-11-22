@@ -33,6 +33,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -127,6 +128,7 @@ import { ThreejsComponent } from './components/threejs/threejs.component';
     PanelModule,
     ChartModule,
     TooltipModule,
+    ToggleButtonModule,
     StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer, preferences: PreferencesReducer })
   ],
   providers: [ConfirmationService, MessageService],
