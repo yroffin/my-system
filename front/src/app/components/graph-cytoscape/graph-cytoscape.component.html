@@ -150,19 +150,26 @@
 
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
     [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-    <p-tabView>
-        <p-tabPanel header="Preview">
-            <div [innerHTML]="captureData.selectElementCdata"></div>
-        </p-tabPanel>
-        <p-tabPanel header="Edit">
-            <textarea [style]="{width: '100%', height: '28vw'}" pInputTextarea
+    <p-splitter [style]="{'height': '100%'}" *ngIf="!captureData.isAlias && captureData.editable">
+        <ng-template pTemplate>
+            <textarea (keyup)="previewNewCData(captureData)" pInputTextarea [style]="{width: '100%', height: '100%'}"
                 [(ngModel)]="captureData.selectElementRawCdata"></textarea>
-        </p-tabPanel>
-    </p-tabView>
+        </ng-template>
+        <ng-template pTemplate>
+            <div [innerHTML]="captureData.selectElementCdata"></div>
+        </ng-template>
+    </p-splitter>
+    <p-splitter [style]="{'height': '100%'}" *ngIf="captureData.isAlias || !captureData.editable">
+        <ng-template pTemplate>
+            <div [innerHTML]="captureData.selectElementCdata"></div>
+        </ng-template>
+    </p-splitter>
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="previewNewCData(captureData)" label="Preview" styleClass="p-button-text">
-        </p-button>
-        <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text">
+        <p-toggleButton [(ngModel)]="captureData.editable" styleClass="p-button-text" onLabel="Editable"
+            offLabel="Readonly" onIcon="pi pi-check" offIcon="pi pi-times" *ngIf="!captureData.isAlias">
+        </p-toggleButton>
+        <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text"
+            *ngIf="!captureData.isAlias">
         </p-button>
     </ng-template>
 </p-dialog>
@@ -188,28 +195,30 @@
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
-                <th>Target</th>
-                <th>Label</th>
+                <th style="width:3rem">#</th>
                 <th>Find</th>
-                <th>Id</th>
-                <th>Label</th>
+                <th>Reference</th>
                 <th>Find</th>
+                <th>Alias</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-alias>
+        <ng-template pTemplate="body" let-alias let-rowIndex="rowIndex">
             <tr>
-                <td>{{alias.target.id}}</td>
-                <td>{{alias.target.label}}</td>
-                <td>
-                    <button pButton pRipple icon="pi pi-arrow-right" class="p-button-rounded"
+                <td>{{rowIndex}}</td>
+                <td *ngIf="rowGroupMetadata[alias.target.id].index === rowIndex"
+                    [attr.rowspan]="rowGroupMetadata[alias.target.id].size">
+                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded"
                         (click)="onSelectCurrentAlias(alias.target.id)"></button>
                 </td>
-                <td>{{alias.id}}</td>
-                <td>{{alias.label}}</td>
+                <td *ngIf="rowGroupMetadata[alias.target.id].index === rowIndex"
+                    [attr.rowspan]="rowGroupMetadata[alias.target.id].size">
+                    {{alias.target.label}} (#{{alias.target.id}})
+                </td>
                 <td>
-                    <button pButton pRipple icon="pi pi-arrow-right" class="p-button-rounded"
+                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded"
                         (click)="onSelectCurrentAlias(alias.id)"></button>
                 </td>
+                <td>{{alias.label}} (#{{alias.id}})</td>
             </tr>
         </ng-template>
     </p-table>

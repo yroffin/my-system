@@ -209,6 +209,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   graphs: TreeNode[] = [];
   allNodes: any[] = [];
   allAlias: any[] = [];
+  rowGroupMetadata: any;
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -365,6 +366,24 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.store.dispatch(retrievedTagsList({ tags }))
 
     this.items = this.coreItem;
+  }
+
+  updateRowGroupMetaData(allAlias: any) {
+    let rowGroupMetadata: any = {};
+
+    if (allAlias) {
+      let index = 0
+      _.each(allAlias, (alias) => {
+        let label = alias.target.id;
+        if (rowGroupMetadata[label]) {
+          rowGroupMetadata[label].size++;
+        } else {
+          rowGroupMetadata[label] = { index: index, size: 1 };
+        }
+        index++;
+      })
+    }
+    return rowGroupMetadata
   }
 
   nodeItem = [
@@ -592,6 +611,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.allAlias = _.sortBy(this.allAlias, (current) => {
           return current.alias
         })
+
+        // Update group
+        this.rowGroupMetadata = this.updateRowGroupMetaData(this.allAlias);
 
         this.logger.info(this.allAlias)
 
@@ -1074,18 +1096,38 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     });
     this.currentSelectedEdge = undefined
     this.currentSelectedNode = event.target[0]
+
+    // Find any documentation
+    let currentDocumentation = ""
+    if (this.currentSelectedNode.data().cdata) {
+      // Read current documentation
+      currentDocumentation = this.currentSelectedNode.data().cdata
+      // If node is an alias only display target node documentation
+      if (this.currentSelectedNode.data().alias) {
+        let target = this.base16.encode(this.currentSelectedNode.data().alias)
+        let targets = this.cy?.$(`#${target}`)
+        if (targets) {
+          currentDocumentation = targets[0].data().cdata
+        }
+      }
+    }
+
     // Any documentation
     if (this.currentSelectedNode.data().cdata) {
       this.captureData = {
+        editable: false,
+        isAlias: this.currentSelectedNode.data().alias ? true : false,
         selectElementId: this.currentSelectedNode.data().id,
-        selectElementCdata: md.render(this.currentSelectedNode.data().cdata),
-        selectElementRawCdata: this.currentSelectedNode.data().cdata
+        selectElementCdata: md.render(currentDocumentation),
+        selectElementRawCdata: currentDocumentation
       }
     } else {
       this.captureData = {
+        editable: false,
+        isAlias: this.currentSelectedNode.data().alias ? true : false,
         selectElementId: this.currentSelectedNode.data().id,
         selectElementCdata: "",
-        selectElementRawCdata: this.currentSelectedNode.data().cdata
+        selectElementRawCdata: currentDocumentation
       }
     }
     this._lockedElement = this.currentSelectedNode.locked()
@@ -1182,7 +1224,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         if (data.css.content === undefined) {
           data.css.content = (element: any) => {
             let cdata = element.data().cdata ? '*' : ''
-            let alias = element.data().alias ? '...' : ''
+            let alias = element.data().alias ? '@' : ''
             if (element.data().label && element.data().group) {
               return `${element.data().label} (${element.data().group}) ${cdata} ${alias}`
             }
