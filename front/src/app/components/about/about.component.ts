@@ -26,6 +26,7 @@ export class AboutComponent implements OnInit {
 
   ### Features releases
 
+  - Find alias by label or id (target and alias)
   - Display alias documentation only
   - Add alias option on node
   - Modify inline documentation
@@ -34,6 +35,7 @@ export class AboutComponent implements OnInit {
 
   ### Bugs
   
+  - GEXF can export more than one edge over 2 nodes
   - Rewrite with a new GUID cloned node (without infinte @.. append)
 
   ## October 2022
