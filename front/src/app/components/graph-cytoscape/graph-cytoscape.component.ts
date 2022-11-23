@@ -1,4 +1,4 @@
-import { AfterViewInit, ANALYZE_FOR_ENTRY_COMPONENTS, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { GraphService } from 'src/app/services/graph.service';
@@ -127,7 +127,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Save',
       tooltipOptions: {
-        tooltipLabel: "Save current diagram",
+        tooltipLabel: "Save current diagram in local storage",
         tooltipPosition: 'top',
         positionTop: -15,
         positionLeft: 15
@@ -145,7 +145,86 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   ]
 
+  selectedAlias: any
   dockLeftItems: MenuItem[] = [
+    {
+      label: 'Finder',
+      tooltipOptions: {
+        tooltipLabel: "Find alias(s)",
+        tooltipPosition: 'right',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/find-alias.png",
+      command: () => {
+        // Scan all nodes and build all alias
+        let allAlias: any[] = _.filter(_.map(this.cy?.elements('node'), (node) => {
+          return {
+            alias: node.data()['alias'],
+            label: node.data()['label'],
+            id: this.base16.decode(node.data()['id']),
+          }
+        }), (alias) => {
+          return alias.alias
+        });
+
+        let allTargets: any = {
+        }
+
+        // Find target node
+        _.each(allAlias, (current) => {
+          let encoded = this.base16.encode(current.alias)
+          let target = this.cy?.$(`#${encoded}`)
+          if (target) {
+            current.target = {
+              id: current.alias,
+              label: target[0].data()['label']
+            }
+
+            // Build all target
+            if (allTargets[encoded]) {
+              allTargets[encoded].aliases.push(current)
+            } else {
+              allTargets[encoded] = {
+                label: target[0].data()['label'],
+                aliases: [current]
+              }
+            }
+          }
+        });
+
+        this.alias = []
+
+        _.each(allTargets, (values, key) => {
+          let treeTarget: TreeNode = {
+            "key": key,
+            "label": `${values.label} #${this.base16.decode(key)}`,
+            "data": {
+              "id": this.base16.decode(key),
+              "label": values.label,
+            },
+            "expandedIcon": "pi pi-folder-open",
+            "collapsedIcon": "pi pi-folder",
+            "children": []
+          }
+          _.each(values.aliases, (value) => {
+            treeTarget.children?.push({
+              "key": this.base16.encode(value.id),
+              "label": `${value.label} #${value.id}`,
+              "leaf": true,
+              "icon": "pi pi-fw pi-clone",
+              "data": {
+                "id": value.id,
+                "label": value.label
+              }
+            })
+          })
+          this.alias.push(treeTarget)
+        })
+
+        this.displayAlias = true;
+      }
+    },
     {
       label: 'Finder',
       tooltipOptions: {
@@ -154,7 +233,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/find.png",
+      icon: "assets/dock/find-element.png",
       command: () => {
         this.displayFinder = true;
       }
@@ -207,8 +286,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   searchNode = ""
   graphs: TreeNode[] = [];
+  alias: TreeNode[] = [];
   allNodes: any[] = [];
-  allAlias: any[] = [];
   rowGroupMetadata: any;
 
   cols: any[] = [
@@ -366,24 +445,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.store.dispatch(retrievedTagsList({ tags }))
 
     this.items = this.coreItem;
-  }
-
-  updateRowGroupMetaData(allAlias: any) {
-    let rowGroupMetadata: any = {};
-
-    if (allAlias) {
-      let index = 0
-      _.each(allAlias, (alias) => {
-        let label = alias.target.id;
-        if (rowGroupMetadata[label]) {
-          rowGroupMetadata[label].size++;
-        } else {
-          rowGroupMetadata[label] = { index: index, size: 1 };
-        }
-        index++;
-      })
-    }
-    return rowGroupMetadata
   }
 
   nodeItem = [
@@ -583,44 +644,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       }
     },
     {
-      label: 'Show alias',
-      icon: 'pi pi-angle-double-right',
-      command: () => {
-        // Scan all nodes
-        this.allAlias = _.filter(_.map(this.cy?.elements('node'), (node) => {
-          return {
-            alias: node.data()['alias'],
-            label: node.data()['label'],
-            id: this.base16.decode(node.data()['id']),
-          }
-        }), (alias) => {
-          return alias.alias
-        });
-
-        // Find target node
-        _.each(this.allAlias, (current) => {
-          let target = this.cy?.$(`#${this.base16.encode(current.alias)}`)
-          if (target) {
-            current.target = {
-              id: current.alias,
-              label: target[0].data()['label']
-            }
-          }
-        });
-
-        this.allAlias = _.sortBy(this.allAlias, (current) => {
-          return current.alias
-        })
-
-        // Update group
-        this.rowGroupMetadata = this.updateRowGroupMetaData(this.allAlias);
-
-        this.logger.info(this.allAlias)
-
-        this.displayAlias = true
-      }
-    },
-    {
       label: 'Group',
       icon: 'pi pi-share-alt',
       items: [
@@ -817,10 +840,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   ];
 
   // Go to alias
-  onSelectCurrentAlias(_id: any): void {
+  onSelectCurrentAlias(event: any): void {
     // selected node
-    let selected = this.cy?.$(`#${this.base16.encode(_id)}`);
-    this.logger.info("Alias", _id)
+    let selected = this.cy?.$(`#${this.selectedAlias.key}`);
     this.cy?.center(selected)
     this.displayAlias = false
   }
