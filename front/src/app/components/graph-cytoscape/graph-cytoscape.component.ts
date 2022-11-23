@@ -222,7 +222,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           this.alias.push(treeTarget)
         })
 
-        console.log(this.alias)
         this.displayAlias = true;
       }
     },
