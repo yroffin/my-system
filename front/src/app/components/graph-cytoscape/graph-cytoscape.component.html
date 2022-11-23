@@ -190,7 +190,7 @@
     <img #myPng src=""><img>
 </p-dialog>
 
-<p-dialog header="Alias" [modal]="true" [style]="{width: '45vw', height: '55vw'}" [(visible)]="displayAlias">
+<p-dialog header="Find any alias" [modal]="true" [style]="{width: '45vw', height: '55vw'}" [(visible)]="displayAlias">
     <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
         (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
 </p-dialog>

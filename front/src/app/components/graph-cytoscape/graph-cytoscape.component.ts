@@ -127,7 +127,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Save',
       tooltipOptions: {
-        tooltipLabel: "Save current diagram",
+        tooltipLabel: "Save current diagram in local storage",
         tooltipPosition: 'top',
         positionTop: -15,
         positionLeft: 15
@@ -155,7 +155,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/find.png",
+      icon: "assets/dock/find-alias.png",
       command: () => {
         // Scan all nodes and build all alias
         let allAlias: any[] = _.filter(_.map(this.cy?.elements('node'), (node) => {
@@ -234,7 +234,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/find.png",
+      icon: "assets/dock/find-element.png",
       command: () => {
         this.displayFinder = true;
       }
