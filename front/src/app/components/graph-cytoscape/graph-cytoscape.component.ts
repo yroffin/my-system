@@ -558,10 +558,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         return
       }
     }
-    this.cy?.$(`#${captureData.id}`)
-      .data('clone', this.base16.encode(captureData.clone))
+    let findIt = this.cy?.$(`#${captureData.id}`)
+
+    findIt?.data('clone', this.base16.encode(captureData.clone))
       .data('alias', captureData.alias)
-      .data('group', captureData.group)
+      .data('group', captureData.group ? captureData.group : "")
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionNode = false
@@ -591,7 +592,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
           return {
             label: tag.label,
             value: tag.label
@@ -655,7 +656,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           }
         },
         {
-          label: 'Statistics',
+          label: 'Group Statistics',
           icon: 'pi pi-chart-pie',
           command: () => {
             // Build all group
@@ -692,6 +693,46 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             }
 
             this.displayGroupStatistic = true
+          }
+        },
+        {
+          label: 'Tag Statistics',
+          icon: 'pi pi-chart-pie',
+          command: () => {
+            // Build all group
+            let allTags = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
+              return node.data().tag
+            }), (node) => node && node !== "" && node.alias === undefined));
+
+            // Group by them
+            let groupBy: any = {}
+            _.each(allTags, (group) => {
+              if (groupBy[group]) {
+                groupBy[group] += 1
+              } else {
+                groupBy[group] = 1
+              }
+            })
+
+            // Build statistic
+            this.dataTagStatistics = {
+              datasets: [{
+                data: _.map(groupBy, (k, v) => k),
+                backgroundColor: _.map(groupBy, (k, v) => {
+                  switch (k) {
+                    case 1: return "#42A5F5";
+                    case 2: return "#66BB6A";
+                    case 3: return "#FFA726";
+                    case 4: return "#26C6DA";
+                    default: return "#7E57C2";
+                  }
+                }),
+                label: 'My dataset'
+              }],
+              labels: _.map(groupBy, (k, v) => v)
+            }
+
+            this.displayTagStatistic = true
           }
         }
       ]
@@ -861,9 +902,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   captureData: any = {}
   createNewNode(): void {
+    let id = this.base16.encode(`default@${uuidv4()}`)
     this.cy?.add([{
       data: {
-        id: this.base16.encode(`default@${uuidv4()}`),
+        id: id,
         label: "default",
         cdata: "TODO ...",
         tag: ""
@@ -873,6 +915,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         y: 0
       }
     }])
+    let selected = this.cy?.$(`#${id}`);
+    this.cy?.center(selected)
   }
 
   selectedNode: any
@@ -1409,6 +1453,20 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     ]
   };
   displayGroupStatistic: boolean = false;
+
+  dataTagStatistics: any = {
+    datasets: [{
+      data: [
+      ],
+      backgroundColor: [
+      ],
+      label: 'Dataset'
+    }],
+    labels: [
+    ]
+  };
+  displayTagStatistic: boolean = false;
+
   chartOptions: any;
   config: any = {
     dark: false
