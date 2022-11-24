@@ -592,7 +592,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+        let allTags: any = _.uniq(_.map(_.filter(this.databaseService.findAllTags(), (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
           return {
             label: tag.label,
             value: tag.label
