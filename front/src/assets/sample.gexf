@@ -14,7 +14,7 @@ TARGET
 <node id="azure/aks/deployment/pod/service-b" label="service B" alias="" group="" x="1060" y="300" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/aks/deployment/pod/service-c" label="service C" alias="" group="sample" x="700" y="380" tag="azure/aks/deployment/pod">
+<node id="azure/aks/deployment/pod/service-c" label="service C" alias="azure/aks/deployment/pod/service-a" group="sample" x="700" y="380" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...
 sdffdsfsdf
 
@@ -32,6 +32,9 @@ sample
 </node>
 <node id="azure/aks/deployment/pod/service-d" label="service D" alias="" group="" x="860" y="460" tag="azure/aks/deployment/pod" />
 <node id="azure/aks/deployment/pod/service-e" label="service E" alias="" group="" x="1620" y="300" tag="azure/aks/deployment/pod">
+<![CDATA[TODO ...]]>
+</node>
+<node id="azure/aks/deployment/pod/service-e.1" label="service E.1" alias="" group="" x="1940" y="300" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/aks/deployment/pod/service-o" label="service O" alias="" group="" x="1340" y="820" tag="azure/aks/deployment/pod">
@@ -52,7 +55,7 @@ sample
 <node id="azure/service-bus/topic/subscription/subscription-a.1" label="subscription A.1" alias="" group="" x="1340" y="620" tag="azure/service-bus/topic/subscription">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/service-bus/topic/subscription/subscription-a.2" label="subscription A.2" alias="" group="" x="1540" y="620" tag="azure/service-bus/topic/subscription">
+<node id="azure/service-bus/topic/subscription/subscription-a.2" label="subscription A.2" alias="" group="" x="1780" y="620" tag="azure/service-bus/topic/subscription">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/service-bus/topic/topic-a" label="topic A" alias="" group="" x="1340" y="460" tag="azure/service-bus/topic">
@@ -91,12 +94,15 @@ link]]>
 <edge id="azure/aks/deployment/pod/service-c:azure/aks/deployment/pod/service-d" source="azure/aks/deployment/pod/service-c" target="azure/aks/deployment/pod/service-d" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-d:azure/aks/deployment/pod/service-a" source="azure/aks/deployment/pod/service-d" target="azure/aks/deployment/pod/service-a" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-d:azure/aks/deployment/pod/service-c" source="azure/aks/deployment/pod/service-d" target="azure/aks/deployment/pod/service-c" label="" tag="" />
+<edge id="azure/aks/deployment/pod/service-e.1:azure/redis/redis-a" source="azure/aks/deployment/pod/service-e.1" target="azure/redis/redis-a" label="" />
+<edge id="azure/aks/deployment/pod/service-e.1:azure/service-bus/topic/subscription/subscription-a.2" source="azure/aks/deployment/pod/service-e.1" target="azure/service-bus/topic/subscription/subscription-a.2" label="" />
+<edge id="azure/aks/deployment/pod/service-e.1:azure/sqlserver/database-a" source="azure/aks/deployment/pod/service-e.1" target="azure/sqlserver/database-a" label="" />
 <edge id="azure/aks/deployment/pod/service-e:azure/redis/redis-a" source="azure/aks/deployment/pod/service-e" target="azure/redis/redis-a" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-e:azure/sqlserver/database-a" source="azure/aks/deployment/pod/service-e" target="azure/sqlserver/database-a" label="" tag="" />
 <edge id="azure/service-bus/queue/bus-queue a:azure/aks/deployment/pod/service-e" source="azure/service-bus/queue/bus-queue a" target="azure/aks/deployment/pod/service-e" label="" tag="" />
 <edge id="azure/service-bus/topic/subscription/subscription-a.1:azure/aks/deployment/pod/service-o" source="azure/service-bus/topic/subscription/subscription-a.1" target="azure/aks/deployment/pod/service-o" label="" tag="" />
 <edge id="azure/service-bus/topic/subscription/subscription-a.1:azure/aks/deployment/pod/service-p" source="azure/service-bus/topic/subscription/subscription-a.1" target="azure/aks/deployment/pod/service-p" label="" tag="" />
-<edge id="azure/service-bus/topic/subscription/subscription-a.2:azure/aks/deployment/pod/service-p" source="azure/service-bus/topic/subscription/subscription-a.2" target="azure/aks/deployment/pod/service-p" label="" />
+<edge id="azure/service-bus/topic/subscription/subscription-a.2:azure/aks/deployment/pod/service-p" source="azure/service-bus/topic/subscription/subscription-a.2" target="azure/aks/deployment/pod/service-p" label="" tag="" />
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.1" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.1" label="" tag="" />
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.1@1" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.1" label="" tag="" />
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.2" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.2" label="" tag="" />
