@@ -57,7 +57,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;
   displayChangeStyle: boolean = false;
-  displayAlias: boolean = false;
 
   displayFinder: boolean = false;
   displayMarkdown: boolean = false;
@@ -149,12 +148,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Finder',
       tooltipOptions: {
-        tooltipLabel: "Find alias(s) and center on it",
+        tooltipLabel: "Find node(s) or edges(s) and center on it",
         tooltipPosition: 'right',
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/find-alias.png",
+      icon: "assets/dock/find-element.png",
       command: () => {
         // Scan all nodes and build all alias
         let allAlias: any[] = _.filter(_.map(this.cy?.elements('node'), (node) => {
@@ -223,19 +222,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           this.alias.push(treeTarget)
         })
 
-        this.displayAlias = true;
-      }
-    },
-    {
-      label: 'Finder',
-      tooltipOptions: {
-        tooltipLabel: "Find node(s) or edges(s) and center on it",
-        tooltipPosition: 'right',
-        positionTop: -15,
-        positionLeft: 15
-      },
-      icon: "assets/dock/find-element.png",
-      command: () => {
         this.displayFinder = true;
       }
     }
@@ -898,7 +884,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // selected node
     let selected = this.cy?.$(`#${this.selectedAlias.key}`);
     this.cy?.center(selected)
-    this.displayAlias = false
+    this.displayFinder = false
   }
 
   ngOnDestroy() {
@@ -949,12 +935,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // selected node
     let selected = this.cy?.$(`#${this.selectedNode.key}`);
     this.cy?.center(selected)
-    if (this.selectedNode.data._source) {
-      this.animate(this.cy?.$(`#${this.selectedNode.data._source}`), anims)
-      this.animate(this.cy?.$(`#${this.selectedNode.data._target}`), anims)
-    } else {
-      this.animate(this.cy?.$(`#${this.selectedNode.data._id}`), anims)
-    }
+    this.displayFinder = false
   }
 
   onToggleGroupEnabled(): void {
@@ -1343,38 +1324,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     })
 
     return allstyles
-  }
-
-  onSelect(item: any): void {
-    let anims = [
-      { "opacity": 0.2 },
-      { "opacity": 1 }
-    ]
-    if (item._source) {
-      this.animate(this.cy?.$(`#${item._source}`), anims)
-      this.animate(this.cy?.$(`#${item._target}`), anims)
-    } else {
-      this.animate(this.cy?.$(`#${item._id}`), anims)
-    }
-  }
-
-  animate(searchedId: any, styles: any[]): void {
-    if (searchedId) {
-      if (searchedId.length > 0) {
-        let _item = searchedId[0]
-        let fns = _.map(styles, (style) => {
-          return () => {
-            _item
-              .animate({
-                style: style
-              }, {
-                duration: 250
-              })
-          }
-        })
-        _.each(fns, (fn) => fn())
-      }
-    }
   }
 
   handleChangeLock(event: any): void {

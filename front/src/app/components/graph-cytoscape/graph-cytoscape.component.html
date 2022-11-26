@@ -47,12 +47,6 @@
     </div>
 </div>
 
-<p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true"
-    [style]="{width: '35vw', height: '55vw'}" [draggable]="true" [resizable]="false">
-    <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
-        (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
-</p-dialog>
-
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
     [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
@@ -215,7 +209,15 @@
     <img #myPng src=""><img>
 </p-dialog>
 
-<p-dialog header="Find any alias" [modal]="true" [style]="{width: '55vw', height: '55vw'}" [(visible)]="displayAlias">
-    <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
-        (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
+<p-dialog header="Find element(s)" [modal]="true" [style]="{width: '55vw', height: '55vw'}" [(visible)]="displayFinder">
+    <p-tabView>
+        <p-tabPanel header="Alias">
+            <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
+                (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+        <p-tabPanel header="Node(s) and edges(s)">
+            <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
+                (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+    </p-tabView>
 </p-dialog>
