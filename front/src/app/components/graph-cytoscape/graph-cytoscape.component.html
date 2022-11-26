@@ -1,5 +1,6 @@
 <p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
 <p-toast position="bottom-center" key="bc"></p-toast>
+<p-toast position="left-center" key="lc"></p-toast>
 
 <span *ngIf="preferences.info" class="cytoscape-selector">
     <span class="field-checkbox">
@@ -61,6 +62,9 @@
                         pTooltip="Internal ID to override current ID on next save or diagram export"
                         tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
+                <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" label="Labelize"
+                    styleClass="p-button-text" pTooltip="Rebuild id with tag and label" tooltipPosition="top">
+                </p-button>
             </div>
         </div>
         <div class="col-12">

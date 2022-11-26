@@ -45,6 +45,14 @@ export class ConverterComponent implements OnInit {
         this.viewer = "data:image/png;base64," + loaded
         this.clipboardService.copyTextToClipboard("data:image/png;base64," + loaded)
       }
+
+      if (loaded.startsWith("UklGR")) {
+        this.messageService.add({
+          severity: 'info', summary: 'Copied to clipboard/WEBP', detail: `Filename ${event[0].name}`
+        });
+        this.viewer = "data:image/webp;base64," + loaded
+        this.clipboardService.copyTextToClipboard("data:image/webp;base64," + loaded)
+      }
     })
   }
 }

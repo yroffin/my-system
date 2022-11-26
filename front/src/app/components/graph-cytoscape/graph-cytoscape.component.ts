@@ -149,7 +149,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Finder',
       tooltipOptions: {
-        tooltipLabel: "Find alias(s)",
+        tooltipLabel: "Find alias(s) and center on it",
         tooltipPosition: 'right',
         positionTop: -15,
         positionLeft: 15
@@ -174,7 +174,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         _.each(allAlias, (current) => {
           let encoded = this.base16.encode(current.alias)
           let target = this.cy?.$(`#${encoded}`)
-          if (target) {
+          if (target && target.length > 0) {
             current.target = {
               id: current.alias,
               label: target[0].data()['label']
@@ -189,6 +189,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                 aliases: [current]
               }
             }
+          } else {
+            this.raiseError("Unknown target", current.alias)
           }
         });
 
@@ -227,7 +229,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Finder',
       tooltipOptions: {
-        tooltipLabel: "Find element(s)",
+        tooltipLabel: "Find node(s) or edges(s) and center on it",
         tooltipPosition: 'right',
         positionTop: -15,
         positionLeft: 15
@@ -282,9 +284,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   breadFirstLayoutOptions?: LayoutOptions = new BreadthFirstLayoutOptionsImpl()
   concentricLayoutOptions?: LayoutOptions = new ConcentricLayoutOptionsImpl()
   circleLayoutOptions?: LayoutOptions = new CircleLayoutOptionsImpl()
-  gridLayoutOptions?: LayoutOptions = new GridLayoutOptionsImpl()
+  gridLayoutOptions?: LayoutOptions = {
+    name: 'grid',
+
+    // extra spacing around nodes when avoidOverlap: true
+    avoidOverlapPadding: 50,
+    // uses all available space on false, uses minimal space on true
+    condense: true,
+    // force num of rows in the grid
+    rows: 20,
+    // force num of columns in the grid
+    cols: 5
+  }
   coseLayoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
-  dagreLayoutOptions?: LayoutOptions = new DagreLayoutOptionsImpl()
 
   id?: string
   currentStyle?: string
@@ -325,7 +337,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       // Apply style
       if (graph.style) {
         this.cy?.style(this.retrieveStyle(graph.style))
-        this.currentStyle = graph.style
+        setTimeout(() => {
+          this.currentStyle = graph.style
+        }, 1)
       }
 
       this.graphs = []
@@ -532,18 +546,20 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  applyNodeUpdate(captureData: any): void {
+  private findNode(captureData: any): cy.CollectionReturnValue | undefined {
     // Clone target must be unique
     if (captureData.clone !== undefined && captureData.clone != "") {
       let found = this.cy?.$(`#${this.base16.encode(captureData.clone)}`)
       if (captureData.id !== this.base16.encode(captureData.clone) && found && found.length > 0) {
-        this.messageService.add({
-          key: 'bc', severity: 'error', summary: 'While checking unicity of', detail: captureData.clone
-        });
+        this.raiseError('While checking unicity of', captureData.clone)
         return
       }
     }
-    let findIt = this.cy?.$(`#${captureData.id}`)
+    return this.cy?.$(`#${captureData.id}`)
+  }
+
+  applyNodeUpdate(captureData: any): void {
+    let findIt = this.findNode(captureData)
 
     findIt?.data('clone', this.base16.encode(captureData.clone))
       .data('alias', captureData.alias)
@@ -551,6 +567,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionNode = false
+  }
+
+  applyLabelize(captureData: any): void {
+    let label: string = captureData.label
+    captureData.clone = `${captureData.tag}/${label.toLowerCase().replace(' ', '-')}`
   }
 
   edgeItem = [
@@ -792,17 +813,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             }
             this.onClearAnySelection()
           }
-        },
-        {
-          label: 'Dagre Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.dagreLayoutOptions) {
-              this.cy?.layout(this.dagreLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        },
+        }
       ]
     },
     {
@@ -1458,6 +1469,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   graphml(_id: string, _label: string, _style?: string): void {
     let _graph: SysGraph = this.toSysGraph(_id, _label, _style)
     this.clipboardService.copyTextToClipboard(this.graphsService.toGraphml(_graph).join('\n'))
+  }
+
+  raiseError(summary: string, detail: string) {
+    this.messageService.add({
+      key: 'lc', severity: 'error', summary: summary, detail: detail
+    });
   }
 
   dataGroupStatistics: any = {
