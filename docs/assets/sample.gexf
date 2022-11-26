@@ -4,7 +4,7 @@
 <creator>Gexf.net</creator>
 <description>A hello world! file</description>
 </meta>
-<graph mode="static" defaultedgetype="directed">
+<graph mode="static" defaultedgetype="directed" style="test">
 <nodes>
 <node id="default@4bdc4282-f013-4864-aaf6-9a8f2d86d50d" label="default" alias="default@a84aa452-6d83-42f4-9a0a-bd9582887ff3" group="sample" x="700" y="380" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...

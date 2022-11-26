@@ -42,7 +42,6 @@ import { graphReducer, graphsReducer } from './stats/graph.reducer';
 import { GraphComponent } from './components/graph/graph.component';
 import { GraphSelectorComponent } from './components/graph-selector/graph-selector.component';
 import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cytoscape.component';
-import { tagsReducer } from './stats/tag.reducer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { TreeTableModule } from 'primeng/treetable';
@@ -63,6 +62,8 @@ import { PanelModule } from 'primeng/panel';
 import { ChartModule } from 'primeng/chart';
 import { AboutComponent } from './components/about/about.component';
 import { ThreejsComponent } from './components/threejs/threejs.component';
+import { StyleSelectorComponent } from './components/style-selector/style-selector.component';
+import { styleReducer, stylesReducer } from './stats/style.reducer';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { ThreejsComponent } from './components/threejs/threejs.component';
     ConverterComponent,
     PreferenceComponent,
     AboutComponent,
-    ThreejsComponent
+    ThreejsComponent,
+    StyleSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -129,7 +131,13 @@ import { ThreejsComponent } from './components/threejs/threejs.component';
     ChartModule,
     TooltipModule,
     ToggleButtonModule,
-    StoreModule.forRoot({ tags: tagsReducer, graphs: graphsReducer, graph: graphReducer, preferences: PreferencesReducer })
+    StoreModule.forRoot({
+      graphs: graphsReducer,
+      graph: graphReducer,
+      styles: stylesReducer,
+      style: styleReducer,
+      preferences: PreferencesReducer
+    })
   ],
   providers: [ConfirmationService, MessageService],
   bootstrap: [AppComponent]

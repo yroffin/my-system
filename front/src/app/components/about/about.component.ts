@@ -26,6 +26,7 @@ export class AboutComponent implements OnInit {
 
   ### Features releases
 
+  - Manage many style sheet
   - Find alias by label or id (target and alias)
   - Display alias documentation only
   - Add alias option on node

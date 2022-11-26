@@ -58,6 +58,7 @@ export class GraphSelectorComponent implements OnInit {
       this.graphs = _.map(_graphs, (graph) => {
         return {
           id: graph.id,
+          style: graph.style,
           label: graph.label,
           nodes: graph.nodes,
           edges: graph.edges
@@ -98,6 +99,7 @@ export class GraphSelectorComponent implements OnInit {
     if (name) {
       this.databaseService.storeGraph({
         id: name,
+        style: "default",
         label: name,
         edges: [],
         nodes: []
