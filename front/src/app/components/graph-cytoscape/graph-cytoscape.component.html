@@ -1,5 +1,6 @@
 <p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
 <p-toast position="bottom-center" key="bc"></p-toast>
+<p-toast position="left-center" key="lc"></p-toast>
 
 <span *ngIf="preferences.info" class="cytoscape-selector">
     <span class="field-checkbox">
@@ -46,12 +47,6 @@
     </div>
 </div>
 
-<p-dialog header="Find any element" [(visible)]="displayFinder" [maximizable]="true"
-    [style]="{width: '35vw', height: '55vw'}" [draggable]="true" [resizable]="false">
-    <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
-        (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
-</p-dialog>
-
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
     [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
@@ -61,6 +56,9 @@
                         pTooltip="Internal ID to override current ID on next save or diagram export"
                         tooltipPosition="top"></i></span>
                 <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
+                <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" label="Labelize"
+                    styleClass="p-button-text" pTooltip="Rebuild id with tag and label" tooltipPosition="top">
+                </p-button>
             </div>
         </div>
         <div class="col-12">
@@ -211,7 +209,15 @@
     <img #myPng src=""><img>
 </p-dialog>
 
-<p-dialog header="Find any alias" [modal]="true" [style]="{width: '55vw', height: '55vw'}" [(visible)]="displayAlias">
-    <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
-        (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
+<p-dialog header="Find element(s)" [modal]="true" [style]="{width: '55vw', height: '55vw'}" [(visible)]="displayFinder">
+    <p-tabView>
+        <p-tabPanel header="Alias">
+            <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
+                (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+        <p-tabPanel header="Node(s) and edges(s)">
+            <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
+                (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+    </p-tabView>
 </p-dialog>
