@@ -2,8 +2,6 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Store } from '@ngrx/store';
 import Graph from 'graphology';
 import ForceSupervisor from "graphology-layout-force/worker";
-import noverlap from 'graphology-layout-noverlap';
-import forceAtlas2 from "graphology-layout-forceatlas2";
 import Sigma from 'sigma';
 import { GraphService } from 'src/app/services/graph.service';
 import { selectGraphs } from 'src/app/stats/graph.selectors';
@@ -128,7 +126,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
   }
 
-  gexf(): void {
+  gexf(style: string): void {
     this.xml = []
     this.xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
     this.xml.push(`<gexf xmlns="http://gexf.net/1.2" version="1.2">`);
@@ -136,7 +134,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.xml.push(`<creator>Gexf.net</creator>`);
     this.xml.push(`<description>A hello world! file</description>`);
     this.xml.push(`</meta>`);
-    this.xml.push(`<graph mode="static" defaultedgetype="directed">`);
+    this.xml.push(`<graph mode="static" defaultedgetype="directed" style="${style}">`);
     this.xml.push(`<nodes>`);
     this.graph.forEachNode(node => {
       let uid = this.graph.getNodeAttribute(node, 'uid');

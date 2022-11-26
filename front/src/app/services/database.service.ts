@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import * as _ from 'lodash';
-import { SysGraph, SysTag } from '../models/graph';
+import { SysGraph } from '../models/graph';
 import { SysPreference } from '../models/preference';
+import { SysTags } from '../models/style';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,9 @@ export class DatabaseService {
     if (!_graphs) {
       this.storage.store('graphs', [])
     }
-    let _tags = this.retrieveTags()
-    if (!_tags) {
-      this.storage.store('tags', [])
+    let _styles = this.findAllStyles()
+    if (!_styles) {
+      this.storage.store('styles', [])
     }
     let _preferences = this.retrievePreferences()
     if (!_preferences) {
@@ -26,16 +27,63 @@ export class DatabaseService {
     }
   }
 
-  private retrieveGraphs(): Array<SysGraph> {
-    return JSON.parse(JSON.stringify(this.storage.retrieve('graphs')))
-  }
-
   retrievePreferences(): SysPreference {
     return JSON.parse(JSON.stringify(this.storage.retrieve('preferences')))
   }
 
-  private retrieveTags(): Array<SysTag> {
-    return JSON.parse(JSON.stringify(this.storage.retrieve('tags')))
+  /**
+   * style
+   */
+
+  findAllStyles(): Array<SysTags> {
+    return this.retrieveStyles()
+  }
+
+  findStyle(_id: string): SysTags | undefined {
+    let _styles = this.retrieveStyles()
+    let found = _.find(_styles, (style) => {
+      return _id === style.id
+    })
+    if (found) {
+      return found
+    }
+    return undefined
+  }
+
+  deleteStyle(_style: string): Array<SysTags> {
+    let _styles = this.retrieveStyles()
+    _.remove(_styles, (style) => {
+      return _style === style.id
+    })
+    this.storage.store('styles', _styles)
+    return _styles
+  }
+
+  storeStyle(_style: SysTags): void {
+    let _styles = this.retrieveStyles()
+    let found = _.find(_styles, (style) => {
+      return _style.id === style.id
+    })
+    if (found) {
+      found.id = _style.id
+      found.tags = _style.tags
+    } else {
+      _styles.push(_style)
+    }
+
+    this.storage.store('styles', _styles)
+  }
+
+  private retrieveStyles(): Array<SysTags> {
+    return JSON.parse(JSON.stringify(this.storage.retrieve('styles')))
+  }
+
+  /**
+   * graph
+   */
+
+  private retrieveGraphs(): Array<SysGraph> {
+    return JSON.parse(JSON.stringify(this.storage.retrieve('graphs')))
   }
 
   deleteGraph(_graph: SysGraph): Array<SysGraph> {
@@ -45,11 +93,6 @@ export class DatabaseService {
     })
     this.storage.store('graphs', _graphs)
     return _graphs
-  }
-
-  findAllTags(): Array<SysTag> {
-    let _tags = this.retrieveTags()
-    return _tags
   }
 
   findAllGraphs(): Array<SysGraph> {
@@ -75,6 +118,7 @@ export class DatabaseService {
     })
     if (found) {
       found.id = _graph.id
+      found.style = _graph.style
       found.label = _graph.label
       found.edges = _graph.edges
       found.nodes = _graph.nodes
@@ -87,9 +131,5 @@ export class DatabaseService {
 
   storePreferences(_preferences: SysPreference): void {
     this.storage.store('preferences', _preferences)
-  }
-
-  storeTags(_tags: Array<SysTag>): void {
-    this.storage.store('tags', _tags)
   }
 }

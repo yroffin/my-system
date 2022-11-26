@@ -1,6 +1,5 @@
 <p-contextMenu #cm [target]="area" [model]="items"></p-contextMenu>
-<p-toast></p-toast>
-
+<p-toast position="bottom-center" key="bc"></p-toast>
 
 <span *ngIf="preferences.info" class="cytoscape-selector">
     <span class="field-checkbox">
@@ -15,6 +14,9 @@
     </span>
     <span class="field-checkbox">
         <p>{{selectorDisplay}}</p>
+    </span>
+    <span class="field-checkbox">
+        <p>style: {{currentStyle}}</p>
     </span>
 </span>
 
@@ -148,6 +150,24 @@
     </ng-template>
 </p-dialog>
 
+<p-dialog header="Change style" [(visible)]="displayChangeStyle" [modal]="true" (onHide)="onHide()" [maximizable]="true"
+    [style]="{width: '45vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <div class="grid p-fluid">
+        <div class="col-12">
+            <div pTooltip="Tags" tooltipPosition="top">
+                <p-dropdown scrollHeight="120px" [options]="captureData.styles" [(ngModel)]="captureData.style"
+                    [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyChangeStyle(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
 <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
     [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
     <p-splitter [style]="{'height': '100%'}" *ngIf="!captureData.isAlias && captureData.editable">
@@ -184,11 +204,6 @@
     [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
     <p-chart type="polarArea" [data]="dataTagStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
     </p-chart>
-</p-dialog>
-
-<p-dialog header="Drag and drop file to update style" [modal]="true" [(visible)]="displayStyle" [maximizable]="true"
-    [breakpoints]="{'960px': '50vw'}" [style]="{width: '60vw', height: '50vw'}" [draggable]="false" [resizable]="false">
-    <pre dropZoneDirective (fileDropped)="onFileDropped($event)">{{tags}}</pre>
 </p-dialog>
 
 <p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"

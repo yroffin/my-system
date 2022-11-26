@@ -43,6 +43,17 @@
     },
     {
         "selector": "node",
+        "label": "internal/cross",
+        "style": {
+            "css": {
+                "shape": "rectangle",
+                "height": "32px",
+                "width": "32px"
+            }
+        }
+    },
+    {
+        "selector": "node",
         "label": "azure/aks/deployment/pod",
         "style": {
             "css": {

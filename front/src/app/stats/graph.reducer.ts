@@ -12,6 +12,7 @@ export const graphsReducer = createReducer(
 export const initialGraphState: SysGraph = {
     id: "default",
     label: "default",
+    style: "default",
     nodes: [],
     edges: []
 }

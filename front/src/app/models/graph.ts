@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 export interface SysGraph {
     id: string;
     label: string;
+    style: string;
     nodes: SysNode[];
     edges: SysEdge[];
 }
@@ -30,9 +31,4 @@ export interface SysEdge {
     tag?: string;
 }
 
-export interface SysTag {
-    id: string;
-    label: string;
-    selector: string;
-    style: any
-}
+

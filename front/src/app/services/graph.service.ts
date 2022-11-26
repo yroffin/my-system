@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
-import { SysEdge, SysGraph, SysNode, SysTag } from '../models/graph';
+import { SysEdge, SysGraph, SysNode } from '../models/graph';
 import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
 import { NGXLogger } from 'ngx-logger';
 import { Base16Service } from './base16.service';
 import { MessageService } from 'primeng/api';
 import { _INITIAL_REDUCERS } from '@ngrx/store/src/tokens';
+import { SysTag } from '../models/style';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
@@ -34,14 +35,6 @@ export class GraphService {
 
     saveGraph(_graph: SysGraph): void {
         this.databaseService.storeGraph(_graph)
-    }
-
-    getAllTags(): Array<SysTag> {
-        return this.databaseService.findAllTags()
-    }
-
-    saveTags(_tags: Array<SysTag>): void {
-        this.databaseService.storeTags(_tags)
     }
 
     private outputNodes(graph: SysGraph | undefined): any[] {
@@ -87,7 +80,7 @@ export class GraphService {
     // Build a unniq instance of each edge key
     private computeInstance(hash: any, key: string): any {
         if (hash[key]) {
-            hash[key].count ++
+            hash[key].count++
         } else {
             hash[key] = {
                 count: 1
@@ -101,7 +94,7 @@ export class GraphService {
     private buildId(hash: any, edge: any): string {
         let uniqInstance = this.computeInstance(hash, `${edge.source}:${edge.target}`)
         let labelInstance = ""
-        if(uniqInstance.count > 1) {
+        if (uniqInstance.count > 1) {
             labelInstance = `@${uniqInstance.count - 1}`
         }
         return `${edge.source}:${edge.target}${labelInstance}`
@@ -116,7 +109,7 @@ export class GraphService {
         xml.push(`<creator>Gexf.net</creator>`);
         xml.push(`<description>A hello world! file</description>`);
         xml.push(`</meta>`);
-        xml.push(`<graph mode="static" defaultedgetype="directed">`);
+        xml.push(`<graph mode="static" defaultedgetype="directed" style="${graph?.style}">`);
         xml.push(`<nodes>`);
         _.each(_.sortBy(this.outputNodes(graph), "uid"), (node) => {
             let endtag = ` />`
@@ -177,7 +170,7 @@ export class GraphService {
         let xml = [];
         xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
         xml.push(`<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">`);
-        xml.push(`<graph id="G" edgedefault="undirected">`);
+        xml.push(`<graph id="G" edgedefault="undirected" style="${graph?.style}">`);
         _.each(this.outputNodes(graph), (node) => {
             let endtag = ` />`
             if (node.cdata) {
@@ -244,11 +237,14 @@ export class GraphService {
                 }
                 let graph: SysGraph = {
                     id: id,
+                    style: "default",
                     label: label,
                     nodes: [],
                     edges: []
                 }
                 _.each(result.gexf.graph, (item) => {
+                    // Read style
+                    graph.style = item['$'].style
                     let index: any = {}
                     this.logger.info("loading nodes", item.nodes)
                     _.each(item.nodes, (nodesHolder) => {
@@ -320,6 +316,7 @@ export class GraphService {
                 }
                 let graph: SysGraph = {
                     id: id,
+                    style: "default",
                     label: label,
                     nodes: [],
                     edges: []
@@ -363,6 +360,7 @@ export class GraphService {
                 let data: String = new String(reader.result);
                 let loadedGraph: SysGraph = {
                     id: id,
+                    style: "default",
                     label: label,
                     nodes: [],
                     edges: []
