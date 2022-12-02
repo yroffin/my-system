@@ -1,11 +1,9 @@
 # About
 
-Simple webapp single page to edit graph, i use it to design all my solution and share with my team graph view of system i support
-
-It's based on
-- angular io
-- cytoscapejs
-- primeng ... just the best app framework for angular
+This tool aim to design complex system with a component view target
+- based on [cytoscapejs](https://js.cytoscape.org)
+- based on [primeng](https://www.primefaces.org/primeng/)
+- based on [json-rules-engine](https://github.com/CacheControl/json-rules-engine)
 
 PS : all data is stored in browser local storage
 
@@ -22,7 +20,11 @@ In graph editor simply grad and drop sample.gexf onto graph
 
 ![Alt text](front/demo/drag.PNG "graph editor")
 
-Last actoin could be style import with style editot (like sample.gexf drag and drop style.json file)
+Last action could be :
+- style import by draging style.json sample file
+- ruleset import by draging rules.json sample file
+
+And then change graph properties by selecting new style and new ruleset
 
 ![Alt text](front/demo/style.PNG "style editor")
 

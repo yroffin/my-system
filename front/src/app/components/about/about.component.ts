@@ -19,10 +19,20 @@ export class AboutComponent implements OnInit {
   This tool aim to design complex system with a component view target
   - based on [cytoscapejs](https://js.cytoscape.org)
   - based on [primeng](https://www.primefaces.org/primeng/)
+  - based on [json-rules-engine](https://github.com/CacheControl/json-rules-engine)
 
   I used it on my own to design my system
 
-  ## November 2022
+  ## December 2022 : version 1.2.x
+
+  ### Features releases
+
+  - Add ruleset manager to check graph integrity
+    - ex: check each node having some tag
+    - ex: check label naming rule
+    - etc ...
+
+  ## November 2022 : version 1.1.x
 
   ### Features releases
 

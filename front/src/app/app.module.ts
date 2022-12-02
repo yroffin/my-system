@@ -34,6 +34,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { BadgeModule } from 'primeng/badge';
 
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -64,6 +65,8 @@ import { AboutComponent } from './components/about/about.component';
 import { ThreejsComponent } from './components/threejs/threejs.component';
 import { StyleSelectorComponent } from './components/style-selector/style-selector.component';
 import { styleReducer, stylesReducer } from './stats/style.reducer';
+import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
+import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +80,9 @@ import { styleReducer, stylesReducer } from './stats/style.reducer';
     PreferenceComponent,
     AboutComponent,
     ThreejsComponent,
-    StyleSelectorComponent
+    StyleSelectorComponent,
+    RuleSelectorComponent,
+    RuleViewerComponent
   ],
   imports: [
     BrowserModule,
@@ -131,6 +136,7 @@ import { styleReducer, stylesReducer } from './stats/style.reducer';
     ChartModule,
     TooltipModule,
     ToggleButtonModule,
+    BadgeModule,
     StoreModule.forRoot({
       graphs: graphsReducer,
       graph: graphReducer,

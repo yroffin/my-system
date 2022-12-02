@@ -89,7 +89,7 @@ export class ThreejsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.clearScene()
       this.startRenderingLoop();
 
-      let _graph = this.graphsService.getGraph(this.id + "")
+      let _graph = this.graphsService.findOne(this.id + "")
       if (_graph) {
         this.store.dispatch(retrievedGraph({ graph: _graph }))
       }

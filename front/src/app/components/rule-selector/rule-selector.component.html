@@ -1,0 +1,61 @@
+<div class="card" dropZoneDirective (fileDropped)="onFileDropped($event)">
+    <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+        </ng-template>
+
+        <ng-template pTemplate="right">
+        </ng-template>
+    </p-toolbar>
+
+    <p-toast position="bottom-center" key="bc"></p-toast>
+    <p-toast position="left-center" key="lc"></p-toast>
+
+    <p-table #myDataset [value]="rules" [rows]="10" [paginator]="true" [globalFilterFields]="['label']"
+        responsiveLayout="scroll" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Manage Datasets</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="type">Type <p-sortIcon field="type"></p-sortIcon>
+                </th>
+                <th pSortableColumn="size">Size <p-sortIcon field="size"></p-sortIcon>
+                </th>
+                <th>Action(s)
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-dataset>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="dataset"></p-tableCheckbox>
+                </td>
+                <td>{{dataset.id}}</td>
+                <td>{{dataset.type}}</td>
+                <td>{{dataset.size}}</td>
+                <td>
+                    <button pButton pRipple pTooltip="Remove this dataset" tooltipPosition="top" icon="pi pi-trash"
+                        (click)="confirm($event, dataset)" class="p-button-danger"></button>
+                    <span>&nbsp;</span>
+                    <button pButton pRipple pTooltip="Select this dataset" tooltipPosition="top" icon="pi pi-sign-out"
+                        (click)="select(dataset)"></button>
+                    <span>&nbsp;</span>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-confirmPopup></p-confirmPopup>

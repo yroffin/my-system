@@ -70,7 +70,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    let graphs = this.graphsService.getGraphs("Default")
+    let graphs = this.graphsService.findAll()
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 

@@ -119,6 +119,7 @@ export class DatabaseService {
     if (found) {
       found.id = _graph.id
       found.style = _graph.style
+      found.rules = _graph.rules
       found.label = _graph.label
       found.edges = _graph.edges
       found.nodes = _graph.nodes
