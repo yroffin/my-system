@@ -59,6 +59,7 @@ export class GraphSelectorComponent implements OnInit {
         return {
           id: graph.id,
           style: graph.style,
+          rules: graph.rules,
           label: graph.label,
           nodes: graph.nodes,
           edges: graph.edges
@@ -100,6 +101,7 @@ export class GraphSelectorComponent implements OnInit {
       this.databaseService.storeGraph({
         id: name,
         style: "default",
+        rules: "default",
         label: name,
         edges: [],
         nodes: []
@@ -120,7 +122,7 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   gexf(_graph: SysGraph): void {
-    let graph = this.graphsService.getGraph(_graph.id + "")
+    let graph = this.graphsService.findOne(_graph.id + "")
     this.exportData = this.graphsService.toGexf(graph)
     this.exportDataHtml = this.exportData.join('\n')
     this.clipboardService.copyTextToClipboard(this.exportData.join('\n'))

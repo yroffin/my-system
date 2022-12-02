@@ -49,7 +49,8 @@
     "chart.js": "3.9.1",
     "three": "0.146.0",
     "three-orbitcontrols-ts": "0.1.2",
-    "three-text-geometry": "0.0.0"
+    "three-text-geometry": "0.0.0",
+    "json-rules-engine": "6.1.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.1.3",

@@ -3,6 +3,7 @@ import { SysPreference } from '../models/preference';
 import { retrievedPreferences } from './preference.actions';
 
 export const initialPreferencesState: SysPreference = {
+    id: "default",
     grid: false,
     info: false,
     full: true,

@@ -4,6 +4,7 @@ export interface SysGraph {
     id: string;
     label: string;
     style: string;
+    rules: string;
     nodes: SysNode[];
     edges: SysEdge[];
 }

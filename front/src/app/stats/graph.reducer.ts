@@ -13,6 +13,7 @@ export const initialGraphState: SysGraph = {
     id: "default",
     label: "default",
     style: "default",
+    rules: "default",
     nodes: [],
     edges: []
 }

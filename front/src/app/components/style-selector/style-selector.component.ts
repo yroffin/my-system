@@ -55,7 +55,7 @@ export class StyleSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let styles = this.styleService.getStyles()
+    let styles = this.styleService.findAll()
     this.store.dispatch(retrievedStyleList({ styles }))
   }
 
@@ -73,23 +73,25 @@ export class StyleSelectorComponent implements OnInit {
   }
 
   selectStyle(_style: SysTags): void {
-    this.selectedStyle = this.styleService.getStyle(_style.id)
+    this.selectedStyle = this.styleService.findOne(_style.id)
     this.logger.info(this.selectedStyle)
     this.displayStyle = true
   }
 
   deleteStyle(_style: SysTags): void {
-    let styles = this.styleService.deleteStyle(_style)
+    let styles = this.styleService.delete(_style.id)
     this.store.dispatch(retrievedStyleList({ styles }))
   }
 
   openNew(name?: string): void {
     if (name) {
-      this.styleService.saveStyle({
+      this.styleService.store({
         id: name,
         tags: []
+      }, (entity) => {
+        entity.tags = []
       })
-      let styles = this.styleService.getStyles()
+      let styles = this.styleService.findAll()
       this.logger.info(styles)
       this.store.dispatch(retrievedStyleList({ styles }))
     }
@@ -104,16 +106,20 @@ export class StyleSelectorComponent implements OnInit {
   }
 
   onFileStyleDropped(event: any): void {
+    let style = event[0].name
     this.messageService.add({
-      key: 'bc', severity: 'info', summary: 'Upload/Style', detail: `Filename ${event[0].name}`
+      key: 'bc', severity: 'info', summary: 'Upload/Style', detail: `Filename ${style}`
     });
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
-      if (this.selectedStyle) {
-        this.selectedStyle.tags = <Array<SysTag>>JSON.parse(reader.result + "")
-        this.styleService.saveStyle(this.selectedStyle)
-        this.store.dispatch(retrievedStyle({ style: this.selectedStyle }))
-      }
+      let tags: Array<SysTag> = JSON.parse(reader.result + "")
+      this.styleService.store({
+        id: style,
+        tags
+      }, (entity) => {
+        entity.tags = tags
+      })
+      this.store.dispatch(retrievedStyle({ style: style }))
     });
     reader.readAsText(event[0])
   }

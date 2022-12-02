@@ -7,34 +7,21 @@ import { Parser } from 'xml2js';
 import { NGXLogger } from 'ngx-logger';
 import { Base16Service } from './base16.service';
 import { MessageService } from 'primeng/api';
-import { _INITIAL_REDUCERS } from '@ngrx/store/src/tokens';
-import { SysTag } from '../models/style';
+import { LocalStorageService } from 'ngx-webstorage';
+import { DatabaseEntity } from './database-entity.service';
 const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
-export class GraphService {
+export class GraphService extends DatabaseEntity<SysGraph> {
+
     constructor(
-        private messageService: MessageService,
-        private databaseService: DatabaseService,
+        private _logger: NGXLogger,
+        private _storage: LocalStorageService,
         private base16: Base16Service,
-        private logger: NGXLogger
-    ) { }
-
-    getGraphs(_filter: string): Array<SysGraph> {
-        let graphs = this.databaseService.findAllGraphs()
-        let result: Array<SysGraph> = new Array<SysGraph>()
-        _.each(graphs, (graph) => {
-            result.push(graph)
-        })
-        return result
-    }
-
-    getGraph(id: string): SysGraph | undefined {
-        return this.databaseService.findGraph(id)
-    }
-
-    saveGraph(_graph: SysGraph): void {
-        this.databaseService.storeGraph(_graph)
+        private messageService: MessageService
+    ) {
+        super()
+        this.init("graphs", this._storage, this._logger)
     }
 
     private outputNodes(graph: SysGraph | undefined): any[] {
@@ -101,7 +88,7 @@ export class GraphService {
     }
 
     toGexf(graph?: SysGraph): Array<string> {
-        this.logger.info("alias", graph)
+        this._logger.info("toGexf", graph)
         let xml = [];
         xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
         xml.push(`<gexf xmlns="http://gexf.net/1.2" version="1.2">`);
@@ -228,16 +215,17 @@ export class GraphService {
     }
 
     async loadGraphGexf(id: string, label: string, data: string): Promise<SysGraph> {
-        this.logger.info(`loadGraphGexf: ${id}`)
+        this._logger.info(`loadGraphGexf: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
-                    this.logger.error(err)
+                    this._logger.error(err)
                     throw err;
                 }
                 let graph: SysGraph = {
                     id: id,
                     style: "default",
+                    rules: "default",
                     label: label,
                     nodes: [],
                     edges: []
@@ -246,7 +234,7 @@ export class GraphService {
                     // Read style
                     graph.style = item['$'].style
                     let index: any = {}
-                    this.logger.info("loading nodes", item.nodes)
+                    this._logger.info("loading nodes", item.nodes)
                     _.each(item.nodes, (nodesHolder) => {
                         _.each(nodesHolder.node, (node) => {
                             let _node: any = {
@@ -270,7 +258,7 @@ export class GraphService {
                             graph.nodes.push(_node);
                         });
                     });
-                    this.logger.info("loading edges", item.edges)
+                    this._logger.info("loading edges", item.edges)
                     _.each(item.edges, (edgesHolder) => {
                         _.each(edgesHolder.edge, (edge) => {
                             let _edge: any = {
@@ -282,18 +270,18 @@ export class GraphService {
                                 tag: edge['$'].tag ? edge['$'].tag : ""
                             }
                             if (!index[_edge.source]) {
-                                this.logger.error("source unkown", edge['$'])
+                                this._logger.error("source unkown", edge['$'])
                                 throw new Error(`source unkown ${edge['$'].source}`)
                             }
                             if (!index[_edge.target]) {
-                                this.logger.error("target unkown", edge['$'])
+                                this._logger.error("target unkown", edge['$'])
                                 throw new Error(`target unkown ${edge['$'].target}`)
                             }
                             graph.edges.push(_edge);
                         });
                     });
                 })
-                this.logger.info(graph)
+                this._logger.info(graph)
                 resolve(graph);
             })
         })
@@ -308,7 +296,7 @@ export class GraphService {
     }
 
     async loadGraphMl(id: string, label: string, data: string): Promise<SysGraph> {
-        this.logger.info(`loadGraphMl: ${id}`)
+        this._logger.info(`loadGraphMl: ${id}`)
         return new Promise<SysGraph>((resolve) => {
             parser.parseString(data, (err, result) => {
                 if (err) {
@@ -317,6 +305,7 @@ export class GraphService {
                 let graph: SysGraph = {
                     id: id,
                     style: "default",
+                    rules: "default",
                     label: label,
                     nodes: [],
                     edges: []
@@ -361,6 +350,7 @@ export class GraphService {
                 let loadedGraph: SysGraph = {
                     id: id,
                     style: "default",
+                    rules: "default",
                     label: label,
                     nodes: [],
                     edges: []

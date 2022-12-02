@@ -31,6 +31,13 @@ export class AppComponent implements OnDestroy {
                 ]
             },
             {
+                label: 'Rule',
+                icon: 'pi pi-fw pi-box',
+                items: [
+                    { label: 'Rule(s)', icon: 'pi pi-fw pi-book', routerLink: '/rules' }
+                ]
+            },
+            {
                 label: 'Style',
                 icon: 'pi pi-fw pi-box',
                 items: [
