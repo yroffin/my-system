@@ -21,14 +21,11 @@ export class RulesService extends DatabaseEntity<SysRules> {
   }
 
   load(id: string, rules: SysRule[]): void {
-    this.reset()
-    _.each(rules, (rule: SysRule) => {
-      this.store({
-        id,
-        rules: rules
-      }, (entity) => {
-        entity.rules = rules
-      })
+    this.store({
+      id,
+      rules: rules
+    }, (entity) => {
+      entity.rules = rules
     })
   }
 

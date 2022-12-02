@@ -15,7 +15,7 @@
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
         <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-between">
-                <h5 class="m-0">Manage Datasets</h5>
+                <h5 class="m-0">Manage Rulesets</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" placeholder="Search..." />
@@ -37,20 +37,20 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-dataset>
+        <ng-template pTemplate="body" let-rule>
             <tr>
                 <td>
-                    <p-tableCheckbox [value]="dataset"></p-tableCheckbox>
+                    <p-tableCheckbox [value]="rule"></p-tableCheckbox>
                 </td>
-                <td>{{dataset.id}}</td>
-                <td>{{dataset.type}}</td>
-                <td>{{dataset.size}}</td>
+                <td>{{rule.id}}</td>
+                <td>{{rule.type}}</td>
+                <td>{{rule.size}}</td>
                 <td>
-                    <button pButton pRipple pTooltip="Remove this dataset" tooltipPosition="top" icon="pi pi-trash"
-                        (click)="confirm($event, dataset)" class="p-button-danger"></button>
+                    <button pButton pRipple pTooltip="Remove this rule" tooltipPosition="top" icon="pi pi-trash"
+                        (click)="confirm($event, rule)" class="p-button-danger"></button>
                     <span>&nbsp;</span>
-                    <button pButton pRipple pTooltip="Select this dataset" tooltipPosition="top" icon="pi pi-sign-out"
-                        (click)="select(dataset)"></button>
+                    <button pButton pRipple pTooltip="Select this rule" tooltipPosition="top" icon="pi pi-sign-out"
+                        (click)="select(rule)"></button>
                     <span>&nbsp;</span>
                 </td>
             </tr>

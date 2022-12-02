@@ -32,7 +32,7 @@ var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
 {
-  window.localStorage['debug'] = "json-rules-engine"
+  // window.localStorage['debug'] = "json-rules-engine"
 }
 
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
@@ -43,14 +43,11 @@ import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
 import { NGXLogger } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
-import { DatabaseService } from 'src/app/services/database.service';
 import { SysPreference } from 'src/app/models/preference';
 import { StyleService } from 'src/app/services/style.service';
 import { SysTags } from 'src/app/models/style';
 import { retrievedStyle } from 'src/app/stats/style.actions';
-import { _ACTION_TYPE_UNIQUENESS_CHECK } from '@ngrx/store/src/tokens';
 import { RulesService } from 'src/app/services/rules.service';
-import { ThisReceiver } from '@angular/compiler';
 import { PreferenceService } from 'src/app/services/preferences.service';
 
 declare var cytoscape: any
@@ -1186,17 +1183,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onFileStyleDropped(event: any): void {
-    let style: string
-    if (!this.currentStyle) {
-      this.messageService.add({
-        key: 'bc', severity: 'warning', summary: 'No style selected'
-      });
-      return
-    }
-    style = this.currentStyle
+    let style: string = event[0].name
+    this.currentStyle = style
+
     this.messageService.add({
       key: 'bc', severity: 'info', summary: 'Upload/Style', detail: `Filename ${event[0].name}`
     });
+
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       let save: SysTags = {
@@ -1206,6 +1199,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.styleService.store(save, (entity) => {
         entity.tags = save.tags
       })
+
+      // Apply style and rules
+      this.applyChangeProperties({
+        style: this.currentStyle,
+        rule: this.currentRules
+      })
+
       this.store.dispatch(retrievedStyle({ style: save }))
     });
     reader.readAsText(event[0])
@@ -1213,13 +1213,22 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   onFileRuleDropped(event: any): void {
     let rule = event[0].name
+    this.currentRules = rule
+
     this.messageService.add({
       key: 'bc', severity: 'info', summary: 'Upload/Rule', detail: `Filename ${rule}`
     });
+
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       // Load rule
       this.rulesService.load(rule, JSON.parse(reader.result + ""))
+
+      // Apply style and rules
+      this.applyChangeProperties({
+        style: this.currentStyle,
+        rule: this.currentRules
+      })
     });
     reader.readAsText(event[0])
   }

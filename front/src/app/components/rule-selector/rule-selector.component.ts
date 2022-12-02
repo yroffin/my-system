@@ -32,11 +32,6 @@ export class RuleSelectorComponent implements OnInit {
     let filename = event[0].name
     this.logger.info("Load file", filename)
 
-    let id = event[0].name
-    this.messageService.add({
-      key: 'bc', severity: 'info', summary: 'Drop', detail: `Filename ${event[0].name}`
-    });
-
     let ext: string = ""
     if (filename.endsWith(".json")) {
       ext = "json"
@@ -49,8 +44,15 @@ export class RuleSelectorComponent implements OnInit {
 
     // Data listener
     reader.addEventListener("loadend", async () => {
+      this.messageService.add({
+        key: 'bc', severity: 'info', summary: 'Drop', detail: `Filename ${filename}`
+      });
+
       // Load this rules
+      this.logger.info("UPDATE", filename, JSON.parse(reader.result + ""))
       this.rulesService.load(filename, JSON.parse(reader.result + ""))
+      this.logger.info("REFRESH")
+      this.rules = this.rulesService.findAll()
     });
 
     // Start reading data
