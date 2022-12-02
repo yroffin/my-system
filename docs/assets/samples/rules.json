@@ -1,0 +1,68 @@
+[
+    {
+        "name": "rule 001",
+        "priority": 0,
+        "conditions": {
+            "any": [
+                {
+                    "all": [
+                        {
+                            "fact": "node",
+                            "operator": "equal",
+                            "value": "service E",
+                            "path": "$.data.label"
+                        },
+                        {
+                            "fact": "edges",
+                            "operator": "equal",
+                            "value": 2,
+                            "path": "$.data.outdegree"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "node",
+                            "operator": "equal",
+                            "value": "database A",
+                            "path": "$.data.label"
+                        },
+                        {
+                            "fact": "edges",
+                            "operator": "equal",
+                            "value": 0,
+                            "path": "$.data.outdegree"
+                        }
+                    ]
+                }
+            ]
+        },
+        "event": {
+            "type": "check",
+            "params": {
+                "message": "todo"
+            }
+        }
+    },
+    {
+        "name": "tag on node is not mandatory",
+        "priority": 1,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "node",
+                    "operator": "notEqual",
+                    "value": "",
+                    "path": "$.data.tag"
+                }
+            ]
+        },
+        "event": {
+            "type": "check",
+            "params": {
+                "message": "each node must have a tag"
+            }
+        }
+    }
+]
