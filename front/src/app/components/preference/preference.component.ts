@@ -28,6 +28,7 @@ export class PreferenceComponent implements OnInit {
     this.preferenceService.store(this.preferences, (entity) => {
       entity.full = this.preferences.full
       entity.grid = this.preferences.grid
+      entity.applyRules = this.preferences.applyRules
       entity.info = this.preferences.info
       entity.maxHeight = this.preferences.maxHeight
       entity.maxWidth = this.preferences.maxWidth

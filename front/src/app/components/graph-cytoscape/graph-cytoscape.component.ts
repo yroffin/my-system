@@ -582,6 +582,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionNode = false
+
+    // Apply ruleset on each update
+    if (this.preferences.applyRules) {
+      this.applyRuleset(false)
+    }
   }
 
   applyLabelize(captureData: any): void {
@@ -659,6 +664,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionEdge = false
+
+    // Apply ruleset on each update
+    if (this.preferences.applyRules) {
+      this.applyRuleset(false)
+    }
   }
 
   applyChangeProperties(captureData: any): void {
@@ -686,90 +696,31 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   coreItem = [
     {
-      label: 'Add new node',
-      icon: 'pi pi-plus',
-      command: () => {
-        this.createNewNode()
-      }
-    },
-    {
-      label: 'Ruleset',
+      label: 'Graph',
       icon: 'pi pi-share-alt',
       items: [
         {
           label: 'Apply rules',
           icon: 'pi pi-wallet',
           command: () => {
-            let facts = _.map(this.cy?.nodes(), (node) => {
-              let incomers: cy.EdgeSingular[] = []
-              _.each(node.incomers(), (incomer) => {
-                if (incomer.source().id()) {
-                  incomers.push(incomer)
-                }
-              })
-              let outgoers: cy.EdgeSingular[] = []
-              _.each(node.outgoers(), (outgoer) => {
-                if (outgoer.source().id()) {
-                  outgoers.push(outgoer)
-                }
-              })
-              return {
-                "node": {
-                  "id": node.data().id,
-                  data: {
-                    "id": this.base16.decode(node.data().id),
-                    "label": node.data().label,
-                    "tag": node.data().tag
-                  }
-                },
-                "edges": {
-                  data: {
-                    "incomers": _.map(incomers, (edge) => {
-                      return {
-                        source: edge.source().data().id,
-                        target: edge.target().data().id,
-                        data: {
-                          source: this.base16.decode(edge.source().data().id),
-                          target: this.base16.decode(edge.target().data().id)
-                        }
-                      }
-                    }),
-                    "outgoers": _.map(outgoers, (edge) => {
-                      return {
-                        source: edge.source().data().id,
-                        target: edge.target().data().id,
-                        data: {
-                          source: this.base16.decode(edge.source().data().id),
-                          target: this.base16.decode(edge.target().data().id)
-                        }
-                      }
-                    }),
-                    "indegree": node.indegree(true),
-                    "outdegree": node.outdegree(true)
-                  }
-                }
-              }
-            })
-
-            // Apply fact
-            this.logger.info("Execute", this.currentRules, facts)
-            this.rulesService.execute(this.currentRules, facts).then((result) => {
-              this.logger.info(result)
-              this.jsonRules = result.treenodes
-              this.currentRulesFail = result.failure.length
-              this.currentRulesSuccess = result.success.length
-              this.displaySidebar = true
-            })
+            this.applyRuleset(true)
           }
-        }
+        },
+        {
+          label: 'Change properties',
+          icon: 'pi pi-wallet',
+          command: () => {
+            this.changeProperties()
+          }
+        },
+        {
+          label: 'Add new node',
+          icon: 'pi pi-plus',
+          command: () => {
+            this.createNewNode()
+          }
+        },
       ]
-    },
-    {
-      label: 'Change properties',
-      icon: 'pi pi-wallet',
-      command: () => {
-        this.changeProperties()
-      }
     },
     {
       label: 'Group',
@@ -996,6 +947,62 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       ]
     }
   ];
+
+  // Apply ruleset
+  applyRuleset(displaySidebar: boolean): void {
+    let nodes = _.map(this.cy?.nodes(), (node) => {
+      return {
+        "element": {
+          "id": node.data().id,
+          "type": "node",
+          data: {
+            "id": this.base16.decode(node.data().id),
+            "label": node.data().label,
+            "tag": node.data().tag
+          }
+        }
+      }
+    })
+
+    let edges = _.map(this.cy?.edges(), (edge) => {
+      return {
+        "element": {
+          "type": "edges",
+          data: {
+            "id": this.base16.decode(edge.data().id),
+            "label": edge.data().label,
+            "tag": edge.data().tag,
+            "source": {
+              "id": this.base16.decode(edge.source().id()),
+              "tag": edge.source().data().tag
+            },
+            "target": {
+              "id": this.base16.decode(edge.target().id()),
+              "tag": edge.target().data().tag
+            }
+          }
+        }
+      }
+    })
+
+    let facts: any[] = []
+    _.each(nodes, (node) => {
+      facts.push(node)
+    })
+    _.each(edges, (edge) => {
+      facts.push(edge)
+    })
+
+    // Apply fact
+    this.logger.info("Execute", this.currentRules, facts)
+    this.rulesService.execute(this.currentRules, facts).then((result) => {
+      this.logger.info(result)
+      this.jsonRules = result.treenodes
+      this.currentRulesFail = result.failure.length
+      this.currentRulesSuccess = result.success.length
+      this.displaySidebar = displaySidebar
+    })
+  }
 
   // Go to alias
   onSelectCurrentAlias(event: any): void {

@@ -5,6 +5,7 @@ export interface SysPreference extends SysEntity {
     grid: boolean;
     info: boolean;
     full: boolean;
+    applyRules: boolean;
     maxWidth: number;
     maxHeight: number;
 }

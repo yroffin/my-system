@@ -1,38 +1,54 @@
 [
     {
-        "name": "rule 001",
+        "name": "Each target edge onto a pod must have a defined label",
         "priority": 0,
         "conditions": {
             "any": [
                 {
                     "all": [
                         {
-                            "fact": "node",
+                            "fact": "element",
+                            "path": "$.type",
                             "operator": "equal",
-                            "value": "service E",
-                            "path": "$.data.label"
+                            "value": "edges"
                         },
                         {
-                            "fact": "edges",
+                            "fact": "element",
+                            "path": "$.data.target.tag",
                             "operator": "equal",
-                            "value": 2,
-                            "path": "$.data.outdegree"
+                            "value": "azure/aks/deployment/pod"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.label",
+                            "operator": "equal",
+                            "value": "consume"
                         }
                     ]
                 },
                 {
                     "all": [
                         {
-                            "fact": "node",
+                            "fact": "element",
+                            "path": "$.type",
                             "operator": "equal",
-                            "value": "database A",
-                            "path": "$.data.label"
+                            "value": "edges"
                         },
                         {
-                            "fact": "edges",
+                            "fact": "element",
+                            "path": "$.data.target.tag",
+                            "operator": "notEqual",
+                            "value": "azure/aks/deployment/pod"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
                             "operator": "equal",
-                            "value": 0,
-                            "path": "$.data.outdegree"
+                            "value": "node"
                         }
                     ]
                 }
@@ -41,20 +57,40 @@
         "event": {
             "type": "check",
             "params": {
-                "message": "todo"
+                "message": "target edge onto a pod must have a defined label"
             }
         }
     },
     {
-        "name": "tag on node is not mandatory",
+        "name": "A tag on node is not mandatory",
         "priority": 1,
         "conditions": {
-            "all": [
+            "any": [
                 {
-                    "fact": "node",
-                    "operator": "notEqual",
-                    "value": "",
-                    "path": "$.data.tag"
+                    "all": [
+                        {
+                            "fact": "element",
+                            "operator": "equal",
+                            "value": "node",
+                            "path": "$.type"
+                        },
+                        {
+                            "fact": "element",
+                            "operator": "notEqual",
+                            "value": "",
+                            "path": "$.data.tag"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "operator": "equal",
+                            "value": "edges",
+                            "path": "$.type"
+                        }
+                    ]
                 }
             ]
         },

@@ -38,7 +38,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
         conditions: sysrule.conditions,
         event: sysrule.event,
         onSuccess: (event: Event, almanac: Almanac, ruleResult: RuleResult) => {
-          almanac.factValue('node').then((fact) => {
+          almanac.factValue('element').then((fact) => {
             this._logger.info("SUCCESS", fact)
             collector.push({
               fact,
@@ -47,7 +47,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
           })
         },
         onFailure: (event: Event, almanac: Almanac, ruleResult: RuleResult) => {
-          almanac.factValue('node').then((fact) => {
+          almanac.factValue('element').then((fact) => {
             this._logger.info("FAIL", fact)
             collector.push({
               fact,
