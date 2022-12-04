@@ -28,7 +28,7 @@
     </div>
     <div>
         <div class="flex flex-row-reverse flex-wrap">
-            <div class="flex align-items-center justify-content-center"><i
+            <div (click)="applyRuleset(true)" class="flex align-items-center justify-content-center"><i
                     class="pi pi-thumbs-down mr-4 p-text-secondary" pBadge style="font-size: 2rem"
                     value="{{currentRulesFail}}" pTooltip="Fail ruleset" severity="danger"></i>
             </div>

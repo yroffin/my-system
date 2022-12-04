@@ -1,5 +1,70 @@
 [
     {
+        "name": "Each target edge onto a listener must match a micromatch regexp",
+        "priority": 0,
+        "conditions": {
+            "any": [
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "edges"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.target.tag",
+                            "operator": "equal",
+                            "value": "listener"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.label",
+                            "operator": "micromatch",
+                            "value": [
+                                "provide",
+                                "ClientID: *"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "edges"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.target.tag",
+                            "operator": "notEqual",
+                            "value": "listener"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "node"
+                        }
+                    ]
+                }
+            ]
+        },
+        "event": {
+            "type": "check",
+            "params": {
+                "message": "target edge onto a pod must have a defined label"
+            }
+        }
+    },
+    {
         "name": "Each target edge onto a pod must have a defined label",
         "priority": 0,
         "conditions": {

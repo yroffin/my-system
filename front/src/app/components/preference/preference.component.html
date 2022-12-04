@@ -12,6 +12,10 @@
         <label for="ny">Run ruleset on each modification</label>
     </div>
     <div class="field-checkbox">
+        <p-inputSwitch [(ngModel)]="preferences.debug" (onChange)="handleChange($event)"></p-inputSwitch>
+        <label for="ny">Debug mode</label>
+    </div>
+    <div class="field-checkbox">
         <p-inputSwitch [(ngModel)]="preferences.full" (onChange)="handleChange($event)"></p-inputSwitch>
         <label for="ny">Export full graph</label>
     </div>

@@ -26,6 +26,7 @@ export class PreferenceService extends DatabaseEntity<SysPreference> {
                 id: "default",
                 full: false,
                 grid: false,
+                debug: false,
                 applyRules: false,
                 info: false,
                 maxWidth: 16384,

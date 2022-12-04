@@ -31,17 +31,13 @@ cy.use(automove);
 var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
-{
-  // window.localStorage['debug'] = "json-rules-engine"
-}
-
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
-import { NGXLogger } from 'ngx-logger';
+import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
 import { SysPreference } from 'src/app/models/preference';
 import { StyleService } from 'src/app/services/style.service';
@@ -967,6 +963,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let edges = _.map(this.cy?.edges(), (edge) => {
       return {
         "element": {
+          "id": edge.data().id,
           "type": "edges",
           data: {
             "id": this.base16.decode(edge.data().id),
@@ -994,9 +991,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     })
 
     // Apply fact
-    this.logger.info("Execute", this.currentRules, facts)
+    this.logger.debug("Execute", this.currentRules, facts)
     this.rulesService.execute(this.currentRules, facts).then((result) => {
-      this.logger.info(result)
+      this.logger.debug(result)
       this.jsonRules = result.treenodes
       this.currentRulesFail = result.failure.length
       this.currentRulesSuccess = result.success.length
@@ -1014,6 +1011,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Go to item
   onSelectItem(item: any): void {
+    this.logger.info("SELECT/ITEM", item)
     // selected node
     let selected = this.cy?.$(`#${item.node.data.uid}`);
     this.cy?.center(selected)
