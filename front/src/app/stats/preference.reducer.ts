@@ -5,6 +5,8 @@ import { retrievedPreferences } from './preference.actions';
 export const initialPreferencesState: SysPreference = {
     id: "default",
     grid: false,
+    applyRules: false,
+    debug: false,
     info: false,
     full: true,
     maxHeight: 16384,

@@ -119,7 +119,8 @@ export class StyleSelectorComponent implements OnInit {
       }, (entity) => {
         entity.tags = tags
       })
-      this.store.dispatch(retrievedStyle({ style: style }))
+      let styles = this.styleService.findAll()
+      this.store.dispatch(retrievedStyleList({ styles: styles }))
     });
     reader.readAsText(event[0])
   }

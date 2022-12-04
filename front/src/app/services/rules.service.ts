@@ -1,11 +1,13 @@
 import * as _ from 'lodash';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Injectable } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
+import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { DatabaseEntity } from './database-entity.service';
 import { SysRule, SysRules } from '../models/rule.model';
 import { Engine, Event, RuleProperties, Almanac, RuleResult, EngineResult } from 'json-rules-engine';
 import { TreeNode } from 'primeng/api';
+import { Base16Service } from './base16.service';
+import * as picomatch from 'picomatch-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -14,26 +16,24 @@ export class RulesService extends DatabaseEntity<SysRules> {
 
   constructor(
     private _logger: NGXLogger,
-    private _storage: LocalStorageService
+    private _storage: LocalStorageService,
+    private base16: Base16Service,
   ) {
     super()
     this.init("rules", this._storage, this._logger)
   }
 
   load(id: string, rules: SysRule[]): void {
-    this.reset()
-    _.each(rules, (rule: SysRule) => {
-      this.store({
-        id,
-        rules: rules
-      }, (entity) => {
-        entity.rules = rules
-      })
+    this.store({
+      id,
+      rules: rules
+    }, (entity) => {
+      entity.rules = rules
     })
   }
 
   ruleFactory(id: string, collector: any[]): RuleProperties[] {
-    this._logger.info("RULE/FACTORY", id)
+    this._logger.debug("RULE/FACTORY", id)
     return _.map(this.findOne(id)?.rules, (sysrule) => {
       let rule: RuleProperties = {
         name: sysrule.name,
@@ -41,8 +41,8 @@ export class RulesService extends DatabaseEntity<SysRules> {
         conditions: sysrule.conditions,
         event: sysrule.event,
         onSuccess: (event: Event, almanac: Almanac, ruleResult: RuleResult) => {
-          almanac.factValue('node').then((fact) => {
-            this._logger.info("SUCCESS", fact)
+          almanac.factValue('element').then((fact) => {
+            this._logger.debug("SUCCESS", fact)
             collector.push({
               fact,
               ruleResult
@@ -50,8 +50,8 @@ export class RulesService extends DatabaseEntity<SysRules> {
           })
         },
         onFailure: (event: Event, almanac: Almanac, ruleResult: RuleResult) => {
-          almanac.factValue('node').then((fact) => {
-            this._logger.info("FAIL", fact)
+          almanac.factValue('element').then((fact) => {
+            this._logger.debug("FAIL", fact)
             collector.push({
               fact,
               ruleResult
@@ -66,7 +66,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
   private fact(engine: Engine, fact: any): Promise<any> {
     return new Promise<any>((resolve) => {
       engine.run(fact).then(({ events }) => {
-        this._logger.info("RESOLVE", fact)
+        this._logger.debug("RESOLVE", fact)
         resolve({
           fact,
           events
@@ -81,14 +81,29 @@ export class RulesService extends DatabaseEntity<SysRules> {
       let collector: any[] = []
       let rules = this.ruleFactory(id, collector)
 
+      // Custom operator
+      engine.addOperator('micromatch', (factValue: any, jsonValues: any) => {
+        if (!_.isString(factValue)) return false
+        let result = false
+        // Only one match is sufficient
+        _.each(jsonValues, (jsonValue) => {
+          let isMatch = picomatch(jsonValue)
+          this._logger.debug(`micromatch: "${factValue}" "${jsonValue}" ${isMatch(factValue)}`)
+          if (isMatch(factValue)) {
+            result = true
+          }
+        })
+        return result
+      })
+
       // Load rules
-      this._logger.info("RULE/LOAD", rules)
+      this._logger.debug("RULE/LOAD", rules)
       _.each(rules, (rule) => {
-        this._logger.info("RULE", rule)
+        this._logger.debug("RULE", rule)
         engine.addRule(rule)
       })
 
-      this._logger.info("FACTS", facts)
+      this._logger.debug("FACTS", facts)
       // Run the engine to evaluate
       let promises = _.map(facts, async (fact) => {
         return await this.fact(engine, fact)
@@ -122,7 +137,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
             "children": _.filter(_.map(collector, (item) => {
               return {
                 "data": {
-                  "uid": item.fact.id,
+                  "uid": this.base16.encode(item.fact.data.id),
                   "id": item.fact.data.id,
                   "label": item.fact.data.label,
                   "tag": item.fact.data.tag,

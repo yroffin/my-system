@@ -31,26 +31,19 @@ cy.use(automove);
 var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
-{
-  window.localStorage['debug'] = "json-rules-engine"
-}
-
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
 import { ActivatedRoute } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
 import { Base16Service } from 'src/app/services/base16.service';
-import { NGXLogger } from 'ngx-logger';
+import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
-import { DatabaseService } from 'src/app/services/database.service';
 import { SysPreference } from 'src/app/models/preference';
 import { StyleService } from 'src/app/services/style.service';
 import { SysTags } from 'src/app/models/style';
 import { retrievedStyle } from 'src/app/stats/style.actions';
-import { _ACTION_TYPE_UNIQUENESS_CHECK } from '@ngrx/store/src/tokens';
 import { RulesService } from 'src/app/services/rules.service';
-import { ThisReceiver } from '@angular/compiler';
 import { PreferenceService } from 'src/app/services/preferences.service';
 
 declare var cytoscape: any
@@ -585,6 +578,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionNode = false
+
+    // Apply ruleset on each update
+    if (this.preferences.applyRules) {
+      this.applyRuleset(false)
+    }
   }
 
   applyLabelize(captureData: any): void {
@@ -662,6 +660,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       .data('label', captureData.label)
       .data('tag', captureData.tag);
     this.displaySelectionEdge = false
+
+    // Apply ruleset on each update
+    if (this.preferences.applyRules) {
+      this.applyRuleset(false)
+    }
   }
 
   applyChangeProperties(captureData: any): void {
@@ -689,90 +692,31 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   coreItem = [
     {
-      label: 'Add new node',
-      icon: 'pi pi-plus',
-      command: () => {
-        this.createNewNode()
-      }
-    },
-    {
-      label: 'Ruleset',
+      label: 'Graph',
       icon: 'pi pi-share-alt',
       items: [
         {
           label: 'Apply rules',
           icon: 'pi pi-wallet',
           command: () => {
-            let facts = _.map(this.cy?.nodes(), (node) => {
-              let incomers: cy.EdgeSingular[] = []
-              _.each(node.incomers(), (incomer) => {
-                if (incomer.source().id()) {
-                  incomers.push(incomer)
-                }
-              })
-              let outgoers: cy.EdgeSingular[] = []
-              _.each(node.outgoers(), (outgoer) => {
-                if (outgoer.source().id()) {
-                  outgoers.push(outgoer)
-                }
-              })
-              return {
-                "node": {
-                  "id": node.data().id,
-                  data: {
-                    "id": this.base16.decode(node.data().id),
-                    "label": node.data().label,
-                    "tag": node.data().tag
-                  }
-                },
-                "edges": {
-                  data: {
-                    "incomers": _.map(incomers, (edge) => {
-                      return {
-                        source: edge.source().data().id,
-                        target: edge.target().data().id,
-                        data: {
-                          source: this.base16.decode(edge.source().data().id),
-                          target: this.base16.decode(edge.target().data().id)
-                        }
-                      }
-                    }),
-                    "outgoers": _.map(outgoers, (edge) => {
-                      return {
-                        source: edge.source().data().id,
-                        target: edge.target().data().id,
-                        data: {
-                          source: this.base16.decode(edge.source().data().id),
-                          target: this.base16.decode(edge.target().data().id)
-                        }
-                      }
-                    }),
-                    "indegree": node.indegree(true),
-                    "outdegree": node.outdegree(true)
-                  }
-                }
-              }
-            })
-
-            // Apply fact
-            this.logger.info("Execute", this.currentRules, facts)
-            this.rulesService.execute(this.currentRules, facts).then((result) => {
-              this.logger.info(result)
-              this.jsonRules = result.treenodes
-              this.currentRulesFail = result.failure.length
-              this.currentRulesSuccess = result.success.length
-              this.displaySidebar = true
-            })
+            this.applyRuleset(true)
           }
-        }
+        },
+        {
+          label: 'Change properties',
+          icon: 'pi pi-wallet',
+          command: () => {
+            this.changeProperties()
+          }
+        },
+        {
+          label: 'Add new node',
+          icon: 'pi pi-plus',
+          command: () => {
+            this.createNewNode()
+          }
+        },
       ]
-    },
-    {
-      label: 'Change properties',
-      icon: 'pi pi-wallet',
-      command: () => {
-        this.changeProperties()
-      }
     },
     {
       label: 'Group',
@@ -1000,6 +944,63 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   ];
 
+  // Apply ruleset
+  applyRuleset(displaySidebar: boolean): void {
+    let nodes = _.map(this.cy?.nodes(), (node) => {
+      return {
+        "element": {
+          "id": node.data().id,
+          "type": "node",
+          data: {
+            "id": this.base16.decode(node.data().id),
+            "label": node.data().label,
+            "tag": node.data().tag
+          }
+        }
+      }
+    })
+
+    let edges = _.map(this.cy?.edges(), (edge) => {
+      return {
+        "element": {
+          "id": edge.data().id,
+          "type": "edges",
+          data: {
+            "id": this.base16.decode(edge.data().id),
+            "label": edge.data().label,
+            "tag": edge.data().tag,
+            "source": {
+              "id": this.base16.decode(edge.source().id()),
+              "tag": edge.source().data().tag
+            },
+            "target": {
+              "id": this.base16.decode(edge.target().id()),
+              "tag": edge.target().data().tag
+            }
+          }
+        }
+      }
+    })
+
+    let facts: any[] = []
+    _.each(nodes, (node) => {
+      facts.push(node)
+    })
+    _.each(edges, (edge) => {
+      facts.push(edge)
+    })
+
+    // Apply fact
+    this.logger.debug("Execute", this.currentRules, facts)
+    this.rulesService.execute(this.currentRules, facts).then((result) => {
+      this.logger.debug(result)
+      this.jsonRules = result.treenodes
+      this.currentRulesFail = result.failure.length
+      this.currentRulesSuccess = result.success.length
+      this.displaySidebar = displaySidebar
+    })
+  }
+
   // Go to alias
   onSelectCurrentAlias(event: any): void {
     // selected node
@@ -1010,6 +1011,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Go to item
   onSelectItem(item: any): void {
+    this.logger.info("SELECT/ITEM", item)
     // selected node
     let selected = this.cy?.$(`#${item.node.data.uid}`);
     this.cy?.center(selected)
@@ -1186,17 +1188,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onFileStyleDropped(event: any): void {
-    let style: string
-    if (!this.currentStyle) {
-      this.messageService.add({
-        key: 'bc', severity: 'warning', summary: 'No style selected'
-      });
-      return
-    }
-    style = this.currentStyle
+    let style: string = event[0].name
+    this.currentStyle = style
+
     this.messageService.add({
       key: 'bc', severity: 'info', summary: 'Upload/Style', detail: `Filename ${event[0].name}`
     });
+
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       let save: SysTags = {
@@ -1206,6 +1204,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.styleService.store(save, (entity) => {
         entity.tags = save.tags
       })
+
+      // Apply style and rules
+      this.applyChangeProperties({
+        style: this.currentStyle,
+        rule: this.currentRules
+      })
+
       this.store.dispatch(retrievedStyle({ style: save }))
     });
     reader.readAsText(event[0])
@@ -1213,13 +1218,22 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   onFileRuleDropped(event: any): void {
     let rule = event[0].name
+    this.currentRules = rule
+
     this.messageService.add({
       key: 'bc', severity: 'info', summary: 'Upload/Rule', detail: `Filename ${rule}`
     });
+
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       // Load rule
       this.rulesService.load(rule, JSON.parse(reader.result + ""))
+
+      // Apply style and rules
+      this.applyChangeProperties({
+        style: this.currentStyle,
+        rule: this.currentRules
+      })
     });
     reader.readAsText(event[0])
   }
