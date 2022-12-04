@@ -75,7 +75,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
     })
   }
 
-  execute(id: string, facts: any): Promise<any> {
+  execute(id: string, facts: any, fail: boolean, success: boolean): Promise<any> {
     return new Promise<any>((resolve) => {
       let engine = new Engine()
       let collector: any[] = []
@@ -146,7 +146,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
                 },
                 "children": []
               }
-            }), (ruleResult) => ruleResult.data.rule === rule.name)
+            }), (ruleResult) => ruleResult.data.rule === rule.name && (ruleResult.data.valid === fail || ruleResult.data.valid === success))
           }
         })
         resolve({

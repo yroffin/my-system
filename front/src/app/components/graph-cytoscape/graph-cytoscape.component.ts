@@ -581,7 +581,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     // Apply ruleset on each update
     if (this.preferences.applyRules) {
-      this.applyRuleset(false)
+      this.applyRuleset(false, false)
     }
   }
 
@@ -663,7 +663,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     // Apply ruleset on each update
     if (this.preferences.applyRules) {
-      this.applyRuleset(false)
+      this.applyRuleset(false, false)
     }
   }
 
@@ -699,7 +699,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           label: 'Apply rules',
           icon: 'pi pi-wallet',
           command: () => {
-            this.applyRuleset(true)
+            this.applyRuleset(true, false)
           }
         },
         {
@@ -945,7 +945,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   ];
 
   // Apply ruleset
-  applyRuleset(displaySidebar: boolean): void {
+  applyRuleset(displaySidebar: boolean, onlyFail: boolean): void {
     let nodes = _.map(this.cy?.nodes(), (node) => {
       return {
         "element": {
@@ -992,13 +992,23 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     // Apply fact
     this.logger.debug("Execute", this.currentRules, facts)
-    this.rulesService.execute(this.currentRules, facts).then((result) => {
-      this.logger.debug(result)
-      this.jsonRules = result.treenodes
-      this.currentRulesFail = result.failure.length
-      this.currentRulesSuccess = result.success.length
-      this.displaySidebar = displaySidebar
-    })
+    if (onlyFail) {
+      this.rulesService.execute(this.currentRules, facts, false, false).then((result) => {
+        this.logger.debug(result)
+        this.jsonRules = result.treenodes
+        this.currentRulesFail = result.failure.length
+        this.currentRulesSuccess = result.success.length
+        this.displaySidebar = displaySidebar
+      })
+    } else {
+      this.rulesService.execute(this.currentRules, facts, false, true).then((result) => {
+        this.logger.debug(result)
+        this.jsonRules = result.treenodes
+        this.currentRulesFail = result.failure.length
+        this.currentRulesSuccess = result.success.length
+        this.displaySidebar = displaySidebar
+      })
+    }
   }
 
   // Go to alias
