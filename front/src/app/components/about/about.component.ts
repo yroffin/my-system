@@ -1,5 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from 'src/app/app.component';
+
+// node.js, the same, but with sugar:
+var md = require('markdown-it')();
 
 @Component({
   selector: 'app-about',
@@ -10,11 +13,18 @@ export class AboutComponent implements OnInit {
 
   about!: string
 
-  constructor() {
+  constructor(
+    private http: HttpClient,
+  ) {
   }
 
   ngOnInit(): void {
-    this.about = AppComponent.aboutMd
+    this.http.get('/assets/about/about.md', {
+      responseType: "text"
+    }
+    ).subscribe((body) => {
+      this.about = md.render(body)
+    })
   }
 
 }
