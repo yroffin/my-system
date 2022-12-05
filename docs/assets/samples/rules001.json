@@ -1,0 +1,98 @@
+[
+    {
+        "name": "Each listener must be labelized with @reference or labelized and an alias",
+        "priority": 0,
+        "conditions": {
+            "any": [
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "node"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.tag",
+                            "operator": "equal",
+                            "value": "listener"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.alias",
+                            "operator": "isUndefinedOrEmpty",
+                            "value": null
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.id",
+                            "operator": "endsWith",
+                            "value": "@reference"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "node"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.tag",
+                            "operator": "equal",
+                            "value": "listener"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.alias",
+                            "operator": "notEmpty",
+                            "value": null
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.id",
+                            "operator": "stringContains",
+                            "value": "@"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "node"
+                        },
+                        {
+                            "fact": "element",
+                            "path": "$.data.tag",
+                            "operator": "notEqual",
+                            "value": "listener"
+                        }
+                    ]
+                },
+                {
+                    "all": [
+                        {
+                            "fact": "element",
+                            "path": "$.type",
+                            "operator": "equal",
+                            "value": "edges"
+                        }
+                    ]
+                }
+            ]
+        },
+        "event": {
+            "type": "check",
+            "params": {
+                "message": "target edge onto a pod must have a defined label"
+            }
+        }
+    }
+]
