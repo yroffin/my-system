@@ -139,6 +139,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let preferences = this.preferenceService.findOne("default")
     if (preferences) {
       this.preferences = preferences
+      this.preferenceService.apply()
     }
 
     this.subscriptions.push(this.graph$.subscribe(graph => {
@@ -247,6 +248,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       }
       this.cy?.endBatch()
       this.cy?.fit()
+
+      // Apply ruleset on each update
+      if (this.preferences.applyRules) {
+        setTimeout(() => {
+          // apply ruleset
+          this.applyRuleset(false, true)
+        }, 1)
+      }
     }))
   }
 

@@ -37,20 +37,6 @@ export class PreferenceComponent implements OnInit {
       entity.maxWidth = this.preferences.maxWidth
     })
 
-    if (this.preferences.debug) {
-      // Get the current config
-      var config = this._logger.getConfigSnapshot();
-      // Updating only one field
-      config.level = NgxLoggerLevel.DEBUG;
-      // Setting the config
-      this._logger.updateConfig(config);
-    } else {
-      // Get the current config
-      var config = this._logger.getConfigSnapshot();
-      // Updating only one field
-      config.level = NgxLoggerLevel.INFO;
-      // Setting the config
-      this._logger.updateConfig(config);
-    }
+    this.preferenceService.apply()
   }
 }
