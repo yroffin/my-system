@@ -96,7 +96,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
         xml.push(`<creator>Gexf.net</creator>`);
         xml.push(`<description>A hello world! file</description>`);
         xml.push(`</meta>`);
-        xml.push(`<graph mode="static" defaultedgetype="directed" style="${graph?.style}">`);
+        xml.push(`<graph mode="static" defaultedgetype="directed" style="${graph?.style}" rules="${graph?.rules}">`);
         xml.push(`<nodes>`);
         _.each(_.sortBy(this.outputNodes(graph), "uid"), (node) => {
             let endtag = ` />`
