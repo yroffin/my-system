@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { SysPreference } from 'src/app/models/preference';
-import { DatabaseService } from 'src/app/services/database.service';
 import { PreferenceService } from 'src/app/services/preferences.service';
 
 @Component({

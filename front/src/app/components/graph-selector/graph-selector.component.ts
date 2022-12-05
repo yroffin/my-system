@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { SysGraph } from 'src/app/models/graph';
 import { ClipboardService } from 'src/app/services/clipboard.service';
-import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
 import { NGXLogger } from 'ngx-logger';
 import { retrievedGraphList } from 'src/app/stats/graph.actions';
@@ -41,7 +40,6 @@ export class GraphSelectorComponent implements OnInit {
     private logger: NGXLogger,
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
-    private databaseService: DatabaseService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private store: Store) {
@@ -69,7 +67,7 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let graphs = this.databaseService.findAllGraphs()
+    let graphs = this.graphsService.findAll()
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
@@ -87,7 +85,7 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   deleteGraph(_graph: SysGraph): void {
-    let graphs = this.databaseService.deleteGraph(_graph)
+    let graphs = this.graphsService.delete(_graph.id)
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 
@@ -98,15 +96,21 @@ export class GraphSelectorComponent implements OnInit {
 
   openNew(name?: string): void {
     if (name) {
-      this.databaseService.storeGraph({
+      this.graphsService.store({
         id: name,
         style: "default",
         rules: "default",
         label: name,
         edges: [],
         nodes: []
+      }, (entity) => {
+        entity.style = "default"
+        entity.rules = "default"
+        entity.label = name
+        entity.edges = []
+        entity.nodes = []
       })
-      let graphs = this.databaseService.findAllGraphs()
+      let graphs = this.graphsService.findAll()
       this.store.dispatch(retrievedGraphList({ graphs }))
     }
   }
@@ -115,7 +119,14 @@ export class GraphSelectorComponent implements OnInit {
     if (_graph) {
       // Load this graph
       this.graphsService.uploadHandler(event.files[0], _graph.id, _graph.id).then((loaded) => {
-        this.databaseService.storeGraph(loaded)
+        this.graphsService.store(loaded,
+          (entity) => {
+            entity.style = "default"
+            entity.rules = "default"
+            entity.label = loaded.label
+            entity.edges = []
+            entity.nodes = []
+          })
         this.displayImport = false
       })
     }

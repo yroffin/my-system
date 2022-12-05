@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { SysGraph } from 'src/app/models/graph';
-import { DatabaseService } from 'src/app/services/database.service';
 import { GraphService } from 'src/app/services/graph.service';
 import { retrievedGraph } from 'src/app/stats/graph.actions';
 import { selectGraph } from 'src/app/stats/graph.selectors';

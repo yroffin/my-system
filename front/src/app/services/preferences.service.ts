@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { SysEdge, SysGraph, SysNode } from '../models/graph';
-import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { Base16Service } from './base16.service';
