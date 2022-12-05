@@ -233,6 +233,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                 _.each(result.gexf.graph, (item) => {
                     // Read style
                     graph.style = item['$'].style
+                    graph.rules = item['$'].rules
                     let index: any = {}
                     this._logger.info("loading nodes", item.nodes)
                     _.each(item.nodes, (nodesHolder) => {
