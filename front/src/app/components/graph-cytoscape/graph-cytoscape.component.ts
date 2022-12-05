@@ -963,7 +963,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           data: {
             "id": this.base16.decode(node.data().id),
             "label": node.data().label,
-            "tag": node.data().tag
+            "tag": node.data().tag,
+            "alias": node.data().alias
           }
         }
       }

@@ -17,9 +17,7 @@ I used it on my own to design my system
     - ex: check each node having some tag
     - ex: check label naming rule
     - etc ...
-
-- Add custom ruleset operator micromatch
-    - In this sample edge label must match any "provide" or "Auth2 client: *"
+- Add custom ruleset operator micromatch (match any array element)
     ```json
         {
             "fact": "element",
@@ -31,7 +29,42 @@ I used it on my own to design my system
             ]
         }
     ```
-
+- Add custom ruleset operator endsWith
+    ```json
+        {
+            "fact": "element",
+            "path": "$.data.id",
+            "operator": "endsWith",
+            "value": "@reference"
+        }
+    ```
+- Add custom ruleset operator stringContains
+    ```json
+        {
+            "fact": "element",
+            "path": "$.data.id",
+            "operator": "stringContains",
+            "value": "@"
+        }
+    ```
+- Add custom ruleset operator notEmpty
+    ```json
+        {
+            "fact": "element",
+            "path": "$.data.alias",
+            "operator": "notEmpty",
+            "value": null
+        }
+    ```
+- Add custom ruleset operator isUndefinedOrEmpty
+    ```json
+        {
+            "fact": "element",
+            "path": "$.data.alias",
+            "operator": "isUndefinedOrEmpty",
+            "value": null
+        }
+    ```
 - Click on failed ruleset will update ruleset status
 - Add debug mode and property "Apply ruleset on save" in preferences
 

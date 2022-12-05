@@ -66,12 +66,53 @@ export class RulesService extends DatabaseEntity<SysRules> {
   private fact(engine: Engine, fact: any): Promise<any> {
     return new Promise<any>((resolve) => {
       engine.run(fact).then(({ events }) => {
-        this._logger.debug("RESOLVE", fact)
+        this._logger.info("RESOLVED", fact, events)
         resolve({
           fact,
           events
         })
       })
+    })
+  }
+
+  operator(engine: Engine): void {
+    // Custom operator micromatch
+    engine.addOperator('micromatch', (factValue: any, jsonValues: any) => {
+      if (!_.isString(factValue)) return false
+      let result = false
+      // Only one match is sufficient
+      _.each(jsonValues, (jsonValue) => {
+        let isMatch = picomatch(jsonValue)
+        this._logger.debug(`micromatch: "${factValue}" "${jsonValue}" ${isMatch(factValue)}`)
+        if (isMatch(factValue)) {
+          result = true
+        }
+      })
+      return result
+    })
+
+    // Custom operator endsWith
+    engine.addOperator('endsWith', (factValue: any, jsonValues: any) => {
+      if (!_.isString(factValue)) return false
+      return factValue.endsWith(jsonValues)
+    })
+
+    // Custom operator stringContains
+    engine.addOperator('stringContains', (factValue: any, jsonValues: any) => {
+      if (!_.isString(factValue)) return false
+      return factValue.indexOf(jsonValues) > 0
+    })
+
+    // Custom operator notEmpty
+    engine.addOperator('notEmpty', (factValue: any, jsonValues: any) => {
+      if (!_.isString(factValue)) return false
+      return factValue.length > 0
+    })
+
+    // Custom operator isUndefinedOrEmpty
+    engine.addOperator('isUndefinedOrEmpty', (factValue: any, jsonValues: any) => {
+      if (_.isString(factValue) && factValue.length === 0) return true
+      return factValue === undefined
     })
   }
 
@@ -82,19 +123,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
       let rules = this.ruleFactory(id, collector)
 
       // Custom operator
-      engine.addOperator('micromatch', (factValue: any, jsonValues: any) => {
-        if (!_.isString(factValue)) return false
-        let result = false
-        // Only one match is sufficient
-        _.each(jsonValues, (jsonValue) => {
-          let isMatch = picomatch(jsonValue)
-          this._logger.debug(`micromatch: "${factValue}" "${jsonValue}" ${isMatch(factValue)}`)
-          if (isMatch(factValue)) {
-            result = true
-          }
-        })
-        return result
-      })
+      this.operator(engine)
 
       // Load rules
       this._logger.debug("RULE/LOAD", rules)
@@ -139,6 +168,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
                 "data": {
                   "uid": this.base16.encode(item.fact.data.id),
                   "id": item.fact.data.id,
+                  "alias": item.fact.data.alias,
                   "label": item.fact.data.label,
                   "tag": item.fact.data.tag,
                   "rule": item.ruleResult.name,

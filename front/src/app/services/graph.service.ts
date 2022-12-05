@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { SysEdge, SysGraph, SysNode } from '../models/graph';
-import { DatabaseService } from './database.service';
 import { Parser } from 'xml2js';
 import { NGXLogger } from 'ngx-logger';
 import { Base16Service } from './base16.service';
@@ -13,6 +12,7 @@ const parser = new Parser();
 
 @Injectable({ providedIn: 'root' })
 export class GraphService extends DatabaseEntity<SysGraph> {
+
 
     constructor(
         private _logger: NGXLogger,
@@ -96,7 +96,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
         xml.push(`<creator>Gexf.net</creator>`);
         xml.push(`<description>A hello world! file</description>`);
         xml.push(`</meta>`);
-        xml.push(`<graph mode="static" defaultedgetype="directed" style="${graph?.style}">`);
+        xml.push(`<graph mode="static" defaultedgetype="directed" style="${graph?.style}" rules="${graph?.rules}">`);
         xml.push(`<nodes>`);
         _.each(_.sortBy(this.outputNodes(graph), "uid"), (node) => {
             let endtag = ` />`
@@ -233,6 +233,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                 _.each(result.gexf.graph, (item) => {
                     // Read style
                     graph.style = item['$'].style
+                    graph.rules = item['$'].rules
                     let index: any = {}
                     this._logger.info("loading nodes", item.nodes)
                     _.each(item.nodes, (nodesHolder) => {

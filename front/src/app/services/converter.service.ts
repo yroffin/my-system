@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
-import { DatabaseService } from './database.service';
-import { Parser } from 'xml2js';
 import { NGXLogger } from 'ngx-logger';
 import { MessageService } from 'primeng/api';
 import { _INITIAL_REDUCERS } from '@ngrx/store/src/tokens';
@@ -10,9 +8,6 @@ import { _INITIAL_REDUCERS } from '@ngrx/store/src/tokens';
 @Injectable({ providedIn: 'root' })
 export class ConverterService {
     constructor(
-        private messageService: MessageService,
-        private databaseService: DatabaseService,
-        private logger: NGXLogger
     ) { }
 
     uploadHandler(file: any): Promise<string> {
