@@ -203,10 +203,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       if (graph.edges) {
         this.graphs.push(this.buildChildEdges(graph))
 
+        let dict: any = {}
         this.cy?.add(_.map(graph.edges, (edge) => {
           let _edge = {
             data: {
-              id: edge.id,
+              id: this.base16.encode(this.graphsService.buildId(dict, {
+                source: this.base16.decode(edge.source),
+                target: this.base16.decode(edge.target)
+              })),
               label: edge.label,
               cdata: edge.cdata,
               source: edge.source || "",
@@ -953,8 +957,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   ];
 
-  // Apply ruleset
-  applyRuleset(displaySidebar: boolean, onlyFail: boolean): void {
+  private buildFacts(): any {
     let nodes = _.map(this.cy?.nodes(), (node) => {
       return {
         "element": {
@@ -975,7 +978,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         "element": {
           "id": edge.data().id,
           "type": "edges",
-          data: {
+          "data": {
             "id": this.base16.decode(edge.data().id),
             "label": edge.data().label,
             "tag": edge.data().tag,
@@ -1000,19 +1003,27 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       facts.push(edge)
     })
 
+    return facts
+  }
+
+  // Apply ruleset
+  applyRuleset(displaySidebar: boolean, onlyFail: boolean): void {
+    // build facts
+    let facts = this.buildFacts()
+
     // Apply fact
     this.logger.debug("Execute", this.currentRules, facts)
     if (onlyFail) {
-      this.rulesService.execute(this.currentRules, facts, false, false).then((result) => {
-        this.logger.debug(result)
+      this.rulesService.jsondataEngine(this.currentRules, facts, false, false).then((result) => {
+        this.logger.info(result)
         this.jsonRules = result.treenodes
         this.currentRulesFail = result.failure.length
         this.currentRulesSuccess = result.success.length
         this.displaySidebar = displaySidebar
       })
     } else {
-      this.rulesService.execute(this.currentRules, facts, false, true).then((result) => {
-        this.logger.debug(result)
+      this.rulesService.jsondataEngine(this.currentRules, facts, false, true).then((result) => {
+        this.logger.info(result)
         this.jsonRules = result.treenodes
         this.currentRulesFail = result.failure.length
         this.currentRulesSuccess = result.success.length

@@ -3,8 +3,8 @@ import { SysEntity } from './entity.model';
 
 export interface SysRule {
     name: string;
-    conditions: any;
-    event: any;
+    sets: any;
+    asserts: any;
 }
 
 export interface SysRules extends SysEntity {

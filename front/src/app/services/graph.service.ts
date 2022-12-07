@@ -78,7 +78,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
 
     // Build a unniq instance of each edge key
     // Ignore 0 index
-    private buildId(hash: any, edge: any): string {
+    buildId(hash: any, edge: any): string {
         let uniqInstance = this.computeInstance(hash, `${edge.source}:${edge.target}`)
         let labelInstance = ""
         if (uniqInstance.count > 1) {
