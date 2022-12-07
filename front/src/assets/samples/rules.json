@@ -1,20 +1,21 @@
 [
     {
-        "name": "All edge targeting a pod must have a label",
+        "name": "Each listener must have a label with @reference or different label and is an alias",
         "sets": [
-            "element[type='edges' and data.target.tag='azure/aks/deployment/pod']"
+            "element[type='node' and data.tag='listener']"
         ],
         "asserts": [
-            "data.label = 'provide'"
+            "data.label = '@reference'"
         ]
     },
     {
-        "name": "All edge targeting a pod must have a label x",
+        "name": "All edge targeting a listener must have a label 'provide' or 'ClientId: *",
         "sets": [
-            "element[type='edges' and data.target.tag='azure/aks/deployment/pod']"
+            "element[type='edges' and data.target.tag='listener']"
         ],
         "asserts": [
-            "data.label = 'provide'"
+            "data.label = 'provide'",
+            "data.label = 'ClientId: *'"
         ]
     }
 ]

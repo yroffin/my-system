@@ -44,27 +44,32 @@ export class RulesService extends DatabaseEntity<SysRules> {
       })
 
       let collector: any[] = []
-      _.each(rules, (rule) => {
+      _.each(rulesets, (rule) => {
         let sets: any[] = []
         // Capture all elements
-        _.each(rule.sets, (set) => {
-          _.each(jsonata(set).evaluate(facts), (elements) => {
+        _.each(rule.sets, (ruleset) => {
+          let query = jsonata(ruleset).evaluate(facts)
+          if (!query.length) {
+            query = [query]
+          }
+          this._logger.info(query)
+          _.each(query, (elements) => {
             sets.push(elements)
           })
         })
         // Parse all assert
-        _.each(rule.asserts, (assert) => {
-          _.each(sets, (element) => {
-            _.each(rule.asserts, (assert) => {
-              let result = jsonata(assert).evaluate(element)
-              collector.push({
-                fact: element,
-                ruleResult: {
-                  name: rule.name,
-                  result
-                }
-              })
-            })
+        _.each(sets, (elements) => {
+          let cumul = false
+          _.each(rule.asserts, (assert) => {
+            let result = jsonata(assert).evaluate(elements)
+            if (result) cumul = true
+          })
+          collector.push({
+            fact: elements,
+            ruleResult: {
+              name: rule.name,
+              result: cumul
+            }
           })
         })
       })
