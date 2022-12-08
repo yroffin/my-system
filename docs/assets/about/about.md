@@ -3,7 +3,7 @@
 This tool aim to design complex system with a component view target
 - based on [cytoscapejs](https://js.cytoscape.org)
 - based on [primeng](https://www.primefaces.org/primeng/)
-- based on [json-rules-engine](https://github.com/CacheControl/json-rules-engine)
+- based on [jsonata](https://docs.jsonata.org/overview.html)
 
 I used it on my own to design my system
 
@@ -17,7 +17,7 @@ I used it on my own to design my system
     - ex: check each node having some tag
     - ex: check label naming rule
     - etc ...
-- Add sample ruleset
+- Add sample ruleset (https://try.jsonata.org/)
 ```json
 [
     {
