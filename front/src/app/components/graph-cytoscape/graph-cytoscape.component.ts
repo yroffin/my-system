@@ -58,6 +58,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;
   displayChangeProperties: boolean = false;
+  displayJsondata: boolean = false;
   onIcon = "pi pi-check"
 
   displayFinder: boolean = false;
@@ -82,6 +83,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   alias: TreeNode[] = [];
   allNodes: any[] = [];
   rowGroupMetadata: any;
+  jsonDataExport: any;
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -272,6 +274,21 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   dockRightItems: MenuItem[] = [
+    {
+      label: 'Export JSONDATA to build rules',
+      tooltipOptions: {
+        tooltipLabel: "Export JSONDATA to build rules",
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15
+      },
+      icon: "assets/dock/export-jsondata.png",
+      command: () => {
+        // build facts
+        this.jsonDataExport = this.buildFacts()
+        this.displayJsondata = true
+      }
+    },
     {
       label: 'Export GEXF to clipboard',
       tooltipOptions: {
@@ -961,7 +978,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let nodes = _.map(this.cy?.nodes(), (node) => {
       return {
         "element": {
-          "id": node.data().id,
           "type": "node",
           "data": {
             "id": this.base16.decode(node.data().id),
@@ -976,7 +992,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let edges = _.map(this.cy?.edges(), (edge) => {
       return {
         "element": {
-          "id": edge.data().id,
           "type": "edges",
           "data": {
             "id": this.base16.decode(edge.data().id),
