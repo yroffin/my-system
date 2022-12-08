@@ -58,7 +58,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;
   displayChangeProperties: boolean = false;
-  displayJsondata: boolean = false;
   onIcon = "pi pi-check"
 
   displayFinder: boolean = false;
@@ -83,7 +82,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   alias: TreeNode[] = [];
   allNodes: any[] = [];
   rowGroupMetadata: any;
-  jsonDataExport: any;
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -285,8 +283,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       icon: "assets/dock/export-jsondata.png",
       command: () => {
         // build facts
-        this.jsonDataExport = this.buildFacts()
-        this.displayJsondata = true
+        let fact = this.buildFacts()
+        this.clipboardService.copyTextToClipboard(fact)
+        this.messageService.add({
+          key: 'bc', severity: 'info', summary: 'Info', detail: `Store JSONDATA in clipboard`
+        });
       }
     },
     {
@@ -1023,7 +1024,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Apply ruleset
   applyRuleset(displaySidebar: boolean, onlyFail: boolean): void {
-    return;
     // build facts
     let facts = this.buildFacts()
 

@@ -251,11 +251,6 @@
         </p-tabView>
     </p-dialog>
 
-    <p-dialog header="JsonData report" [modal]="true" [style]="{width: '65vw', height: '55vw'}"
-        [(visible)]="displayJsondata">
-        <pre>{{jsonDataExport | json}}</pre>
-    </p-dialog>
-
     <p-dialog header="Ruleset report" [modal]="true" [style]="{width: '65vw', height: '55vw'}"
         [(visible)]="displaySidebar">
         <p-treeTable [value]="jsonRules" styleClass="p-treetable-sm">
