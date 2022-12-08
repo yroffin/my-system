@@ -1,6 +1,6 @@
 [
     {
-        "name": "Each listener must have a label with @reference or different label and is an alias",
+        "name": "Each listener must have a label with @reference and not an alias",
         "sets": [
             "element[type='node' and data.tag='listener' and (data.alias ? 'empty' : 'full') = 'full']"
         ],
