@@ -17,54 +17,31 @@ I used it on my own to design my system
     - ex: check each node having some tag
     - ex: check label naming rule
     - etc ...
-- Add custom ruleset operator micromatch (match any array element)
-    ```json
-        {
-            "fact": "element",
-            "path": "$.data.label",
-            "operator": "micromatch",
-            "value": [
-                "provide",
-                "Auth2 client: *"
-            ]
-        }
-    ```
-- Add custom ruleset operator endsWith
-    ```json
-        {
-            "fact": "element",
-            "path": "$.data.id",
-            "operator": "endsWith",
-            "value": "@reference"
-        }
-    ```
-- Add custom ruleset operator stringContains
-    ```json
-        {
-            "fact": "element",
-            "path": "$.data.id",
-            "operator": "stringContains",
-            "value": "@"
-        }
-    ```
-- Add custom ruleset operator notEmpty
-    ```json
-        {
-            "fact": "element",
-            "path": "$.data.alias",
-            "operator": "notEmpty",
-            "value": null
-        }
-    ```
-- Add custom ruleset operator isUndefinedOrEmpty
-    ```json
-        {
-            "fact": "element",
-            "path": "$.data.alias",
-            "operator": "isUndefinedOrEmpty",
-            "value": null
-        }
-    ```
+- Add sample ruleset
+```json
+[
+    {
+        "name": "Each listener must have a label with @reference or different label and is an alias",
+        "sets": [
+            "element[type='node' and data.tag='listener']"
+        ],
+        "asserts": [
+            "data.label = '@reference'"
+        ]
+    },
+    {
+        "name": "All edge targeting a listener must have a label 'provide' or 'ClientId: *",
+        "sets": [
+            "element[type='edges' and data.target.tag='listener']"
+        ],
+        "asserts": [
+            "data.label = 'provide'",
+            "data.label = 'ClientId: *'"
+        ]
+    }
+]
+```
+
 - Click on failed ruleset will update ruleset status
 - Add debug mode and property "Apply ruleset on save" in preferences
 
