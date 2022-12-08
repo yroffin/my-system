@@ -284,7 +284,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       command: () => {
         // build facts
         let fact = this.buildFacts()
-        this.clipboardService.copyTextToClipboard(fact)
+        this.clipboardService.copyTextToClipboard(JSON.stringify(fact))
         this.messageService.add({
           key: 'bc', severity: 'info', summary: 'Info', detail: `Store JSONDATA in clipboard`
         });
