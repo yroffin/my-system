@@ -1023,6 +1023,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Apply ruleset
   applyRuleset(displaySidebar: boolean, onlyFail: boolean): void {
+    return;
     // build facts
     let facts = this.buildFacts()
 
