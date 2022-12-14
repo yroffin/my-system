@@ -19,7 +19,7 @@ export class AppComponent implements OnDestroy {
     constructor(
         private title: Title,
         private store: Store) {
-        this.title.setTitle('MySystem 1.2.3')
+        this.title.setTitle('MySystem 1.2.4')
     }
 
     ngOnInit() {

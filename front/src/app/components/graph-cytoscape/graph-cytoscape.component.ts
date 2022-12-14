@@ -32,7 +32,7 @@ var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
 
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClipboardService } from 'src/app/services/clipboard.service';
 import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
 import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
@@ -105,6 +105,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   coseLayoutOptions?: LayoutOptions = new CoseLayoutOptionsImpl()
 
   id?: string
+  activeQueryParams!: any
+  activeRoute!: string
+
   currentStyle!: string
   currentStyleCounter: number = 0
   items: MenuItem[] = [];
@@ -131,6 +134,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     private rulesService: RulesService,
     private preferenceService: PreferenceService,
     private clipboardService: ClipboardService,
+    private router: Router,
     private logger: NGXLogger,
     private messageService: MessageService,
     private base16: Base16Service,
@@ -253,6 +257,21 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.cy?.endBatch()
       this.cy?.fit()
 
+      // Decode query params
+      this.route.queryParams.subscribe(activeQueryParams => {
+        this.activeQueryParams = activeQueryParams
+        if (this.activeQueryParams.zoom) {
+          let zoom = Number(this.activeQueryParams.zoom)
+          this.cy?.zoom(zoom)
+        }
+        if (this.activeQueryParams['nodeId']) {
+          this.cy?.center(this.cy?.$(`#${this.base16.encode(this.activeQueryParams['nodeId'])}`))
+        }
+        if (this.activeQueryParams['edgeId']) {
+          this.cy?.center(this.cy?.$(`#${this.base16.encode(this.activeQueryParams['edgeId'])}`))
+        }
+      })
+
       // Apply ruleset on each update
       if (this.preferences.applyRules) {
         setTimeout(() => {
@@ -264,11 +283,119 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.id = params['id'];
+    this.items = this.coreItem;
+  }
+
+  ngAfterViewInit(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.cy = cy({
+      container: this.myGraph?.nativeElement,
+      layout: { name: 'preset' },
+      motionBlur: true,
+      selectionType: 'single',
+      boxSelectionEnabled: false
     });
 
-    this.items = this.coreItem;
+    if (this.preferences.grid) {
+      let myCy: any = this.cy
+      myCy?.snapToGrid()
+    }
+
+    this.cy.on('mouseover', (event) => {
+      this.logger.debug(event)
+    });
+
+    this.cy.on('mouseout', (event) => {
+      this.logger.debug(event)
+    });
+
+    this.cy.on('zoom', (event) => {
+      this.activeQueryParams = {
+        nodeId: this.activeQueryParams.nodeId,
+        edgeId: this.activeQueryParams.edgeId,
+        zoom: this.cy?.zoom()
+      }
+      // Apply new query params
+      this.router.navigate([this.activeRoute], {
+        queryParams: this.activeQueryParams
+      });
+    });
+
+    this.cy.on('dblclick', 'node', (event) => {
+      this.onDblClickNode(event, event.target.id(), this.nodeItem)
+    });
+
+    this.cy.on('dblclick', 'edge', (event) => {
+      this.onDblClickEdge(event, event.target.id(), this.edgeItem)
+    });
+
+    this.cy.on('cxttap', 'node', (event) => {
+      this.onRightClickNode(event, event.target.id(), this.nodeItem)
+    });
+
+    this.cy.on('cxttap', 'edge', (event) => {
+      this.onRightClickEdge(event, event.target.id(), this.edgeItem)
+    });
+
+    this.cy.on('click', (event) => {
+      this.onClearAnySelection()
+    });
+
+    this.cy.on('click', 'node', (event) => {
+      this.onLeftClickNode(event, event.target.id(), this.nodeItem)
+    });
+
+    this.cy.on('click', 'edge', (event) => {
+      this.onLeftClickEdge(event, event.target.id(), this.edgeItem)
+    });
+
+    this.cy.on('mouseover', (event) => {
+      //this.logger.info(event)
+    });
+
+    // Decode URL
+    this.route.url.subscribe(activeRoute => {
+      this.activeRoute = activeRoute.join('/')
+    })
+
+    // Decode query params
+    this.route.queryParams.subscribe(activeQueryParams => {
+      this.activeQueryParams = activeQueryParams
+    })
+
+    // Decode params
+    this.route.params.subscribe(params => {
+      this.id = params['label'];
+
+      let _graph = this.graphsService.findOne(this.id + "")
+      if (_graph) {
+        this.store.dispatch(retrievedGraph({ graph: _graph }))
+      }
+    });
+  }
+
+  selectGraphItem(params: any | undefined, items: MenuItem[] | undefined): void {
+    if (params.nodeId) {
+      this.selectorDisplay = params.nodeId
+      this.activeQueryParams = {
+        nodeId: params.nodeId,
+        zoom: this.cy?.zoom()
+      }
+    }
+    if (params.edgeId) {
+      this.selectorDisplay = params.edgeId
+      this.activeQueryParams = {
+        edgeId: params.edgeId,
+        zoom: this.cy?.zoom()
+      }
+    }
+    if (items) {
+      this.items = items
+    }
+    // Apply new query params
+    this.router.navigate([this.activeRoute], {
+      queryParams: this.activeQueryParams
+    });
   }
 
   dockRightItems: MenuItem[] = [
@@ -1288,102 +1415,45 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   currentSelectedNode: any = undefined
   currentSelectedEdge: any = undefined
 
-  ngAfterViewInit(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.cy = cy({
-      container: this.myGraph?.nativeElement,
-      layout: { name: 'preset' },
-      motionBlur: true,
-      selectionType: 'single',
-      boxSelectionEnabled: false
-    });
-
-    if (this.preferences.grid) {
-      let myCy: any = this.cy
-      myCy?.snapToGrid()
-    }
-
-    this.cy.on('mouseover', (event) => {
-      this.logger.debug(event)
-    });
-
-    this.cy.on('mouseout', (event) => {
-      this.logger.debug(event)
-    });
-
-    this.cy.on('dblclick', 'node', (event) => {
-      this.items = this.nodeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onDblClickNode(event)
-    });
-
-    this.cy.on('dblclick', 'edge', (event) => {
-      this.items = this.edgeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onDblClickEdge(event)
-    });
-
-    this.cy.on('cxttap', 'node', (event) => {
-      this.items = this.nodeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onRightClickNode(event)
-    });
-
-    this.cy.on('cxttap', 'edge', (event) => {
-      this.items = this.edgeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onRightClickEdge(event)
-    });
-
-    this.cy.on('click', (event) => {
-      this.onClearAnySelection()
-    });
-
-    this.cy.on('click', 'node', (event) => {
-      this.items = this.nodeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onLeftClickNode(event)
-    });
-
-    this.cy.on('click', 'edge', (event) => {
-      this.items = this.edgeItem;
-      this.selectorDisplay = this.base16.decode(event.target.id())
-      this.onLeftClickEdge(event)
-    });
-
-    this.cy.on('mouseover', (event) => {
-      //this.logger.info(event)
-    });
-
-    this.route.params.subscribe(params => {
-      this.id = params['label'];
-
-      let _graph = this.graphsService.findOne(this.id + "")
-      if (_graph) {
-        this.store.dispatch(retrievedGraph({ graph: _graph }))
-      }
-    });
-  }
-
-  onRightClickNode(event: any): void {
+  onRightClickNode(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select node
+    this.selectGraphItem({
+      nodeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[NODE] rclick', event)
   }
 
-  onRightClickEdge(event: any): void {
+  onRightClickEdge(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select edge
+    this.selectGraphItem({
+      edgeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[EDGE] rclick', event)
   }
 
-  onDblClickNode(event: any): void {
+  onDblClickNode(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select node
+    this.selectGraphItem({
+      nodeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[NODE] dblclick', event)
   }
 
-  onDblClickEdge(event: any): void {
+  onDblClickEdge(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select edge
+    this.selectGraphItem({
+      edgeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[EDGE] dblclick', event)
   }
 
-  onLeftClickNode(event: any): void {
+  onLeftClickNode(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select node
+    this.selectGraphItem({
+      nodeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[NODE] lclick', event)
-    this.selectorDisplay = this.base16.decode(event.target.id())
+
     this.currentSelectedEdge = undefined
     this.currentSelectedNode = event.target[0]
 
@@ -1423,8 +1493,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this._lockedElement = this.currentSelectedNode.locked()
   }
 
-  onLeftClickEdge(event: any): void {
+  onLeftClickEdge(event: any, target: string, items: MenuItem[] | undefined): void {
+    // Select edge
+    this.selectGraphItem({
+      edgeId: this.base16.decode(target)
+    }, items)
     this.logger.info('[EDGE] lclick', event)
+
     this.selectorDisplay = this.base16.decode(event.target.id())
     this.currentSelectedNode = undefined
     this.currentSelectedEdge = event.target[0]
@@ -1465,6 +1540,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           data: {
             id: this.base16.encode(id),
             label: node.data()?.label,
+            alias: this.base16.decode(node.data()?.id),
             cdata: "TODO ...",
             group: "",
             tag: node.data()?.tag

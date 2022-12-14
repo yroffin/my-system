@@ -11,6 +11,10 @@ I used it on my own to design my system
 
 ### Features releases
 
+#### Features release zoom and keep selection
+
+- Store zoom and selection in query param
+
 #### Features release "ruleset"
 
 - Add ruleset manager to check graph integrity
