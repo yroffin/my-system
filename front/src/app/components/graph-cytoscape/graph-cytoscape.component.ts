@@ -107,6 +107,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   id?: string
   activeQueryParams!: any
   activeRoute!: string
+  firstLoad: boolean = false
 
   currentStyle!: string
   currentStyleCounter: number = 0
@@ -151,6 +152,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         return
       }
       // refresh render
+      this.firstLoad = false
       this.cy?.startBatch()
       this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
       this.cy?.nodes().remove()
@@ -265,10 +267,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           this.cy?.zoom(zoom)
         }
         if (this.activeQueryParams['nodeId']) {
-          this.cy?.center(this.cy?.$(`#${this.base16.encode(this.activeQueryParams['nodeId'])}`))
+          // Select node
+          this.selectGraphItem({
+            nodeId: this.activeQueryParams['nodeId']
+          }, this.coreItem, false)
         }
         if (this.activeQueryParams['edgeId']) {
-          this.cy?.center(this.cy?.$(`#${this.base16.encode(this.activeQueryParams['edgeId'])}`))
+          // Select edge
+          this.selectGraphItem({
+            nodeId: this.activeQueryParams['edgeId']
+          }, this.coreItem, false)
         }
       })
 
@@ -374,12 +382,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  selectGraphItem(params: any | undefined, items: MenuItem[] | undefined): void {
+  selectGraphItem(params: any | undefined, items: MenuItem[] | undefined, navigate: boolean): void {
     if (params.nodeId) {
       this.selectorDisplay = params.nodeId
       this.activeQueryParams = {
         nodeId: params.nodeId,
         zoom: this.cy?.zoom()
+      }
+      if (!this.firstLoad) {
+        // Center on this node
+        let selected = this.cy?.$(`#${this.base16.encode(params.nodeId)}`);
+        this.logger.info("Center on node", params.nodeId, selected)
+        this.cy?.center(selected)
+        this.firstLoad = true
       }
     }
     if (params.edgeId) {
@@ -388,14 +403,23 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         edgeId: params.edgeId,
         zoom: this.cy?.zoom()
       }
+      if (!this.firstLoad) {
+        // Center on this edge
+        let selected = this.cy?.$(`#${this.base16.encode(params.edgeId)}`);
+        this.logger.info("Center on node", params.edgeId, selected)
+        this.cy?.center(selected)
+        this.firstLoad = true
+      }
     }
     if (items) {
       this.items = items
     }
-    // Apply new query params
-    this.router.navigate([this.activeRoute], {
-      queryParams: this.activeQueryParams
-    });
+    if (navigate) {
+      // Apply new query params
+      this.router.navigate([this.activeRoute], {
+        queryParams: this.activeQueryParams
+      });
+    }
   }
 
   dockRightItems: MenuItem[] = [
@@ -1179,6 +1203,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   onSelectCurrentAlias(event: any): void {
     // selected node
     let selected = this.cy?.$(`#${this.selectedAlias.key}`);
+    this.logger.info(`Center on alias ${this.selectedAlias.key}`)
     this.cy?.center(selected)
     this.displayFinder = false
   }
@@ -1187,6 +1212,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   onSelectItem(item: any): void {
     this.logger.info("SELECT/ITEM", item)
     // selected node
+    this.logger.info(`Center on item ${item.node.data.uid}`)
     let selected = this.cy?.$(`#${item.node.data.uid}`);
     this.cy?.center(selected)
     this.displaySidebar = false
@@ -1220,6 +1246,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       }
     }])
     let selected = this.cy?.$(`#${id}`);
+    this.logger.info(`Center on created node ${id}`)
     this.cy?.center(selected)
   }
 
@@ -1241,6 +1268,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     ]
     // selected node
     let selected = this.cy?.$(`#${this.selectedNode.key}`);
+    this.logger.info(`Center on select node ${this.selectedNode.key}`)
     this.cy?.center(selected)
     this.displayFinder = false
   }
@@ -1419,7 +1447,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select node
     this.selectGraphItem({
       nodeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[NODE] rclick', event)
   }
 
@@ -1427,7 +1455,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select edge
     this.selectGraphItem({
       edgeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[EDGE] rclick', event)
   }
 
@@ -1435,7 +1463,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select node
     this.selectGraphItem({
       nodeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[NODE] dblclick', event)
   }
 
@@ -1443,7 +1471,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select edge
     this.selectGraphItem({
       edgeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[EDGE] dblclick', event)
   }
 
@@ -1451,7 +1479,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select node
     this.selectGraphItem({
       nodeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[NODE] lclick', event)
 
     this.currentSelectedEdge = undefined
@@ -1497,7 +1525,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Select edge
     this.selectGraphItem({
       edgeId: this.base16.decode(target)
-    }, items)
+    }, items, true)
     this.logger.info('[EDGE] lclick', event)
 
     this.selectorDisplay = this.base16.decode(event.target.id())
