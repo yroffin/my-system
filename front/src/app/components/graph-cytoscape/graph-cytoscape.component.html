@@ -64,225 +64,222 @@
             <div class="flex align-items-center justify-content-center">Current selection: {{selectorDisplay}}</div>
         </div>
     </div>
+</div>
 
-    <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
-        [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
-        <div *ngIf="currentSelectedNode" class="grid p-fluid">
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-bookmark"
-                            pTooltip="Internal ID to override current ID on next save or diagram export"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
-                    <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" label="Labelize"
-                        styleClass="p-button-text" pTooltip="Rebuild id with tag and label" tooltipPosition="top">
-                    </p-button>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
-                </div>
-            </div>
-            <div class="col-12">
-                <div pTooltip="Alias" tooltipPosition="top">
-                    <p-dropdown class="p-col" scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
-                        [style]="{width: '100%'}" defaultLabel="Select an alias" [filter]="true" [showClear]="true"
-                        filterBy="label">
-                    </p-dropdown>
-                </div>
-            </div>
-            <div class="col-12">
-                <div pTooltip="Tags" tooltipPosition="top">
-                    <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                        [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
-                        filterBy="label">
-                    </p-dropdown>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-clone" pTooltip="Group"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="captureData.group" pInputText placeholder="">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon" pTooltip="Locked item ?" tooltipPosition="top">
-                        <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
-                            (onChange)="handleChangeLock($event)"></p-checkbox>
-                    </span>
-                    <input type="text" pInputText placeholder="Locked" readonly="true">
-                </div>
+<p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
+    [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
+    <div *ngIf="currentSelectedNode" class="grid p-fluid">
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-bookmark"
+                        pTooltip="Internal ID to override current ID on next save or diagram export"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
+                <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" label="Labelize"
+                    styleClass="p-button-text" pTooltip="Rebuild id with tag and label" tooltipPosition="top">
+                </p-button>
             </div>
         </div>
-        <ng-template pTemplate="footer">
-            <p-button icon="pi pi-check" (click)="applyNodeUpdate(captureData)" label="Ok" styleClass="p-button-text">
-            </p-button>
-        </ng-template>
-    </p-dialog>
-
-    <p-dialog header="Current edge" [(visible)]="displaySelectionEdge" [modal]="true" (onHide)="onHide()"
-        [maximizable]="true" [style]="{width: '100vw', height: '32vw'}" [draggable]="true" [resizable]="false">
-        <div *ngIf="currentSelectedEdge" class="grid p-fluid">
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
-                </div>
-            </div>
-            <div class="col-12">
-                <div pTooltip="Tags" tooltipPosition="top">
-                    <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
-                        [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
-                        filterBy="label">
-                    </p-dropdown>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Source"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="currentSelectedEdge.data()._source" pInputText placeholder=""
-                        readonly="true">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Target"
-                            tooltipPosition="top"></i></span>
-                    <input type="text" [(ngModel)]="currentSelectedEdge.data()._target" pInputText placeholder=""
-                        readonly="true">
-                </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
             </div>
         </div>
-        <ng-template pTemplate="footer">
-            <p-button icon="pi pi-check" (click)="applyEdgeUpdate(captureData)" label="Ok" styleClass="p-button-text">
-            </p-button>
-        </ng-template>
-    </p-dialog>
-
-    <p-dialog header="Change graph properties" [(visible)]="displayChangeProperties" [modal]="true" (onHide)="onHide()"
-        [maximizable]="true" [style]="{width: '45vw', height: '45vw'}" [draggable]="true" [resizable]="false">
-        <div class="grid p-fluid">
-            <div class="col-12">
-                <div pTooltip="Styles" tooltipPosition="top">
-                    <p-dropdown scrollHeight="120px" [options]="captureData.styles" [(ngModel)]="captureData.style"
-                        [style]="{width: '100%'}" defaultLabel="Select a style" [filter]="true" [showClear]="true"
-                        filterBy="label">
-                    </p-dropdown>
-                </div>
-            </div>
-            <div class="col-12">
-                <div pTooltip="Rules" tooltipPosition="top">
-                    <p-dropdown scrollHeight="120px" [options]="captureData.rules" [(ngModel)]="captureData.rule"
-                        [style]="{width: '100%'}" defaultLabel="Select a ruleset" [filter]="true" [showClear]="true"
-                        filterBy="label">
-                    </p-dropdown>
-                </div>
+        <div class="col-12">
+            <div pTooltip="Alias" tooltipPosition="top">
+                <p-dropdown class="p-col" scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
+                    [style]="{width: '100%'}" defaultLabel="Select an alias" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
             </div>
         </div>
-        <ng-template pTemplate="footer">
-            <p-button icon="pi pi-check" (click)="applyChangeProperties(captureData)" label="Ok"
-                styleClass="p-button-text">
-            </p-button>
+        <div class="col-12">
+            <div pTooltip="Tags" tooltipPosition="top">
+                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                    [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-clone" pTooltip="Group"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="captureData.group" pInputText placeholder="">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon" pTooltip="Locked item ?" tooltipPosition="top">
+                    <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
+                        (onChange)="handleChangeLock($event)"></p-checkbox>
+                </span>
+                <input type="text" pInputText placeholder="Locked" readonly="true">
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyNodeUpdate(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Current edge" [(visible)]="displaySelectionEdge" [modal]="true" (onHide)="onHide()"
+    [maximizable]="true" [style]="{width: '100vw', height: '32vw'}" [draggable]="true" [resizable]="false">
+    <div *ngIf="currentSelectedEdge" class="grid p-fluid">
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
+            </div>
+        </div>
+        <div class="col-12">
+            <div pTooltip="Tags" tooltipPosition="top">
+                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                    [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Source"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data()._source" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-cog" pTooltip="Target"
+                        tooltipPosition="top"></i></span>
+                <input type="text" [(ngModel)]="currentSelectedEdge.data()._target" pInputText placeholder=""
+                    readonly="true">
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyEdgeUpdate(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Change graph properties" [(visible)]="displayChangeProperties" [modal]="true" (onHide)="onHide()"
+    [maximizable]="true" [style]="{width: '45vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <div class="grid p-fluid">
+        <div class="col-12">
+            <div pTooltip="Styles" tooltipPosition="top">
+                <p-dropdown scrollHeight="120px" [options]="captureData.styles" [(ngModel)]="captureData.style"
+                    [style]="{width: '100%'}" defaultLabel="Select a style" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="col-12">
+            <div pTooltip="Rules" tooltipPosition="top">
+                <p-dropdown scrollHeight="120px" [options]="captureData.rules" [(ngModel)]="captureData.rule"
+                    [style]="{width: '100%'}" defaultLabel="Select a ruleset" [filter]="true" [showClear]="true"
+                    filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="applyChangeProperties(captureData)" label="Ok" styleClass="p-button-text">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()" [maximizable]="true"
+    [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
+    <p-splitter [style]="{'height': '100%'}" *ngIf="!captureData.isAlias && captureData.editable">
+        <ng-template pTemplate>
+            <textarea (keyup)="previewNewCData(captureData)" pInputTextarea [style]="{width: '100%', height: '100%'}"
+                [(ngModel)]="captureData.selectElementRawCdata"></textarea>
         </ng-template>
-    </p-dialog>
-
-    <p-dialog header="Documentation" [(visible)]="displayMarkdown" [modal]="true" (onHide)="onHide()"
-        [maximizable]="true" [style]="{width: '60vw', height: '50vw'}" [draggable]="true" [resizable]="false">
-        <p-splitter [style]="{'height': '100%'}" *ngIf="!captureData.isAlias && captureData.editable">
-            <ng-template pTemplate>
-                <textarea (keyup)="previewNewCData(captureData)" pInputTextarea
-                    [style]="{width: '100%', height: '100%'}"
-                    [(ngModel)]="captureData.selectElementRawCdata"></textarea>
-            </ng-template>
-            <ng-template pTemplate>
-                <div [innerHTML]="captureData.selectElementCdata"></div>
-            </ng-template>
-        </p-splitter>
-        <p-splitter [style]="{'height': '100%'}" *ngIf="captureData.isAlias || !captureData.editable">
-            <ng-template pTemplate>
-                <div [innerHTML]="captureData.selectElementCdata"></div>
-            </ng-template>
-        </p-splitter>
-        <ng-template pTemplate="footer">
-            <p-toggleButton [(ngModel)]="captureData.editable" styleClass="p-button-text" onLabel="Editable"
-                offLabel="Readonly" offIcon="pi pi-times" onIcon="{{onIcon}}" *ngIf="!captureData.isAlias">
-            </p-toggleButton>
-            <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text"
-                *ngIf="!captureData.isAlias">
-            </p-button>
+        <ng-template pTemplate>
+            <div [innerHTML]="captureData.selectElementCdata"></div>
         </ng-template>
-    </p-dialog>
+    </p-splitter>
+    <p-splitter [style]="{'height': '100%'}" *ngIf="captureData.isAlias || !captureData.editable">
+        <ng-template pTemplate>
+            <div [innerHTML]="captureData.selectElementCdata"></div>
+        </ng-template>
+    </p-splitter>
+    <ng-template pTemplate="footer">
+        <p-toggleButton [(ngModel)]="captureData.editable" styleClass="p-button-text" onLabel="Editable"
+            offLabel="Readonly" offIcon="pi pi-times" onIcon="{{onIcon}}" *ngIf="!captureData.isAlias">
+        </p-toggleButton>
+        <p-button icon="pi pi-save" (click)="applyNewCData(captureData)" label="Update" styleClass="p-button-text"
+            *ngIf="!captureData.isAlias">
+        </p-button>
+    </ng-template>
+</p-dialog>
 
-    <p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
-        [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
-        <p-chart type="polarArea" [data]="dataGroupStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
-        </p-chart>
-    </p-dialog>
+<p-dialog header="Group statistics" [(visible)]="displayGroupStatistic" [modal]="true" [maximizable]="true"
+    [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <p-chart type="polarArea" [data]="dataGroupStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
+    </p-chart>
+</p-dialog>
 
-    <p-dialog header="Tag statistics" [(visible)]="displayTagStatistic" [modal]="true" [maximizable]="true"
-        [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
-        <p-chart type="polarArea" [data]="dataTagStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
-        </p-chart>
-    </p-dialog>
+<p-dialog header="Tag statistics" [(visible)]="displayTagStatistic" [modal]="true" [maximizable]="true"
+    [style]="{width: '40vw', height: '45vw'}" [draggable]="true" [resizable]="false">
+    <p-chart type="polarArea" [data]="dataTagStatistics" [options]="chartOptions" [style]="{'width': '40%'}">
+    </p-chart>
+</p-dialog>
 
-    <p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
-        [(visible)]="displayExportPng">
-        <img #myPng src=""><img>
-    </p-dialog>
+<p-dialog header="Png file to export" [modal]="true" [style]="{width: '60vw', height: '50vw'}" header="Png export"
+    [(visible)]="displayExportPng">
+    <img #myPng src=""><img>
+</p-dialog>
 
-    <p-dialog header="Find element(s)" [modal]="true" [style]="{width: '55vw', height: '55vw'}"
-        [(visible)]="displayFinder">
-        <p-tabView>
-            <p-tabPanel header="Node(s) and edges(s)">
-                <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
-                    (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
-            </p-tabPanel>
-            <p-tabPanel header="Alias">
-                <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
-                    (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
-            </p-tabPanel>
-        </p-tabView>
-    </p-dialog>
+<p-dialog header="Find element(s)" [modal]="true" [style]="{width: '55vw', height: '55vw'}" [(visible)]="displayFinder">
+    <p-tabView>
+        <p-tabPanel header="Node(s) and edges(s)">
+            <p-tree #myTree [value]="graphs" selectionMode="single" [(selection)]="selectedNode"
+                (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+        <p-tabPanel header="Alias">
+            <p-tree #myTreeAlias [value]="alias" selectionMode="single" [(selection)]="selectedAlias"
+                (onNodeSelect)="onSelectCurrentAlias($event)" [filter]="true" filterMode="strict"></p-tree>
+        </p-tabPanel>
+    </p-tabView>
+</p-dialog>
 
-    <p-dialog header="Ruleset report" [modal]="true" [style]="{width: '65vw', height: '55vw'}"
-        [(visible)]="displaySidebar">
-        <p-treeTable [value]="jsonRules" styleClass="p-treetable-sm">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th style="width:65%">#Id</th>
-                    <th style="width:20%">Label</th>
-                    <th style="width:5%">Ok</th>
-                    <th style="width:5%">Ko</th>
-                    <th style="width:5%">Sel.</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-                <tr>
-                    <td>
-                        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                        {{rowData.id}}
-                    </td>
-                    <td>{{rowData.label}}</td>
-                    <td *ngIf="!rowData.fail && rowData.valid"><i class="pi pi-check"></i></td>
-                    <td *ngIf="!rowData.fail && rowData.valid"></td>
-                    <td *ngIf="!rowData.fail && !rowData.valid"></td>
-                    <td *ngIf="!rowData.fail && !rowData.valid"><i class="pi pi-times"></i></td>
-                    <td *ngIf="rowData.success">
-                        {{rowData.success.length}}
-                    </td>
-                    <td *ngIf="rowData.fail">
-                        {{rowData.fail.length}}
-                    </td>
-                    <td *ngIf="rowData.fail"></td>
-                    <td *ngIf="!rowData.fail" (click)="onSelectItem(rowNode)"><i class="pi pi-search"></i></td>
-                </tr>
-            </ng-template>
-        </p-treeTable>
-    </p-dialog>
+<p-dialog header="Ruleset report" [modal]="true" [style]="{width: '65vw', height: '55vw'}" [(visible)]="displaySidebar">
+    <p-treeTable [value]="jsonRules" styleClass="p-treetable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:65%">#Id</th>
+                <th style="width:20%">Label</th>
+                <th style="width:5%">Ok</th>
+                <th style="width:5%">Ko</th>
+                <th style="width:5%">Sel.</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr>
+                <td>
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    {{rowData.id}}
+                </td>
+                <td>{{rowData.label}}</td>
+                <td *ngIf="!rowData.fail && rowData.valid"><i class="pi pi-check"></i></td>
+                <td *ngIf="!rowData.fail && rowData.valid"></td>
+                <td *ngIf="!rowData.fail && !rowData.valid"></td>
+                <td *ngIf="!rowData.fail && !rowData.valid"><i class="pi pi-times"></i></td>
+                <td *ngIf="rowData.success">
+                    {{rowData.success.length}}
+                </td>
+                <td *ngIf="rowData.fail">
+                    {{rowData.fail.length}}
+                </td>
+                <td *ngIf="rowData.fail"></td>
+                <td *ngIf="!rowData.fail" (click)="onSelectItem(rowNode)"><i class="pi pi-search"></i></td>
+            </tr>
+        </ng-template>
+    </p-treeTable>
+</p-dialog>
