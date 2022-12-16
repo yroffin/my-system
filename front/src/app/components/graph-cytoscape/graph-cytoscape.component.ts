@@ -768,8 +768,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   applyLabelize(captureData: any): void {
-    let label: string = captureData.label
-    captureData.clone = `${captureData.tag}/${label.toLowerCase().replace(' ', '-')}`
+    let label: string = captureData.label.toLowerCase()
+    label = _.kebabCase(label)
+    captureData.clone = `${captureData.tag}/${label}`
   }
 
   edgeItem = [

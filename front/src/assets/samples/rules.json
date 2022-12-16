@@ -5,7 +5,7 @@
             "element[type='node' and data.tag='listener' and (data.alias ? 'empty' : 'full') = 'full']"
         ],
         "asserts": [
-            "(data.id ~> /([a-zA-Z/!-]*)[@](reference)/i).match = data.id"
+            "(data.id ~> /([0-9a-zA-Z/!-]*)[@](reference)/i).match = data.id"
         ]
     },
     {
@@ -14,7 +14,7 @@
             "element[type='node' and data.tag='listener' and data.alias!='']"
         ],
         "asserts": [
-            "(data.id ~> /([a-zA-Z/!-]*)[@]([a-zA-Z/!-]*)/i).match = data.id"
+            "(data.id ~> /([0-9a-zA-Z/!-]*)[@]([0-9a-zA-Z/!-]*)/i).match = data.id"
         ]
     },
     {
