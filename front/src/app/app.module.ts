@@ -67,6 +67,7 @@ import { StyleSelectorComponent } from './components/style-selector/style-select
 import { styleReducer, stylesReducer } from './stats/style.reducer';
 import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
+import { menuReducer } from './stats/menu.reducer';
 
 @NgModule({
   declarations: [
@@ -142,6 +143,7 @@ import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.compon
       graph: graphReducer,
       styles: stylesReducer,
       style: styleReducer,
+      menu: menuReducer,
       preferences: PreferencesReducer
     })
   ],

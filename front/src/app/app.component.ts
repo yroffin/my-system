@@ -4,6 +4,8 @@ import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
+import { selectMenuIds } from './stats/menu.actions';
+import { menuIds } from './models/menu';
 
 @Component({
     selector: 'app-root',
@@ -28,7 +30,34 @@ export class AppComponent implements OnDestroy {
                 label: 'Graph',
                 icon: 'pi pi-fw pi-box',
                 items: [
-                    { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' }
+                    { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' },
+                    {
+                        label: 'Apply rules', icon: 'pi pi-wallet', command: () => {
+                            this.store.dispatch(selectMenuIds({
+                                message: {
+                                    id: menuIds.graph_apply_rules
+                                }
+                            }))
+                        }
+                    },
+                    {
+                        label: 'Change properties', icon: 'pi pi-wallet', command: () => {
+                            this.store.dispatch(selectMenuIds({
+                                message: {
+                                    id: menuIds.graph_change_properties
+                                }
+                            }))
+                        }
+                    },
+                    {
+                        label: 'Add new node', icon: 'pi pi-plus', command: () => {
+                            this.store.dispatch(selectMenuIds({
+                                message: {
+                                    id: menuIds.graph_add_new_node
+                                }
+                            }))
+                        }
+                    }
                 ]
             },
             {
@@ -52,6 +81,30 @@ export class AppComponent implements OnDestroy {
                     { label: 'Preferences', icon: 'pi pi-fw pi-database', routerLink: '/preferences' },
                     { label: 'Images', icon: 'pi pi-fw pi-cloud-upload', routerLink: '/converters/images' },
                     { label: 'About', icon: 'pi pi-fw pi-at', routerLink: '/about' }
+                ]
+            },
+            {
+                label: 'Statistics',
+                icon: 'pi pi-chart-pie',
+                items: [
+                    {
+                        label: 'Groups', icon: 'pi pi-chart-pie', command: () => {
+                            this.store.dispatch(selectMenuIds({
+                                message: {
+                                    id: menuIds.statistics_groups
+                                }
+                            }))
+                        }
+                    },
+                    {
+                        label: 'Tags', icon: 'pi pi-chart-pie', command: () => {
+                            this.store.dispatch(selectMenuIds({
+                                message: {
+                                    id: menuIds.statistics_tags
+                                }
+                            }))
+                        }
+                    }
                 ]
             }
         ];
