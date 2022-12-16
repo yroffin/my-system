@@ -6,7 +6,7 @@
 </meta>
 <graph mode="static" defaultedgetype="directed" style="styles.json" rules="rules.json">
 <nodes>
-<node id="azure/aks/deployment/pod/service-a" label="service A" alias="" group="" x="860" y="300" tag="azure/aks/deployment/pod">
+<node id="azure/aks/deployment/pod/service-a" label="service A" alias="" group="" x="700" y="380" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...
 TARGET
 ]]>
@@ -14,7 +14,7 @@ TARGET
 <node id="azure/aks/deployment/pod/service-b" label="service B" alias="" group="" x="1060" y="300" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/aks/deployment/pod/service-c" label="service C" alias="azure/aks/deployment/pod/service-a" group="sample" x="580" y="100" tag="azure/aks/deployment/pod">
+<node id="azure/aks/deployment/pod/service-c" label="service C" alias="azure/aks/deployment/pod/service-a" group="sample" x="220" y="180" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...
 sdffdsfsdf
 
@@ -30,17 +30,17 @@ sample
 sample
 ]]>
 </node>
-<node id="azure/aks/deployment/pod/service-d" label="service D" alias="" group="" x="580" y="460" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/deployment/pod/service-d" label="service D" alias="" group="" x="220" y="460" tag="azure/aks/deployment/pod" />
 <node id="azure/aks/deployment/pod/service-e" label="service E" alias="" group="" x="1620" y="300" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/aks/deployment/pod/service-e.1" label="service E.1" alias="" group="" x="1900" y="460" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/aks/deployment/pod/service-o" label="service O" alias="" group="" x="1340" y="820" tag="azure/aks/deployment/pod">
+<node id="azure/aks/deployment/pod/service-o" label="service O" alias="" group="" x="900" y="780" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/aks/deployment/pod/service-p" label="service P" alias="" group="" x="1500" y="820" tag="azure/aks/deployment/pod">
+<node id="azure/aks/deployment/pod/service-p" label="service P" alias="" group="" x="1500" y="620" tag="azure/aks/deployment/pod">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/redis/redis-a" label="redis A" alias="" group="" x="1620" y="100" tag="azure/redis">
@@ -55,53 +55,53 @@ sample
 sample
 ]]>
 </node>
-<node id="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" label="bus queue A" alias="azure/service-bus/queue/bus-queue a" group="" x="580" y="300" tag="azure/service-bus/queue">
+<node id="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" label="bus queue A" alias="azure/service-bus/queue/bus-queue a" group="" x="220" y="340" tag="azure/service-bus/queue">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/service-bus/topic/subscription/subscription-a.1" label="subscription A.1" alias="" group="" x="1340" y="620" tag="azure/service-bus/topic/subscription">
+<node id="azure/service-bus/topic/subscription/subscription-a.1" label="subscription A.1" alias="" group="" x="900" y="620" tag="azure/service-bus/topic/subscription">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/service-bus/topic/subscription/subscription-a.2" label="subscription A.2" alias="" group="" x="1500" y="460" tag="azure/service-bus/topic/subscription">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/service-bus/topic/topic-a" label="topic A" alias="" group="" x="1340" y="460" tag="azure/service-bus/topic">
+<node id="azure/service-bus/topic/topic-a" label="topic A" alias="" group="" x="900" y="460" tag="azure/service-bus/topic">
 <![CDATA[TODO ...]]>
 </node>
 <node id="azure/sqlserver/database-a" label="database A" alias="" group="" x="1900" y="300" tag="azure/sqlserver">
 <![CDATA[TODO ...]]>
 </node>
-<node id="azure/webapp/webapp" label="webapp" alias="" group="" x="860" y="-60" tag="azure/webapp">
+<node id="azure/webapp/webapp" label="webapp" alias="" group="" x="940" y="-100" tag="azure/webapp">
 <![CDATA[Simple webapp
 ]]>
 </node>
-<node id="listener/service-a" label="service A (port 8080)" alias="" group="" x="860" y="100" tag="listener">
+<node id="listener/service-a-port-8080@copie" label="service A (port 8080)" alias="listener/service-a-port-8080@reference" group="" x="900" y="1020" tag="listener">
 <![CDATA[TODO ...]]>
 </node>
-<node id="listener/service-a@d0ccfb74-b594-4940-a82f-e78b4ec08865" label="service A (port 8080)" alias="listener/service-a" group="" x="1340" y="1020" tag="listener">
+<node id="listener/service-a-port-8080@reference" label="service A (port 8080)" alias="" group="" x="700" y="180" tag="listener">
 <![CDATA[TODO ...]]>
 </node>
-<node id="listener/service-b" label="service B (port 8080)" alias="" group="" x="1060" y="100" tag="listener">
+<node id="listener/service-b-port-8080@copie" label="service B (port 8080)" alias="listener/service-b-port-8080@reference" group="" x="1500" y="820" tag="listener">
 <![CDATA[TODO ...]]>
 </node>
-<node id="listener/service-b@2fcfeb7f-894e-450f-8b3f-723797e119a4" label="service B (port 8080)" alias="listener/service-b" group="" x="1500" y="980" tag="listener">
+<node id="listener/service-b-port-8080@reference" label="service B (port 8080)" alias="" group="" x="1060" y="100" tag="listener">
 <![CDATA[TODO ...]]>
 </node>
 </nodes>
 <edges>
-<edge id="azure/aks/deployment/pod/service-a:listener/service-a" source="azure/aks/deployment/pod/service-a" target="listener/service-a" label="provide" tag="" />
+<edge id="azure/aks/deployment/pod/service-a:listener/service-a-port-8080@reference" source="azure/aks/deployment/pod/service-a" target="listener/service-a-port-8080@reference" label="provide" tag="" />
 <edge id="azure/aks/deployment/pod/service-b:azure/service-bus/queue/bus-queue a" source="azure/aks/deployment/pod/service-b" target="azure/service-bus/queue/bus-queue a" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-b:azure/service-bus/topic/topic-a" source="azure/aks/deployment/pod/service-b" target="azure/service-bus/topic/topic-a" label="alt" tag="" />
 <edge id="azure/aks/deployment/pod/service-b:azure/service-bus/topic/topic-a@1" source="azure/aks/deployment/pod/service-b" target="azure/service-bus/topic/topic-a" label="default" tag="" />
-<edge id="azure/aks/deployment/pod/service-b:listener/service-b" source="azure/aks/deployment/pod/service-b" target="listener/service-b" label="provide" tag="" />
-<edge id="azure/aks/deployment/pod/service-c:listener/service-a" source="azure/aks/deployment/pod/service-c" target="listener/service-a" label="" />
+<edge id="azure/aks/deployment/pod/service-b:listener/service-b-port-8080@reference" source="azure/aks/deployment/pod/service-b" target="listener/service-b-port-8080@reference" label="provide" tag="" />
+<edge id="azure/aks/deployment/pod/service-c:listener/service-a-port-8080@reference" source="azure/aks/deployment/pod/service-c" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
 <edge id="azure/aks/deployment/pod/service-d:azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" source="azure/aks/deployment/pod/service-d" target="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" label="" />
 <edge id="azure/aks/deployment/pod/service-e.1:azure/redis/redis-a@219d7775-e919-4fd4-8f33-c91a363aba2f" source="azure/aks/deployment/pod/service-e.1" target="azure/redis/redis-a@219d7775-e919-4fd4-8f33-c91a363aba2f" label="" />
 <edge id="azure/aks/deployment/pod/service-e.1:azure/service-bus/topic/subscription/subscription-a.2" source="azure/aks/deployment/pod/service-e.1" target="azure/service-bus/topic/subscription/subscription-a.2" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-e.1:azure/sqlserver/database-a" source="azure/aks/deployment/pod/service-e.1" target="azure/sqlserver/database-a" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-e:azure/redis/redis-a" source="azure/aks/deployment/pod/service-e" target="azure/redis/redis-a" label="" tag="" />
 <edge id="azure/aks/deployment/pod/service-e:azure/sqlserver/database-a" source="azure/aks/deployment/pod/service-e" target="azure/sqlserver/database-a" label="" tag="" />
-<edge id="azure/aks/deployment/pod/service-o:listener/service-a@d0ccfb74-b594-4940-a82f-e78b4ec08865" source="azure/aks/deployment/pod/service-o" target="listener/service-a@d0ccfb74-b594-4940-a82f-e78b4ec08865" label="" />
-<edge id="azure/aks/deployment/pod/service-p:listener/service-b@2fcfeb7f-894e-450f-8b3f-723797e119a4" source="azure/aks/deployment/pod/service-p" target="listener/service-b@2fcfeb7f-894e-450f-8b3f-723797e119a4" label="" />
+<edge id="azure/aks/deployment/pod/service-o:listener/service-a-port-8080@copie" source="azure/aks/deployment/pod/service-o" target="listener/service-a-port-8080@copie" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/aks/deployment/pod/service-p:listener/service-b-port-8080@copie" source="azure/aks/deployment/pod/service-p" target="listener/service-b-port-8080@copie" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
 <edge id="azure/service-bus/queue/bus-queue a:azure/aks/deployment/pod/service-e" source="azure/service-bus/queue/bus-queue a" target="azure/aks/deployment/pod/service-e" label="" tag="" />
 <edge id="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc:azure/aks/deployment/pod/service-c" source="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" target="azure/aks/deployment/pod/service-c" label="" />
 <edge id="azure/service-bus/topic/subscription/subscription-a.1:azure/aks/deployment/pod/service-o" source="azure/service-bus/topic/subscription/subscription-a.1" target="azure/aks/deployment/pod/service-o" label="" tag="" />
@@ -111,8 +111,8 @@ sample
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.1" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.1" label="" tag="" />
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.1@1" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.1" label="" tag="" />
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a.2" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a.2" label="" tag="" />
-<edge id="azure/webapp/webapp:listener/service-a" source="azure/webapp/webapp" target="listener/service-a" label="consume" tag="" />
-<edge id="azure/webapp/webapp:listener/service-b" source="azure/webapp/webapp" target="listener/service-b" label="consume" tag="" />
+<edge id="azure/webapp/webapp:listener/service-a-port-8080@reference" source="azure/webapp/webapp" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/webapp/webapp:listener/service-b-port-8080@reference" source="azure/webapp/webapp" target="listener/service-b-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
 </edges>
 </graph>
 </gexf>
