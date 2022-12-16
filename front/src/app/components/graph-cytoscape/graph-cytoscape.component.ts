@@ -45,6 +45,8 @@ import { SysTags } from 'src/app/models/style';
 import { retrievedStyle } from 'src/app/stats/style.actions';
 import { RulesService } from 'src/app/services/rules.service';
 import { PreferenceService } from 'src/app/services/preferences.service';
+import { selectMenu } from 'src/app/stats/menu.selectors';
+import { menuIds } from 'src/app/models/menu';
 
 declare var cytoscape: any
 
@@ -126,6 +128,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
+  menu$ = this.store.select(selectMenu);
 
   _lockedElement: boolean = false;
 
@@ -146,6 +149,103 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.preferences = preferences
       this.preferenceService.apply()
     }
+
+    this.subscriptions.push(this.menu$.subscribe(message => {
+      switch (message.id) {
+        case menuIds.graph_apply_rules:
+          {
+            this.applyRuleset(true, false)
+          }
+          break;
+        case menuIds.graph_change_properties:
+          {
+            this.changeProperties()
+          }
+          break;
+        case menuIds.graph_add_new_node:
+          {
+            this.createNewNode()
+          }
+          break;
+        case menuIds.statistics_groups:
+          {
+            // Build all group
+            let allGroups = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
+              return node.data().group
+            }), (node) => node && node !== ""));
+
+            // Group by them
+            let groupBy: any = {}
+            _.each(allGroups, (group) => {
+              if (groupBy[group]) {
+                groupBy[group] += 1
+              } else {
+                groupBy[group] = 1
+              }
+            })
+
+            // Build statistic
+            this.dataGroupStatistics = {
+              datasets: [{
+                data: _.map(groupBy, (k, v) => k),
+                backgroundColor: _.map(groupBy, (k, v) => {
+                  switch (k) {
+                    case 1: return "#42A5F5";
+                    case 2: return "#66BB6A";
+                    case 3: return "#FFA726";
+                    case 4: return "#26C6DA";
+                    default: return "#7E57C2";
+                  }
+                }),
+                label: 'My dataset'
+              }],
+              labels: _.map(groupBy, (k, v) => v)
+            }
+
+            this.displayGroupStatistic = true
+          }
+          break;
+        case menuIds.statistics_tags:
+          {
+            // Build all group
+            let allTags = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
+              return node.data().tag
+            }), (node) => node && node !== "" && node.alias === undefined));
+
+            // Group by them
+            let groupBy: any = {}
+            _.each(allTags, (group) => {
+              if (groupBy[group]) {
+                groupBy[group] += 1
+              } else {
+                groupBy[group] = 1
+              }
+            })
+
+            // Build statistic
+            this.dataTagStatistics = {
+              datasets: [{
+                data: _.map(groupBy, (k, v) => k),
+                backgroundColor: _.map(groupBy, (k, v) => {
+                  switch (k) {
+                    case 1: return "#42A5F5";
+                    case 2: return "#66BB6A";
+                    case 3: return "#FFA726";
+                    case 4: return "#26C6DA";
+                    default: return "#7E57C2";
+                  }
+                }),
+                label: 'My dataset'
+              }],
+              labels: _.map(groupBy, (k, v) => v)
+            }
+
+            this.displayTagStatistic = true
+          }
+          break;
+      }
+    })
+    )
 
     this.subscriptions.push(this.graph$.subscribe(graph => {
       if (!graph) {
@@ -875,33 +975,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   coreItem = [
     {
-      label: 'Graph',
-      icon: 'pi pi-share-alt',
-      items: [
-        {
-          label: 'Apply rules',
-          icon: 'pi pi-wallet',
-          command: () => {
-            this.applyRuleset(true, false)
-          }
-        },
-        {
-          label: 'Change properties',
-          icon: 'pi pi-wallet',
-          command: () => {
-            this.changeProperties()
-          }
-        },
-        {
-          label: 'Add new node',
-          icon: 'pi pi-plus',
-          command: () => {
-            this.createNewNode()
-          }
-        },
-      ]
-    },
-    {
       label: 'Group',
       icon: 'pi pi-share-alt',
       items: [
@@ -910,86 +983,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           icon: 'pi pi-undo',
           command: () => {
             this.onToggleGroupEnabled()
-          }
-        },
-        {
-          label: 'Group Statistics',
-          icon: 'pi pi-chart-pie',
-          command: () => {
-            // Build all group
-            let allGroups = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
-              return node.data().group
-            }), (node) => node && node !== ""));
-
-            // Group by them
-            let groupBy: any = {}
-            _.each(allGroups, (group) => {
-              if (groupBy[group]) {
-                groupBy[group] += 1
-              } else {
-                groupBy[group] = 1
-              }
-            })
-
-            // Build statistic
-            this.dataGroupStatistics = {
-              datasets: [{
-                data: _.map(groupBy, (k, v) => k),
-                backgroundColor: _.map(groupBy, (k, v) => {
-                  switch (k) {
-                    case 1: return "#42A5F5";
-                    case 2: return "#66BB6A";
-                    case 3: return "#FFA726";
-                    case 4: return "#26C6DA";
-                    default: return "#7E57C2";
-                  }
-                }),
-                label: 'My dataset'
-              }],
-              labels: _.map(groupBy, (k, v) => v)
-            }
-
-            this.displayGroupStatistic = true
-          }
-        },
-        {
-          label: 'Tag Statistics',
-          icon: 'pi pi-chart-pie',
-          command: () => {
-            // Build all group
-            let allTags = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
-              return node.data().tag
-            }), (node) => node && node !== "" && node.alias === undefined));
-
-            // Group by them
-            let groupBy: any = {}
-            _.each(allTags, (group) => {
-              if (groupBy[group]) {
-                groupBy[group] += 1
-              } else {
-                groupBy[group] = 1
-              }
-            })
-
-            // Build statistic
-            this.dataTagStatistics = {
-              datasets: [{
-                data: _.map(groupBy, (k, v) => k),
-                backgroundColor: _.map(groupBy, (k, v) => {
-                  switch (k) {
-                    case 1: return "#42A5F5";
-                    case 2: return "#66BB6A";
-                    case 3: return "#FFA726";
-                    case 4: return "#26C6DA";
-                    default: return "#7E57C2";
-                  }
-                }),
-                label: 'My dataset'
-              }],
-              labels: _.map(groupBy, (k, v) => v)
-            }
-
-            this.displayTagStatistic = true
           }
         }
       ]
