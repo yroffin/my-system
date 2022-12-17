@@ -49,6 +49,9 @@ sample
 <node id="azure/redis/redis-a@219d7775-e919-4fd4-8f33-c91a363aba2f" label="redis A" alias="azure/redis/redis-a" group="" x="1900" y="620" tag="azure/redis">
 <![CDATA[TODO ...]]>
 </node>
+<node id="azure/redis/redis-a@5b300ec8-1241-4c21-aa25-5dc923572d15" label="redis A" alias="azure/redis/redis-a" group="" x="220" y="700" tag="azure/redis">
+<![CDATA[TODO ...]]>
+</node>
 <node id="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" label="bus queue A" alias="azure/service-bus/queue/bus-queue a" group="" x="220" y="340" tag="azure/service-bus/queue">
 <![CDATA[TODO ...]]>
 </node>
@@ -74,6 +77,9 @@ sample
 <![CDATA[Simple webapp
 ]]>
 </node>
+<node id="azure/webapp/webapp@6c7067a9-a3fd-4923-908f-c9d65bdbdeb6" label="webapp" alias="azure/webapp/webapp" group="" x="1620" y="-100" tag="azure/webapp">
+<![CDATA[TODO ...]]>
+</node>
 <node id="listener/service-a-port-8080@copie" label="service A (port 8080)" alias="listener/service-a-port-8080@reference" group="" x="900" y="1020" tag="listener">
 <![CDATA[TODO ...]]>
 </node>
@@ -94,6 +100,9 @@ sample
 <edge id="azure/aks/deployment/pod/service-b:azure/service-bus/topic/topic-a@1" source="azure/aks/deployment/pod/service-b" target="azure/service-bus/topic/topic-a" label="default" tag="" />
 <edge id="azure/aks/deployment/pod/service-b:listener/service-b-port-8080@reference" source="azure/aks/deployment/pod/service-b" target="listener/service-b-port-8080@reference" label="provide" tag="" />
 <edge id="azure/aks/deployment/pod/service-c:listener/service-a-port-8080@reference" source="azure/aks/deployment/pod/service-c" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/aks/deployment/pod/service-c:listener/service-a-port-8080@reference@1" source="azure/aks/deployment/pod/service-c" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/aks/deployment/pod/service-c:listener/service-a-port-8080@reference@2" source="azure/aks/deployment/pod/service-c" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/aks/deployment/pod/service-d:azure/redis/redis-a@5b300ec8-1241-4c21-aa25-5dc923572d15" source="azure/aks/deployment/pod/service-d" target="azure/redis/redis-a@5b300ec8-1241-4c21-aa25-5dc923572d15" label="" />
 <edge id="azure/aks/deployment/pod/service-d:azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" source="azure/aks/deployment/pod/service-d" target="azure/service-bus/queue/bus-queue a@efab0f67-f4b5-4fcb-b1c3-0453632976bc" label="" />
 <edge id="azure/aks/deployment/pod/service-e-1:azure/redis/redis-a@219d7775-e919-4fd4-8f33-c91a363aba2f" source="azure/aks/deployment/pod/service-e-1" target="azure/redis/redis-a@219d7775-e919-4fd4-8f33-c91a363aba2f" label="" />
 <edge id="azure/aks/deployment/pod/service-e-1:azure/service-bus/topic/subscription/subscription-a-2" source="azure/aks/deployment/pod/service-e-1" target="azure/service-bus/topic/subscription/subscription-a-2" label="" tag="" />
@@ -113,6 +122,7 @@ sample
 <edge id="azure/service-bus/topic/topic-a:azure/service-bus/topic/subscription/subscription-a-2" source="azure/service-bus/topic/topic-a" target="azure/service-bus/topic/subscription/subscription-a-2" label="" tag="" />
 <edge id="azure/webapp/webapp:listener/service-a-port-8080@reference" source="azure/webapp/webapp" target="listener/service-a-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
 <edge id="azure/webapp/webapp:listener/service-b-port-8080@reference" source="azure/webapp/webapp" target="listener/service-b-port-8080@reference" label="ClientID: 0000-0000-0000-0000-0000" tag="" />
+<edge id="azure/webapp/webapp@6c7067a9-a3fd-4923-908f-c9d65bdbdeb6:azure/redis/redis-a" source="azure/webapp/webapp@6c7067a9-a3fd-4923-908f-c9d65bdbdeb6" target="azure/redis/redis-a" label="" />
 </edges>
 </graph>
 </gexf>
