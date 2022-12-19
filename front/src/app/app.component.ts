@@ -4,8 +4,9 @@ import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
-import { selectMenuIds } from './stats/menu.actions';
+import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from './stats/menu.actions';
 import { menuIds } from './models/menu';
+import { selectMenu, selectParameter } from './stats/menu.selectors';
 
 @Component({
     selector: 'app-root',
@@ -18,10 +19,23 @@ export class AppComponent implements OnDestroy {
     subscriptions: any = [];
     static aboutMd: string
 
+    zoom = 1.;
+    drawMode = false;
+    groupMode = false;
+    menu$ = this.store.select(selectMenu);
+    parameter$ = this.store.select(selectParameter);
+
     constructor(
         private title: Title,
         private store: Store) {
         this.title.setTitle('MySystem 1.2.4')
+
+        this.subscriptions.push(this.parameter$.subscribe(message => {
+            this.drawMode = message.drawMode
+            this.groupMode = message.groupMode
+            this.zoom = message.zoom
+        })
+        )
     }
 
     ngOnInit() {
@@ -108,6 +122,18 @@ export class AppComponent implements OnDestroy {
                 ]
             }
         ];
+    }
+
+    onChangeZoom(event: any): void {
+        this.store.dispatch(setZoom({ message: this.zoom }))
+    }
+
+    onChangeDrawMode(event: any): void {
+        this.store.dispatch(setDrawMode({ message: this.drawMode }))
+    }
+
+    onChangeGroupMode(event: any): void {
+        this.store.dispatch(setGroupMode({ message: this.groupMode }))
     }
 
     ngOnDestroy() {
