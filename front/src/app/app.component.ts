@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from './stats/menu.actions';
 import { menuIds } from './models/menu';
 import { selectMenu, selectParameter } from './stats/menu.selectors';
+import { MenuService } from './services/menu.service';
 
 @Component({
     selector: 'app-root',
@@ -27,6 +28,7 @@ export class AppComponent implements OnDestroy {
 
     constructor(
         private title: Title,
+        private menuService: MenuService,
         private store: Store) {
         this.title.setTitle('MySystem 1.2.4')
 
@@ -46,31 +48,56 @@ export class AppComponent implements OnDestroy {
                 items: [
                     { label: 'Graph(s)', icon: 'pi pi-fw pi-book', routerLink: '/graphs' },
                     {
-                        label: 'Apply rules', icon: 'pi pi-wallet', command: () => {
-                            this.store.dispatch(selectMenuIds({
-                                message: {
-                                    id: menuIds.graph_apply_rules
+                        label: 'Apply',
+                        icon: 'pi pi-sitemap',
+                        items: [
+                            {
+                                label: 'Apply rules', icon: 'pi pi-map', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_apply_rules)
                                 }
-                            }))
-                        }
+                            },
+                            {
+                                label: 'Apply properties', icon: 'pi pi-wallet', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_change_properties)
+                                }
+                            },
+                            {
+                                label: 'Add new node', icon: 'pi pi-plus', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_add_new_node)
+                                }
+                            }
+                        ],
                     },
                     {
-                        label: 'Change properties', icon: 'pi pi-wallet', command: () => {
-                            this.store.dispatch(selectMenuIds({
-                                message: {
-                                    id: menuIds.graph_change_properties
+                        label: 'Graph',
+                        icon: 'pi pi-sitemap',
+                        items: [
+                            {
+                                label: 'Bread First Layout', icon: 'pi pi-ellipsis-h', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_layout_bread_first)
                                 }
-                            }))
-                        }
-                    },
-                    {
-                        label: 'Add new node', icon: 'pi pi-plus', command: () => {
-                            this.store.dispatch(selectMenuIds({
-                                message: {
-                                    id: menuIds.graph_add_new_node
+                            },
+                            {
+                                label: 'Concentric Layout', icon: 'pi pi-ellipsis-h', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_layout_concentric)
                                 }
-                            }))
-                        }
+                            },
+                            {
+                                label: 'Circle Layout', icon: 'pi pi-ellipsis-h', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_layout_circle)
+                                }
+                            },
+                            {
+                                label: 'Grid Layout', icon: 'pi pi-ellipsis-h', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_layout_grid)
+                                }
+                            },
+                            {
+                                label: 'Cose Layout', icon: 'pi pi-ellipsis-h', command: () => {
+                                    this.menuService.dispatch(menuIds.graph_layout_cose)
+                                }
+                            },
+                        ]
                     }
                 ]
             },
@@ -103,20 +130,12 @@ export class AppComponent implements OnDestroy {
                 items: [
                     {
                         label: 'Groups', icon: 'pi pi-chart-pie', command: () => {
-                            this.store.dispatch(selectMenuIds({
-                                message: {
-                                    id: menuIds.statistics_groups
-                                }
-                            }))
+                            this.menuService.dispatch(menuIds.statistics_groups)
                         }
                     },
                     {
                         label: 'Tags', icon: 'pi pi-chart-pie', command: () => {
-                            this.store.dispatch(selectMenuIds({
-                                message: {
-                                    id: menuIds.statistics_tags
-                                }
-                            }))
+                            this.menuService.dispatch(menuIds.statistics_tags)
                         }
                     }
                 ]

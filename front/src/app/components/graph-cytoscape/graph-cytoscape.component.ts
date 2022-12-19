@@ -277,6 +277,47 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             this.displayTagStatistic = true
           }
           break;
+
+        case menuIds.graph_layout_bread_first:
+          {
+            if (this.breadFirstLayoutOptions) {
+              this.cy?.layout(this.breadFirstLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+          break;
+        case menuIds.graph_layout_concentric:
+          {
+            if (this.concentricLayoutOptions) {
+              this.cy?.layout(this.concentricLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+          break;
+        case menuIds.graph_layout_circle:
+          {
+            if (this.circleLayoutOptions) {
+              this.cy?.layout(this.circleLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+          break;
+        case menuIds.graph_layout_grid:
+          {
+            if (this.gridLayoutOptions) {
+              this.cy?.layout(this.gridLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+          break;
+        case menuIds.graph_layout_cose:
+          {
+            if (this.coseLayoutOptions) {
+              this.cy?.layout(this.coseLayoutOptions).run()
+            }
+            this.onClearAnySelection()
+          }
+          break;
       }
     })
     )
@@ -1028,122 +1069,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   coreItem = [
     {
-      label: 'Layout',
-      icon: 'pi pi-sitemap',
-      items: [
-        {
-          label: 'Bread First Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.breadFirstLayoutOptions) {
-              this.cy?.layout(this.breadFirstLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        },
-        {
-          label: 'Concentric Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.concentricLayoutOptions) {
-              this.cy?.layout(this.concentricLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        },
-        {
-          label: 'Circle Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.circleLayoutOptions) {
-              this.cy?.layout(this.circleLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        },
-        {
-          label: 'Grid Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.gridLayoutOptions) {
-              this.cy?.layout(this.gridLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        },
-        {
-          label: 'Cose Layout',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            if (this.coseLayoutOptions) {
-              this.cy?.layout(this.coseLayoutOptions).run()
-            }
-            this.onClearAnySelection()
-          }
-        }
-      ]
-    },
-    {
-      label: 'Zoom',
-      icon: 'pi pi-circle',
-      items: [
-        {
-          label: '0.1',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.1)
-          }
-        },
-        {
-          label: '0.2',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.2)
-          }
-        },
-        {
-          label: '0.3',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.3)
-          }
-        },
-        {
-          label: '0.5',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.5)
-          }
-        },
-        {
-          label: '0.6',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.6)
-          }
-        },
-        {
-          label: '0.75',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(0.75)
-          }
-        },
-        {
-          label: '1',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.zoom(1)
-          }
-        },
-        {
-          label: 'fit',
-          icon: 'pi pi-ellipsis-h',
-          command: () => {
-            this.cy?.fit()
-          }
-        }
-      ]
+      label: 'Fit',
+      icon: 'pi pi-globe',
+      command: () => {
+        this.cy?.fit()
+      }
     }
   ];
 
