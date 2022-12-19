@@ -45,8 +45,9 @@ import { SysTags } from 'src/app/models/style';
 import { retrievedStyle } from 'src/app/stats/style.actions';
 import { RulesService } from 'src/app/services/rules.service';
 import { PreferenceService } from 'src/app/services/preferences.service';
-import { selectMenu } from 'src/app/stats/menu.selectors';
+import { selectMenu, selectParameter } from 'src/app/stats/menu.selectors';
 import { menuIds } from 'src/app/models/menu';
+import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from 'src/app/stats/menu.actions';
 
 declare var cytoscape: any
 
@@ -120,15 +121,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   currentRulesFail: number = 0
   currentRulesSuccess: number = 0
 
-  groupEnabled: boolean = true;
   selectorDisplay: string = "";
-  drawModeEnabled: boolean = false;
   edgehandles: any;
   rules: any = [];
+
+  preventDispatchZoom = true;
 
   graph$ = this.store.select(selectGraph);
   graphs$ = this.store.select(selectGraphs);
   menu$ = this.store.select(selectMenu);
+  parameter$ = this.store.select(selectParameter);
 
   _lockedElement: boolean = false;
 
@@ -149,6 +151,38 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.preferences = preferences
       this.preferenceService.apply()
     }
+
+    this.subscriptions.push(this.parameter$.subscribe(message => {
+      {
+        this.logger.info(`Parameter: ${message}`)
+        if (message.groupMode) {
+          _.each(this.rules, (rule) => {
+            rule.enable()
+          })
+        } else {
+          _.each(this.rules, (rule) => {
+            rule.disable()
+          })
+        }
+
+        if (this.edgehandles) {
+          if (message.drawMode) {
+            this.edgehandles.enableDrawMode()
+          } else {
+            this.edgehandles.disableDrawMode()
+          }
+        }
+
+        if (message.zoom) {
+          this.preventDispatchZoom = true
+          this.cy?.zoom(message.zoom)
+          this.preventDispatchZoom = false
+        }
+
+        this.onClearAnySelection()
+      }
+    })
+    )
 
     this.subscriptions.push(this.menu$.subscribe(message => {
       switch (message.id) {
@@ -418,10 +452,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     });
 
     this.cy.on('zoom', (event) => {
+      let zoom = this.cy?.zoom()
+
+      // zoom event can be thrown with zoom internal update
+      if (zoom && !this.preventDispatchZoom) {
+        this.store.dispatch(setZoom({
+          message: zoom
+        }))
+      }
+
       this.activeQueryParams = {
         nodeId: this.activeQueryParams.nodeId,
         edgeId: this.activeQueryParams.edgeId,
-        zoom: this.cy?.zoom()
+        zoom: zoom
       }
       // Apply new query params
       this.router.navigate([this.activeRoute], {
@@ -480,6 +523,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.store.dispatch(retrievedGraph({ graph: _graph }))
       }
     });
+
+    setTimeout(() => {
+      this.store.dispatch(setDrawMode({
+        message: false
+      }))
+
+      this.store.dispatch(setGroupMode({
+        message: true
+      }))
+    })
   }
 
   selectGraphItem(params: any | undefined, items: MenuItem[] | undefined, navigate: boolean): void {
@@ -975,19 +1028,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   coreItem = [
     {
-      label: 'Group',
-      icon: 'pi pi-share-alt',
-      items: [
-        {
-          label: 'Toggle',
-          icon: 'pi pi-undo',
-          command: () => {
-            this.onToggleGroupEnabled()
-          }
-        }
-      ]
-    },
-    {
       label: 'Layout',
       icon: 'pi pi-sitemap',
       items: [
@@ -1101,19 +1141,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           icon: 'pi pi-ellipsis-h',
           command: () => {
             this.cy?.fit()
-          }
-        }
-      ]
-    },
-    {
-      label: 'Draw mode',
-      icon: 'pi pi-share-alt',
-      items: [
-        {
-          label: 'Toggle',
-          icon: 'pi pi-undo',
-          command: () => {
-            this.onToggleDrawModeEnabled()
           }
         }
       ]
@@ -1265,32 +1292,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.logger.info(`Center on select node ${this.selectedNode.key}`)
     this.cy?.center(selected)
     this.displayFinder = false
-  }
-
-  onToggleGroupEnabled(): void {
-    if (this.groupEnabled) {
-      this.groupEnabled = false
-      _.each(this.rules, (rule) => {
-        rule.disable()
-      })
-    } else {
-      this.groupEnabled = true
-      _.each(this.rules, (rule) => {
-        rule.enable()
-      })
-    }
-    this.onClearAnySelection()
-  }
-
-  onToggleDrawModeEnabled(): void {
-    if (this.drawModeEnabled) {
-      this.edgehandles.disableDrawMode()
-      this.drawModeEnabled = false;
-    } else {
-      this.edgehandles.enableDrawMode()
-      this.drawModeEnabled = true;
-    }
-    this.onClearAnySelection()
   }
 
   buildChildNodes(graph: any): TreeNode {

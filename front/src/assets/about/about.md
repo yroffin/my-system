@@ -14,6 +14,7 @@ I used it on my own to design my system
 #### Features release zoom and keep selection
 
 - Store zoom and selection in query param
+- Rework draw mode, group mode and zoom onto menubar
 
 #### Features release "ruleset"
 

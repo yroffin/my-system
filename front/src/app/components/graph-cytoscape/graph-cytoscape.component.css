@@ -5,3 +5,13 @@
     padding: 0;
     overflow: hidden;
 }
+
+.grid-inputgroup-left {
+    justify-content: left;
+    align-items: left;
+}
+
+.grid-inputgroup-right {
+    justify-content: right;
+    align-items: right;
+}
