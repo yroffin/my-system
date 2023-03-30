@@ -137,6 +137,11 @@ export class AppComponent implements OnDestroy {
                         label: 'Tags', icon: 'pi pi-chart-pie', command: () => {
                             this.menuService.dispatch(menuIds.statistics_tags)
                         }
+                    },
+                    {
+                        label: 'Summary', icon: 'pi pi-chart-pie', command: () => {
+                            this.menuService.dispatch(menuIds.statistics_summary)
+                        }
                     }
                 ]
             }

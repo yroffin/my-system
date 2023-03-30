@@ -4,6 +4,7 @@ export enum menuIds {
     default,
     statistics_groups,
     statistics_tags,
+    statistics_summary,
     graph_apply_rules,
     graph_change_properties,
     graph_add_new_node,
