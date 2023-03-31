@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<graph id="G" edgedefault="undirected">
+<node id="all/group/group-001" label="sample-ingress" x="148.75" y="235" tag="all/group">
+<![CDATA[
+# Test
+
+## Sample
+
+simple text
+
+__test__
+
+This is the local project with the fibre optics.
+All the statistical manipulation is performed. Example. '"&<> and submission date 12/12/2020
+
+> Of all the things I've lost 
+> I miss my mind the most. - Mark Twain
+
+* Item 1
+* Item 2
+* Item 3
+
+]]>
+</node>
+<node id="all/group/group-002" label="sample-functions" x="460" y="1171" tag="all/group" />
+<node id="azure/aks/deployment/pod/sample-api" parent="all/group/group-001" label="sample-api" x="60" y="300" tag="azure/aks/deployment/pod" />
+<node id="azure/aks/deployment/pod/sample-api/listener" parent="all/group/group-001" label="sample-api" x="260" y="140" tag="listener" />
+<node id="azure/aks/ingress/sample-ingress" label="sample-ingress" x="220" y="-100" tag="azure/aks/ingress" />
+<node id="azure/function/function-001" parent="all/group/group-002" label="sample-function-001" x="180" y="1180" tag="azure/function" />
+<node id="azure/function/function-002" parent="all/group/group-002" label="sample-function-002" x="740" y="1180" tag="azure/function" />
+<node id="azure/gateway/v1/gateway-001" label="sample-ingress" x="220" y="-340" tag="azure/gateway/v1" />
+<node id="azure/redis/redis-001" label="sample-redis-001" x="-100" y="540" tag="azure/redis" />
+<node id="azure/service-bus/queue/sample-queue" label="sample-queue" x="460" y="1420" tag="azure/service-bus/queue" />
+<node id="azure/service-bus/topic/sample-topic-001" label="sample-topic-001" x="140" y="660" tag="azure/service-bus/topic" />
+<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="sample-subscription-001" x="-20" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="sample-subscription-001" x="260" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002" label="sample-topic-002" x="740" y="700" tag="azure/service-bus/topic" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="sample-subscription-001" x="860" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="sample-subscription-001" x="580" y="860" tag="azure/service-bus/topic/subscription" />
+<node id="azure/sqlserver/database-001" label="sample-database-001" x="-260" y="260" tag="azure/sqlserver" />
+<node id="azure/storage/container/table-001" label="sample-container-001" x="500" y="260" tag="azure/storage/container" />
+<node id="azure/storage/table/table-001" label="sample-table-001" x="-260" y="420" tag="azure/storage/table" />
+<node id="azure/vm/vm-001" label="sample-vm-001" x="1180" y="1140" tag="azure/vm" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/deployment/pod/sample-api" target="azure/aks/deployment/pod/sample-api/listener" label="provide" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/redis/redis-001" source="azure/aks/deployment/pod/sample-api" target="azure/redis/redis-001" label="redis" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-001" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-001" label="send" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/service-bus/topic/sample-topic-002" source="azure/aks/deployment/pod/sample-api" target="azure/service-bus/topic/sample-topic-002" label="send" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/sqlserver/database-001" source="azure/aks/deployment/pod/sample-api" target="azure/sqlserver/database-001" label="sql" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/storage/container/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/container/table-001" label="microsoft container" />
+<edge id="azure/aks/deployment/pod/sample-api:azure/storage/table/table-001" source="azure/aks/deployment/pod/sample-api" target="azure/storage/table/table-001" label="microsoft table" />
+<edge id="azure/aks/ingress/sample-ingress:azure/aks/deployment/pod/sample-api/listener" source="azure/aks/ingress/sample-ingress" target="azure/aks/deployment/pod/sample-api/listener" label="rest" />
+<edge id="azure/function/function-001:azure/service-bus/queue/sample-queue" source="azure/function/function-001" target="azure/service-bus/queue/sample-queue" label="write" />
+<edge id="azure/function/function-002:azure/vm/vm-001" source="azure/function/function-002" target="azure/vm/vm-001" label="ssh">
+<![CDATA[
+# Test
+
+## Sample
+
+simple text
+
+__test__
+
+This is the local project with the fibre optics.
+All the statistical manipulation is performed. Example. '"&<> and submission date 12/12/2020
+
+> Of all the things I've lost 
+> I miss my mind the most. - Mark Twain
+
+* Item 1
+* Item 2
+* Item 3
+
+[links text](https://www.google.fr)
+]]>
+</edge>
+<edge id="azure/gateway/v1/gateway-001:azure/aks/ingress/sample-ingress" source="azure/gateway/v1/gateway-001" target="azure/aks/ingress/sample-ingress" label="ingress" />
+<edge id="azure/service-bus/queue/sample-queue:azure/function/function-002" source="azure/service-bus/queue/sample-queue" target="azure/function/function-002" label="read" />
+<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" target="azure/function/function-001" label="sample-subscription-001-001" />
+<edge id="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002:azure/function/function-001" source="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" target="azure/function/function-001" label="sample-subscription-001-002" />
+<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-001" label="copy" />
+<edge id="azure/service-bus/topic/sample-topic-001:azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" source="azure/service-bus/topic/sample-topic-001" target="azure/service-bus/topic/sample-topic-001/subscription/sample-subscription-001-002" label="copy" />
+<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" target="azure/function/function-002" label="sample-subscription-002-001" />
+<edge id="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002:azure/function/function-002" source="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" target="azure/function/function-002" label="sample-subscription-002-002" />
+<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-001" label="copy" />
+<edge id="azure/service-bus/topic/sample-topic-002:azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" source="azure/service-bus/topic/sample-topic-002" target="azure/service-bus/topic/sample-topic-002/subscription/sample-subscription-002-002" label="copy" />
+</graph>
+</graphml>

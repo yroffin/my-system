@@ -271,3 +271,7 @@
         </ng-template>
     </p-treeTable>
 </p-dialog>
+
+<p-dialog header="Sumary" [modal]="true" [style]="{width: '65vw', height: '55vw'}" [(visible)]="displaySummary">
+    <div [innerHTML]="markdownSummary"></div>
+</p-dialog>

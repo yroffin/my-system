@@ -60,6 +60,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   displaySelectionNode: boolean = false;
   displaySelectionEdge: boolean = false;
+  displaySummary: boolean = false;
   displayChangeProperties: boolean = false;
   onIcon = "pi pi-check"
 
@@ -85,6 +86,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   alias: TreeNode[] = [];
   allNodes: any[] = [];
   rowGroupMetadata: any;
+
+  markdownSummary = "";
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -275,6 +278,60 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             }
 
             this.displayTagStatistic = true
+          }
+          break;
+
+        case menuIds.statistics_summary:
+          {
+            // Build all tags
+            let allTags = _.uniq(_.map(this.cy?.nodes(), (node) => {
+              return node.data().tag
+            }))
+
+            let markdown = ""
+            let facts = this.buildFacts()
+
+            _.each(allTags, (tag) => {
+              markdown += `# ${tag}\n`
+
+              let edges = _.sortBy(_.map(_.filter(facts, (fact) => {
+                return fact.element.type === 'edges'
+                  && (fact.element.data.source?.tag === tag || fact.element.data.target?.tag === tag)
+              }), (edge) => {
+                if (edge.element.data.source?.tag === tag) {
+                  return {
+                    id: edge.element.data.source.id,
+                    target: edge.element.data.target.id
+                  }
+                } else {
+                  return {
+                    id: edge.element.data.target.id,
+                    target: edge.element.data.source.id
+                  }
+                }
+              }), (edge) => {
+                return edge.id
+              })
+
+              let nodes = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
+                return {
+                  id: this.base16.decode(node.data().id),
+                  tag: node.data().tag,
+                  alias: node.data().alias !== undefined
+                }
+              }), (node) => !node.alias), (node) => node.id)
+
+              _.each(_.filter(nodes, (node) => node.tag === tag), (node) => {
+                markdown += `## ${node.id}\n\n`
+                _.each(_.filter(edges, (edge) => edge.id === node.id), (edge) => {
+                  markdown += `${edge.target}\n\n`
+                })
+              })
+
+            })
+
+            this.markdownSummary = md.render(markdown)
+            this.displaySummary = true
           }
           break;
 

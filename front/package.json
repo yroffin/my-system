@@ -51,7 +51,8 @@
     "three": "0.146.0",
     "three-orbitcontrols-ts": "0.1.2",
     "three-text-geometry": "0.0.0",
-    "jsonata": "1.8.6"
+    "jsonata": "1.8.6",
+    "paper": "0.12.17"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.1.3",

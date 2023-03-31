@@ -68,6 +68,7 @@ import { styleReducer, stylesReducer } from './stats/style.reducer';
 import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
 import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.component';
 import { menuReducer, parameterReducer } from './stats/menu.reducer';
+import { GraphPaperComponent } from './components/graph-paper/graph-paper.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { menuReducer, parameterReducer } from './stats/menu.reducer';
     ThreejsComponent,
     StyleSelectorComponent,
     RuleSelectorComponent,
-    RuleViewerComponent
+    RuleViewerComponent,
+    GraphPaperComponent
   ],
   imports: [
     BrowserModule,
