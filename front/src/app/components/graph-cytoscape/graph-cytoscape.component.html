@@ -272,16 +272,46 @@
     </p-treeTable>
 </p-dialog>
 
-<p-dialog header="Sumary" [modal]="true" [style]="{width: '65vw', height: '55vw'}" [(visible)]="displaySummary">
+<p-dialog header="Sumary" [modal]="true" [style]="{width: '80vw', height: '55vw'}" [(visible)]="displaySummary">
+    <p-toast position="bottom-center" key="popup"></p-toast>
     <p-panel *ngFor="let item of tagsSummary; index as i" header="Tag analysis for [{{item}}]">
-        <ul *ngFor="let element of markdownSummary[i]; index as j">
-            <li>#{{element.id}} : {{element.label}} <i (click)="nodeSummarySelect(element.key)"
-                    class="pi pi-search"></i></li>
-            <ul>
-                <li *ngFor="let link of element.links; index as k">{{link.action}} : #{{link.target}}
-                    ({{link.label}})
-                </li>
-            </ul>
-        </ul>
+        <p-table styleClass="p-datatable-striped" [value]="markdownSummary[i]">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:1%">Search</th>
+                    <th style="width:20%">Id</th>
+                    <th style="width:10%">Name</th>
+                    <th style="width:5%">Alias</th>
+                    <th style="width:44%">Links</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-element>
+                <tr>
+                    <td><i (click)="nodeSummarySelect(element.key)" class="pi pi-search"></i></td>
+                    <td>{{ element.id }}<br>{{ element.rawAlias }}</td>
+                    <td>{{ element.label }}</td>
+                    <td>{{ element.isAlias }}</td>
+                    <td>
+                        <p-table [value]="element.links">
+                            <ng-template pTemplate="header">
+                <tr>
+                    <th>Link</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-link>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>{{ link.action }}</li>
+                            <li>{{ link.target }}</li>
+                            <li>{{ link.label }}</li>
+                        </ul>
+                </tr>
+            </ng-template>
+        </p-table>
+        </td>
+        </tr>
+        </ng-template>
+        </p-table>
     </p-panel>
 </p-dialog>

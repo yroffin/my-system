@@ -298,6 +298,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             this.tagsSummary = _.uniq(tags)
 
             let facts = this.buildFacts()
+            let CSV = "Tag;Id;Label;isAlias;Alias;Type;Label;Target\n"
 
             // build all nodes
             let allNodes = _.map(this.cy?.nodes(), (node) => {
@@ -307,7 +308,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                 label: node.data().label,
                 tag: node.data().tag,
                 alias: node.data().alias !== undefined,
-                rawAlias: node.data().alias
+                rawAlias: node.data().alias !== undefined ? node.data().alias : this.base16.decode(node.data().id)
               }
             })
 
@@ -330,13 +331,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                 return edge.id
               })
 
-              let nodes = _.sortBy(_.filter(allNodes, (node) => !node.alias), (node) => node.id)
+              let nodes = _.sortBy(_.filter(allNodes, (node) => true), (node) => node.rawAlias)
 
               _.each(_.filter(nodes, (node) => node.tag === tag), (node) => {
                 let local = {
                   id: `${node.id}`,
                   key: `${node.key}`,
                   label: `${node.label}`,
+                  isAlias: node.alias,
+                  alias: node.alias ? `${node.rawAlias}` : `${node.id}`,
+                  rawAlias: node.alias ? `[ALIAS FOR] ${node.rawAlias}` : ``,
                   links: <link[]>[]
                 }
                 markdown.push(local)
@@ -347,18 +351,25 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                       label: `${edge.label}`,
                       target: `${edge.target}`
                     })
+                    CSV += `${tag};${local.id};${local.label};${local.isAlias};${local.alias};IN;${edge.label};${edge.target}\n`
                   } else {
                     local.links.push({
                       action: `OUT`,
                       label: `${edge.label}`,
                       target: `${edge.source}`
                     })
+                    CSV += `${tag};${local.id};${local.label};${local.isAlias};${local.alias};OUT;${edge.label};${edge.source}\n`
                   }
                 })
               })
 
               this.markdownSummary.push(markdown)
             })
+
+            this.messageService.add({
+              key: 'popup', severity: 'info', summary: 'Info', detail: `Store CSV in clipboard`
+            });
+            this.clipboardService.copyTextToClipboard(CSV)
 
             this.displaySummary = true
           }
