@@ -51,6 +51,12 @@ import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from 'src/app/stats
 
 declare var cytoscape: any
 
+class link {
+  public action!: string;
+  public label!: string;
+  public target!: string;
+}
+
 @Component({
   selector: 'app-graph-cytoscape',
   templateUrl: './graph-cytoscape.component.html',
@@ -297,9 +303,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
             let allNodes = _.map(this.cy?.nodes(), (node) => {
               return {
                 id: this.base16.decode(node.data().id),
+                key: node.data().id,
                 label: node.data().label,
                 tag: node.data().tag,
-                alias: node.data().alias === undefined
+                alias: node.data().alias !== undefined,
+                rawAlias: node.data().alias
               }
             })
 
@@ -312,16 +320,11 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                 return fact.element.type === 'edges'
                   && (fact.element.data.source?.tag === tag || fact.element.data.target?.tag === tag)
               }), (edge) => {
-                if (edge.element.data.source?.tag === tag) {
-                  return {
-                    id: edge.element.data.source.id,
-                    target: edge.element.data.target.id
-                  }
-                } else {
-                  return {
-                    id: edge.element.data.target.id,
-                    target: edge.element.data.source.id
-                  }
+                return {
+                  id: edge.element.data.source?.tag === tag ? edge.element.data.source.id : edge.element.data.target.id,
+                  label: edge.element.data.label,
+                  source: edge.element.data.source.id,
+                  target: edge.element.data.target.id
                 }
               }), (edge) => {
                 return edge.id
@@ -332,20 +335,31 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
               _.each(_.filter(nodes, (node) => node.tag === tag), (node) => {
                 let local = {
                   id: `${node.id}`,
+                  key: `${node.key}`,
                   label: `${node.label}`,
-                  links: (<string[]>[])
+                  links: <link[]>[]
                 }
                 markdown.push(local)
                 _.each(_.filter(edges, (edge) => edge.id === node.id), (edge) => {
-                  let value = `${edge.target}`
-                  local.links.push(value)
+                  if (node.id === edge.source) {
+                    local.links.push({
+                      action: `IN`,
+                      label: `${edge.label}`,
+                      target: `${edge.target}`
+                    })
+                  } else {
+                    local.links.push({
+                      action: `OUT`,
+                      label: `${edge.label}`,
+                      target: `${edge.source}`
+                    })
+                  }
                 })
               })
 
               this.markdownSummary.push(markdown)
             })
 
-            console.log(this.markdownSummary)
             this.displaySummary = true
           }
           break;
@@ -1294,6 +1308,13 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.logger.info(`Center on select node ${this.selectedNode.key}`)
     this.cy?.center(selected)
     this.displayFinder = false
+  }
+
+  nodeSummarySelect(key: any): void {
+    let selected = this.cy?.$(`#${key}`);
+    this.logger.info(`Center on select node ${key}`)
+    this.cy?.center(selected)
+    this.displaySummary = false
   }
 
   buildChildNodes(graph: any): TreeNode {

@@ -273,14 +273,15 @@
 </p-dialog>
 
 <p-dialog header="Sumary" [modal]="true" [style]="{width: '65vw', height: '55vw'}" [(visible)]="displaySummary">
-    <p-accordion [activeIndex]="0">
-        <p-accordionTab *ngFor="let item of tagsSummary; index as i" header="{{item}}">
-            <ul *ngFor="let element of markdownSummary[i]; index as j">
-                <li>Component: {{element.label}} Id: {{element.id}}</li>
-                <ul>
-                    <li *ngFor="let link of element.links; index as k">Target: {{link}}</li>
-                </ul>
+    <p-panel *ngFor="let item of tagsSummary; index as i" header="Tag analysis for [{{item}}]">
+        <ul *ngFor="let element of markdownSummary[i]; index as j">
+            <li>#{{element.id}} : {{element.label}} <i (click)="nodeSummarySelect(element.key)"
+                    class="pi pi-search"></i></li>
+            <ul>
+                <li *ngFor="let link of element.links; index as k">{{link.action}} : #{{link.target}}
+                    ({{link.label}})
+                </li>
             </ul>
-        </p-accordionTab>
-    </p-accordion>
+        </ul>
+    </p-panel>
 </p-dialog>

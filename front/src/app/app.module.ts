@@ -35,6 +35,8 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { BadgeModule } from 'primeng/badge';
+import { DividerModule } from 'primeng/divider';
+import { FieldsetModule } from 'primeng/fieldset';
 
 import { StoreModule } from '@ngrx/store';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -139,6 +141,8 @@ import { GraphPaperComponent } from './components/graph-paper/graph-paper.compon
     ChartModule,
     TooltipModule,
     ToggleButtonModule,
+    FieldsetModule,
+    DividerModule,
     BadgeModule,
     StoreModule.forRoot({
       graphs: graphsReducer,
