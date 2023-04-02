@@ -273,5 +273,14 @@
 </p-dialog>
 
 <p-dialog header="Sumary" [modal]="true" [style]="{width: '65vw', height: '55vw'}" [(visible)]="displaySummary">
-    <div [innerHTML]="markdownSummary"></div>
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab *ngFor="let item of tagsSummary; index as i" header="{{item}}">
+            <ul *ngFor="let element of markdownSummary[i]; index as j">
+                <li>Component: {{element.label}} Id: {{element.id}}</li>
+                <ul>
+                    <li *ngFor="let link of element.links; index as k">Target: {{link}}</li>
+                </ul>
+            </ul>
+        </p-accordionTab>
+    </p-accordion>
 </p-dialog>

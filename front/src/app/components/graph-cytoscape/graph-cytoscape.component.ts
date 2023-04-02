@@ -87,7 +87,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   allNodes: any[] = [];
   rowGroupMetadata: any;
 
-  markdownSummary = "";
+  tagsSummary: string[] = []
+  markdownSummary: any[][] = []
 
   cols: any[] = [
     { field: 'label', header: 'Label' }
@@ -284,16 +285,29 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         case menuIds.statistics_summary:
           {
             // Build all tags
-            let allTags = _.uniq(_.map(this.cy?.nodes(), (node) => {
-              return node.data().tag
-            }))
+            let tags = _.map<cy.NodeSingular, string>(this.cy?.nodes(), (node) => {
+              let result: string = node.data().tag;
+              return result
+            })
+            this.tagsSummary = _.uniq(tags)
 
-            let markdown = ""
             let facts = this.buildFacts()
 
-            _.each(allTags, (tag) => {
-              markdown += `# ${tag}\n`
+            // build all nodes
+            let allNodes = _.map(this.cy?.nodes(), (node) => {
+              return {
+                id: this.base16.decode(node.data().id),
+                label: node.data().label,
+                tag: node.data().tag,
+                alias: node.data().alias === undefined
+              }
+            })
 
+            this.markdownSummary = []
+            _.each(this.tagsSummary, (tag) => {
+              let markdown: any[] = []
+
+              // build all edges with target (node) with tag
               let edges = _.sortBy(_.map(_.filter(facts, (fact) => {
                 return fact.element.type === 'edges'
                   && (fact.element.data.source?.tag === tag || fact.element.data.target?.tag === tag)
@@ -313,24 +327,25 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
                 return edge.id
               })
 
-              let nodes = _.sortBy(_.filter(_.map(this.cy?.nodes(), (node) => {
-                return {
-                  id: this.base16.decode(node.data().id),
-                  tag: node.data().tag,
-                  alias: node.data().alias !== undefined
-                }
-              }), (node) => !node.alias), (node) => node.id)
+              let nodes = _.sortBy(_.filter(allNodes, (node) => !node.alias), (node) => node.id)
 
               _.each(_.filter(nodes, (node) => node.tag === tag), (node) => {
-                markdown += `## ${node.id}\n\n`
+                let local = {
+                  id: `${node.id}`,
+                  label: `${node.label}`,
+                  links: (<string[]>[])
+                }
+                markdown.push(local)
                 _.each(_.filter(edges, (edge) => edge.id === node.id), (edge) => {
-                  markdown += `${edge.target}\n\n`
+                  let value = `${edge.target}`
+                  local.links.push(value)
                 })
               })
 
+              this.markdownSummary.push(markdown)
             })
 
-            this.markdownSummary = md.render(markdown)
+            console.log(this.markdownSummary)
             this.displaySummary = true
           }
           break;
