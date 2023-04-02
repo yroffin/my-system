@@ -7,6 +7,15 @@ This tool aim to design complex system with a component view target
 
 I used it on my own to design my system
 
+## Mars 2023 : version 1.2.x
+
+### Features releases
+
+#### Features release summary
+
+- Add summary export in statistics
+- Add summary export in statistics with clipboard copy as CSV
+
 ## December 2022 : version 1.2.x
 
 ### Features releases
