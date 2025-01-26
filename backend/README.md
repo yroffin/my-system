@@ -1,9 +1,8 @@
 # backend
 
-# local design
+## run locally
 
 ```
-python3 -m venv .tmp
-source .tmp/bin/activate
+./gradlew -t :bootJar
+./gradlew bootRun
 ```
-
