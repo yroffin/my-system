@@ -9,12 +9,16 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "graphs")
+@Table(name = "sys_graphs")
 @Data
-public class GraphEntity implements Serializable {
+public class SysGraphEntity implements Serializable {
     @Id
     private String id;
 
     @Column(nullable = false)
-    private String description;
+    private String label;
+    @Column(nullable = false)
+    private String style;
+    @Column(nullable = false)
+    private String rules;
 }

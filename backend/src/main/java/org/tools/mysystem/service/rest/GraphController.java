@@ -12,7 +12,7 @@ import org.tools.mysystem.model.rest.GraphRest;
 import org.tools.mysystem.service.app.GraphService;
 
 @RestController
-@RequestMapping("/graph")
+@RequestMapping("/api/graph")
 public class GraphController {
     private static final String template = "Hello, %s! test 18";
 
@@ -25,11 +25,11 @@ public class GraphController {
 
     @PostMapping("/")
     public GraphRest create(@RequestBody GraphRest body) {
-        return graphService.create(body);
+        return null;
     }
 
     @GetMapping("/")
     public List<GraphRest> greeting() {
-        return graphService.findAll();
+        return null;
     }
 }
