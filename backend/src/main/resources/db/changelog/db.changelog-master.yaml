@@ -8,23 +8,23 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: label
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: style
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: rules
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
         - createTable:
@@ -32,33 +32,33 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: label
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: parent
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
                   name: alias
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
                   name: cdata
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
                   name: grp
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
@@ -78,45 +78,55 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: color
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
                   name: tag
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
+              - column:
+                  name: graph_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
         - createTable:
             tableName: sys_edges
             columns:
               - column:
                   name: id
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: label
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: cdata
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
                   name: source
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: target
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: tag
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     nullable: true
+              - column:
+                  name: graph_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

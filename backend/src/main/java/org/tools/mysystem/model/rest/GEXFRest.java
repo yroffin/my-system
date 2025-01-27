@@ -4,6 +4,6 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class GraphRest {
-    private @NonNull String id;
+public class GEXFRest {
+    private @NonNull String content;
 }
