@@ -1,34 +1,34 @@
 <p-menubar [model]="items">
-    <ng-template pTemplate="start">
-        <img src="assets/favicon.png" height="40" class="mr-2">
-    </ng-template>
-    <ng-template pTemplate="end">
-        <div class="grid-inputgroup">
-            <div>
-                <label>Zoom: {{zoom}}</label>
-            </div>
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <div>
-                <p-slider [(ngModel)]="zoom" [min]="0.1" [max]="5" [step]="0.1" [style]="{width: '100px'}"
-                    (onChange)="onChangeZoom($event)"></p-slider>
-            </div>
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <div>
-                <p-checkbox [(ngModel)]="drawMode" [binary]="true" inputId="draw" (onChange)="onChangeDrawMode($event)">
-                </p-checkbox>
-                <label for="draw">&nbsp;Draw&nbsp;</label>
-            </div>
-            &nbsp;
-            <div>
-                <p-checkbox [(ngModel)]="groupMode" [binary]="true" inputId="group"
-                    (onChange)="onChangeGroupMode($event)"></p-checkbox>
-                <label for="group">&nbsp;Group&nbsp;</label>
-            </div>
-        </div>
-    </ng-template>
+  <ng-template pTemplate="start">
+    <img src="favicon.png" height="40" class="mr-2">
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="grid-inputgroup">
+      <div>
+        <label>Zoom: {{zoom}}</label>
+      </div>
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      <div>
+        <p-slider [(ngModel)]="zoom" [min]="0.1" [max]="5" [step]="0.1" [style]="{width: '100px'}"
+          (onChange)="onChangeZoom($event)"></p-slider>
+      </div>
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      <div>
+        <p-checkbox [(ngModel)]="drawMode" [binary]="true" inputId="draw" (onChange)="onChangeDrawMode($event)">
+        </p-checkbox>
+        <label for="draw">&nbsp;Draw&nbsp;</label>
+      </div>
+      &nbsp;
+      <div>
+        <p-checkbox [(ngModel)]="groupMode" [binary]="true" inputId="group"
+          (onChange)="onChangeGroupMode($event)"></p-checkbox>
+        <label for="group">&nbsp;Group&nbsp;</label>
+      </div>
+    </div>
+  </ng-template>
 </p-menubar>
 <router-outlet></router-outlet>

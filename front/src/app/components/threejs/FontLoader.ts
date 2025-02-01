@@ -10,6 +10,8 @@ class FontLoader extends Loader {
         super(manager);
     }
 
+    /*
+     * TODO
     load(url: string, onLoad: any, onProgress?: any, onError?: any) {
         const scope = this;
         const loader = new FileLoader(this.manager);
@@ -21,6 +23,7 @@ class FontLoader extends Loader {
             if (onLoad) onLoad(font);
         }, onProgress, onError);
     }
+        */
     parse(json: string) {
         return new Font(json);
     }

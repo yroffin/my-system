@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
-import { SysPreference } from 'src/app/models/preference';
-import { PreferenceService } from 'src/app/services/preferences.service';
+import { SysPreference } from '../../models/preference';
+import { PreferenceService } from '../../services/preferences.service';
+import { FormsModule } from '@angular/forms';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-preference',
   templateUrl: './preference.component.html',
-  styleUrls: ['./preference.component.css']
+  styleUrls: ['./preference.component.css'],
+  imports: [FormsModule, PanelModule],
 })
 export class PreferenceComponent implements OnInit {
 

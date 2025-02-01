@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
-import { SysGraph } from 'src/app/models/graph';
-import { GraphService } from 'src/app/services/graph.service';
-import { retrievedGraph } from 'src/app/stats/graph.actions';
-import { selectGraph } from 'src/app/stats/graph.selectors';
+import { SysGraph } from '../../models/graph';
+import { GraphService } from '../../services/graph.service';
+import { retrievedGraph } from '../../stats/graph.actions';
+import { selectGraph } from '../../stats/graph.selectors';
 import * as THREE from 'three';
 import { OrbitControls } from 'three-orbitcontrols-ts';
 import { FontLoader } from './FontLoader';
@@ -60,7 +60,7 @@ export class ThreejsComponent implements OnInit, AfterViewInit, OnDestroy {
   private group = new THREE.Group();
 
   id?: string
-  graph$ = this.store.select(selectGraph);
+  graph$;
   subscriptions: any = [];
 
   constructor(
@@ -69,6 +69,7 @@ export class ThreejsComponent implements OnInit, AfterViewInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute
   ) {
+    this.graph$ = this.store.select(selectGraph);
     this.subscriptions.push(this.graph$.subscribe(graph => {
       if (!graph) {
         return

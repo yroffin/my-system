@@ -1,13 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { MessageService } from 'primeng/api';
-import { ClipboardService } from 'src/app/services/clipboard.service';
-import { ConverterService } from 'src/app/services/converter.service';
+import { ClipboardService } from '../../services/clipboard.service';
+import { ConverterService } from '../../services/converter.service';
+import { SplitterModule } from 'primeng/splitter';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-converter',
   templateUrl: './converter.component.html',
-  styleUrls: ['./converter.component.css']
+  styleUrls: ['./converter.component.css'],
+  imports: [SplitterModule, ToastModule]
 })
 export class ConverterComponent implements OnInit {
 

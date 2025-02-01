@@ -10,7 +10,9 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { DatabaseEntity } from './database-entity.service';
 const parser = new Parser();
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+    providedIn: 'root'
+})
 export class GraphService extends DatabaseEntity<SysGraph> {
 
 

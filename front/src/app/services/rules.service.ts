@@ -48,7 +48,11 @@ export class RulesService extends DatabaseEntity<SysRules> {
         let sets: any[] = []
         // Capture all elements
         _.each(rule.sets, (ruleset) => {
-          let query = jsonata(ruleset).evaluate(facts)
+          /**
+           * TODO
+           * let query = jsonata(ruleset).evaluate(facts)
+           */
+          let query = { length: 0 }
           if (!query.length) {
             query = [query]
           }
@@ -61,7 +65,11 @@ export class RulesService extends DatabaseEntity<SysRules> {
         _.each(sets, (elements) => {
           let cumul = false
           _.each(rule.asserts, (assert) => {
-            let result = jsonata(assert).evaluate(elements)
+            /**
+             * TODO
+             * let result = jsonata(assert).evaluate(elements)
+             */
+            let result = {}
             if (result) cumul = true
           })
           collector.push({

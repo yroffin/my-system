@@ -2,19 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { SysGraph } from 'src/app/models/graph';
-import { ClipboardService } from 'src/app/services/clipboard.service';
-import { GraphService } from 'src/app/services/graph.service';
-import { NGXLogger } from 'ngx-logger';
-import { retrievedGraphList } from 'src/app/stats/graph.actions';
-import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { SysGraph } from '../../models/graph';
+import { ClipboardService } from '../../services/clipboard.service';
+import { GraphService } from '../../services/graph.service';
+import { LoggerModule, NGXLogger } from 'ngx-logger';
+import { retrievedGraphList } from '../../stats/graph.actions';
+import { selectGraph, selectGraphs } from '../../stats/graph.selectors';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { FormsModule } from '@angular/forms';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-graph-selector',
   templateUrl: './graph-selector.component.html',
   providers: [MessageService],
-  styleUrls: ['./graph-selector.component.css']
+  styleUrls: ['./graph-selector.component.css'],
+  imports: [LoggerModule, ButtonModule, DialogModule, FileUploadModule, ConfirmDialogModule, ConfirmPopupModule, TableModule, ToastModule, FormsModule, ToolbarModule]
 })
 export class GraphSelectorComponent implements OnInit {
 
@@ -32,8 +42,8 @@ export class GraphSelectorComponent implements OnInit {
   Delete = "false";
   xml: Array<string> = [];
 
-  graph$ = this.store.select(selectGraph);
-  graphs$ = this.store.select(selectGraphs);
+  graph$;
+  graphs$;
 
   constructor(
     private router: Router,
@@ -43,6 +53,8 @@ export class GraphSelectorComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private store: Store) {
+    this.graph$ = this.store.select(selectGraph);
+    this.graphs$ = this.store.select(selectGraphs);
     this.graph$.subscribe(_graph => {
       if (!_graph) {
         return

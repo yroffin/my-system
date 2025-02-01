@@ -2,7 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 // node.js, the same, but with sugar:
-var md = require('markdown-it')();
+var md = {
+  render: (arg: string) => { return "" }
+}
+//require('markdown-it')();
 
 @Component({
   selector: 'app-about',

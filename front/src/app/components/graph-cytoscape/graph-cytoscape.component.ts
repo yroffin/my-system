@@ -1,15 +1,18 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { GraphService } from 'src/app/services/graph.service';
-import { retrievedGraph } from 'src/app/stats/graph.actions';
-import { selectGraph, selectGraphs } from 'src/app/stats/graph.selectors';
+import { GraphService } from '../../services/graph.service';
+import { retrievedGraph } from '../../stats/graph.actions';
+import { selectGraph, selectGraphs } from '../../stats/graph.selectors';
 import { v4 as uuidv4 } from 'uuid';
 
 // node.js, the same, but with sugar:
-var md = require('markdown-it')();
+var md = {
+  render: (arg: string) => { }
+}
+//require('markdown-it')();
 
-import * as cy from 'cytoscape'
+import cy from 'cytoscape';
 import {
   Core,
   CytoscapeOptions,
@@ -22,6 +25,7 @@ import {
   Stylesheet
 } from 'cytoscape'
 
+/*
 var edgehandles = require('cytoscape-edgehandles');
 cy.use(edgehandles);
 
@@ -30,24 +34,47 @@ cy.use(automove);
 
 var snapToGrid = require('cytoscape-snap-to-grid');
 snapToGrid(cy); // register extension
+*/
 
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClipboardService } from 'src/app/services/clipboard.service';
-import { SysEdge, SysGraph, SysNode } from 'src/app/models/graph';
-import { MenuItem, Message, MessageService, TreeNode } from 'primeng/api';
-import { Base16Service } from 'src/app/services/base16.service';
-import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
+import { ClipboardService } from '../../services/clipboard.service';
+import { SysEdge, SysGraph, SysNode } from '../../models/graph';
+import { MenuItem, MessageService, TreeNode } from 'primeng/api';
+import { Base16Service } from '../../services/base16.service';
+import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
-import { SysPreference } from 'src/app/models/preference';
-import { StyleService } from 'src/app/services/style.service';
-import { SysTags } from 'src/app/models/style';
-import { retrievedStyle } from 'src/app/stats/style.actions';
-import { RulesService } from 'src/app/services/rules.service';
-import { PreferenceService } from 'src/app/services/preferences.service';
-import { selectMenu, selectParameter } from 'src/app/stats/menu.selectors';
-import { menuIds } from 'src/app/models/menu';
-import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from 'src/app/stats/menu.actions';
+import { SysPreference } from '../../models/preference';
+import { StyleService } from '../../services/style.service';
+import { SysTags } from '../../models/style';
+import { retrievedStyle } from '../../stats/style.actions';
+import { RulesService } from '../../services/rules.service';
+import { PreferenceService } from '../../services/preferences.service';
+import { selectMenu, selectParameter } from '../../stats/menu.selectors';
+import { menuIds } from '../../models/menu';
+import { selectMenuIds, setDrawMode, setGroupMode, setZoom } from '../../stats/menu.actions';
+import { GraphApiService } from '../../services/data/graph-api.service';
+import { TableModule } from 'primeng/table';
+import { PanelModule } from 'primeng/panel';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { TreeTableModule } from 'primeng/treetable';
+import { TreeModule } from 'primeng/tree';
+import { TabViewModule } from 'primeng/tabview'
+import { ChartModule } from 'primeng/chart';
+import { ButtonModule } from 'primeng/button';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { SplitterModule } from 'primeng/splitter';
+import { TextareaModule } from 'primeng/textarea';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown'
+import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
+import { BadgeModule } from 'primeng/badge';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { DockModule } from 'primeng/dock';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { CommonModule } from '@angular/common';
 
 declare var cytoscape: any
 
@@ -60,7 +87,10 @@ class link {
 @Component({
   selector: 'app-graph-cytoscape',
   templateUrl: './graph-cytoscape.component.html',
-  styleUrls: ['./graph-cytoscape.component.css']
+  styleUrls: ['./graph-cytoscape.component.css'],
+  imports: [CommonModule, ContextMenuModule, DockModule, BadgeModule, OverlayBadgeModule, TooltipModule,
+    CheckboxModule, DropdownModule, FormsModule, TextareaModule, TableModule, PanelModule, ToastModule, DialogModule,
+    TreeTableModule, TreeModule, TabViewModule, ChartModule, ButtonModule, ToggleButtonModule, SplitterModule]
 })
 export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -137,15 +167,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   preventDispatchZoom = true;
 
-  graph$ = this.store.select(selectGraph);
-  graphs$ = this.store.select(selectGraphs);
-  menu$ = this.store.select(selectMenu);
-  parameter$ = this.store.select(selectParameter);
+  graph$;
+  graphs$;
+  menu$;
+  parameter$;
 
   _lockedElement: boolean = false;
 
   constructor(
     private graphsService: GraphService,
+    private graphsServiceApi: GraphApiService,
     private styleService: StyleService,
     private rulesService: RulesService,
     private preferenceService: PreferenceService,
@@ -155,6 +186,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     private messageService: MessageService,
     private base16: Base16Service,
     private store: Store, private route: ActivatedRoute) {
+    this.graph$ = this.store.select(selectGraph);
+    this.graphs$ = this.store.select(selectGraphs);
+    this.menu$ = this.store.select(selectMenu);
+    this.parameter$ = this.store.select(selectParameter);
 
     let preferences = this.preferenceService.findOne("default")
     if (preferences) {
@@ -657,6 +692,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.id = params['label'];
 
       let _graph = this.graphsService.findOne(this.id + "")
+      let _graph_alt = this.graphsServiceApi.findOne(this.id + "")
       if (_graph) {
         this.store.dispatch(retrievedGraph({ graph: _graph }))
       }

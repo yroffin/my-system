@@ -4,16 +4,26 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SysTag, SysTags } from 'src/app/models/style';
-import { ClipboardService } from 'src/app/services/clipboard.service';
-import { StyleService } from 'src/app/services/style.service';
-import { retrievedStyle, retrievedStyleList } from 'src/app/stats/style.actions';
-import { selectStyle, selectStyles } from 'src/app/stats/style.selectors';
+import { SysTag, SysTags } from '../../models/style';
+import { ClipboardService } from '../../services/clipboard.service';
+import { StyleService } from '../../services/style.service';
+import { retrievedStyle, retrievedStyleList } from '../../stats/style.actions';
+import { selectStyle, selectStyles } from '../../stats/style.selectors';
+import { JsonPipe } from '@angular/common';
+
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ToolbarModule } from 'primeng/toolbar';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-style-selector',
   templateUrl: './style-selector.component.html',
-  styleUrls: ['./style-selector.component.css']
+  styleUrls: ['./style-selector.component.css'],
+  imports: [JsonPipe, DialogModule, ToastModule, ConfirmPopupModule, TableModule, InputTextModule, ToolbarModule, FormsModule],
 })
 export class StyleSelectorComponent implements OnInit {
 
@@ -24,8 +34,8 @@ export class StyleSelectorComponent implements OnInit {
   displayStyle: boolean = false;
   selectedStyle?: SysTags
 
-  style$ = this.store.select(selectStyle);
-  styles$ = this.store.select(selectStyles);
+  style$;
+  styles$;
 
   constructor(
     private router: Router,
@@ -35,6 +45,10 @@ export class StyleSelectorComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private store: Store) {
+
+    this.style$ = this.store.select(selectStyle);
+    this.styles$ = this.store.select(selectStyles);
+
     this.style$.subscribe(_style => {
       if (!_style) {
         return

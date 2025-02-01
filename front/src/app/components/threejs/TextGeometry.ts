@@ -54,7 +54,10 @@ class TextGeometry extends ExtrudeGeometry {
 
         }
 
-        this.type = 'TextGeometry';
+        /**
+         * TODO
+         * this.type = 'TextGeometry';
+         */
 
     }
 

@@ -3,13 +3,19 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SysRule, SysRules } from 'src/app/models/rule.model';
-import { RulesService } from 'src/app/services/rules.service';
+import { SysRule, SysRules } from '../../models/rule.model';
+import { RulesService } from '../../services/rules.service';
+
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-rule-selector',
   templateUrl: './rule-selector.component.html',
-  styleUrls: ['./rule-selector.component.css']
+  styleUrls: ['./rule-selector.component.css'],
+  imports: [ConfirmPopupModule, TableModule, ToastModule, ToolbarModule]
 })
 export class RuleSelectorComponent implements OnInit {
 

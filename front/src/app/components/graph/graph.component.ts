@@ -3,17 +3,22 @@ import { Store } from '@ngrx/store';
 import Graph from 'graphology';
 import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from 'sigma';
-import { GraphService } from 'src/app/services/graph.service';
-import { selectGraphs } from 'src/app/stats/graph.selectors';
+import { GraphService } from '../../services/graph.service';
+import { selectGraphs } from '../../stats/graph.selectors';
 import * as _ from 'lodash';
-import { retrievedGraphList } from 'src/app/stats/graph.actions';
+import { retrievedGraphList } from '../../stats/graph.actions';
 import { HttpClient } from '@angular/common/http';
 import { NGXLogger } from 'ngx-logger';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FileUploadModule } from 'primeng/fileupload';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.css']
+  styleUrls: ['./graph.component.css'],
+  imports: [CommonModule, ButtonModule, DialogModule, FileUploadModule]
 })
 export class GraphComponent implements OnInit, AfterViewInit {
 
@@ -25,13 +30,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
   display = false;
   xml: Array<string> = [];
 
-  graphs$ = this.store.select(selectGraphs);
+  graphs$;
 
   constructor(
     private http: HttpClient,
     private logger: NGXLogger,
     private graphsService: GraphService,
     private store: Store) {
+    this.graphs$ = this.store.select(selectGraphs);
     this.graphs$.subscribe(graphs => {
       if (!graphs || graphs.length === 0) {
         return

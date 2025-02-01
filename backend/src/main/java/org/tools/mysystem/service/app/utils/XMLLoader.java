@@ -48,12 +48,16 @@ public class XMLLoader {
                     switch (name) {
                         case "node":
                             logger.trace("[NODE] text: {} attrs:{}", text, map);
-                            callbackData.onCompleteNode(map.get("id"), "", 0, 0);
+                            callbackData.onCompleteNode(map.get("id"), map.get("label"), Integer.parseInt(map.get("x")),
+                                    Integer.parseInt(map.get("y")), map.get("alias"), map.get("group"),
+                                    map.get("tag"), map.get("cdata"));
                             break;
 
                         case "edge":
                             logger.trace("[EDGE] text: {} attrs:{}", text, map);
-                            callbackData.onCompleteEdge(map.get("id"), "", map.get("source"), map.get("target"));
+                            callbackData.onCompleteEdge(map.get("id"), map.get("label"), map.get("source"),
+                                    map.get("target"),
+                                    map.get("tag"));
                             break;
 
                         default:
