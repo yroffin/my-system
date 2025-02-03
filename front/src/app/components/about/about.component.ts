@@ -22,7 +22,7 @@ export class AboutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.http.get('assets/about/about.md', {
+    this.http.get('about/about.md', {
       responseType: "text"
     }
     ).subscribe((body) => {

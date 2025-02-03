@@ -226,6 +226,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                 }
                 let graph: SysGraph = {
                     id: id,
+                    location: "default",
                     style: "default",
                     rules: "default",
                     label: label,
@@ -307,6 +308,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                 }
                 let graph: SysGraph = {
                     id: id,
+                    location: "default",
                     style: "default",
                     rules: "default",
                     label: label,
@@ -333,6 +335,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                     _.each(item.edge, (edge) => {
                         let _edge: SysEdge = {
                             id: edge['$'].id,
+                            location: "default",
                             label: "default",
                             source: edge['$'].source,
                             target: edge['$'].target,
@@ -352,6 +355,7 @@ export class GraphService extends DatabaseEntity<SysGraph> {
                 let data: String = new String(reader.result);
                 let loadedGraph: SysGraph = {
                     id: id,
+                    location: "default",
                     style: "default",
                     rules: "default",
                     label: label,

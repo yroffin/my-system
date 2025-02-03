@@ -32,8 +32,9 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
-                <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon>
-                </th>
+                <th pSortableColumn="id">#id <p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="location">Location <p-sortIcon field="location"></p-sortIcon></th>
+                <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon></th>
                 <th>Action(s)
                 </th>
             </tr>
@@ -43,6 +44,8 @@
                 <td>
                     <p-tableCheckbox [value]="graph"></p-tableCheckbox>
                 </td>
+                <td>{{graph.id}}</td>
+                <td>{{graph.location}}</td>
                 <td>{{graph.label}}</td>
                 <td>
                     <button pButton type="button" pTooltip="Import" tooltipPosition="top" (click)="showImport(graph)"

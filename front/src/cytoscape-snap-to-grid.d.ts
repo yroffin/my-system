@@ -1,0 +1,1 @@
+declare module 'cytoscape-snap-to-grid';

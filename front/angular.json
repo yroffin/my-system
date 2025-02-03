@@ -77,7 +77,8 @@
               "buildTarget": "model:build:production"
             },
             "development": {
-              "buildTarget": "model:build:development"
+              "buildTarget": "model:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

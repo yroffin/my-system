@@ -6,12 +6,6 @@ import { retrievedGraph } from '../../stats/graph.actions';
 import { selectGraph, selectGraphs } from '../../stats/graph.selectors';
 import { v4 as uuidv4 } from 'uuid';
 
-// node.js, the same, but with sugar:
-var md = {
-  render: (arg: string) => { }
-}
-//require('markdown-it')();
-
 import cy from 'cytoscape';
 import {
   Core,
@@ -24,17 +18,13 @@ import {
   SelectionType,
   Stylesheet
 } from 'cytoscape'
+import edgehandles from 'cytoscape-edgehandles';
+import automove from 'cytoscape-automove';
+import snapToGrid from 'cytoscape-snap-to-grid';
 
-/*
-var edgehandles = require('cytoscape-edgehandles');
 cy.use(edgehandles);
-
-var automove = require('cytoscape-automove');
 cy.use(automove);
-
-var snapToGrid = require('cytoscape-snap-to-grid');
-snapToGrid(cy); // register extension
-*/
+cy.use(snapToGrid);
 
 import { BreadthFirstLayoutOptionsImpl, CircleLayoutOptionsImpl, ConcentricLayoutOptionsImpl, CoseLayoutOptionsImpl, DagreLayoutOptionsImpl, GridLayoutOptionsImpl } from './layout-options-impl';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -75,6 +65,8 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { DockModule } from 'primeng/dock';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { CommonModule } from '@angular/common';
+import { MarkdownService } from '../../services/markdown.service';
+import { HashService } from '../../services/hash.service';
 
 declare var cytoscape: any
 
@@ -175,7 +167,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   _lockedElement: boolean = false;
 
   constructor(
-    private graphsService: GraphService,
+    private markdownService: MarkdownService,
+    private hashService: HashService,
     private graphsServiceApi: GraphApiService,
     private styleService: StyleService,
     private rulesService: RulesService,
@@ -465,7 +458,6 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.cy?.nodes().remove()
       this.cy?.edges().remove()
 
-      logger.info("graph", graph)
       // Apply style and rules
       this.applyChangeProperties({
         style: graph.style,
@@ -480,8 +472,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         // Capture all node id (for alias)
         this.allNodes = _.map(graph.nodes, (node) => {
           return {
-            label: this.base16.decode(node.id),
-            value: this.base16.decode(node.id)
+            label: node.location,
+            value: node.location
           }
         })
         this.allNodes.unshift({
@@ -492,7 +484,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.cy?.add(_.map(graph.nodes, (node) => {
           let _node: any = {
             data: {
-              id: node.id,
+              id: this.base16.encode(node.location),
               label: node.label,
               cdata: node.cdata,
               alias: node.alias,
@@ -520,16 +512,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.cy?.add(_.map(graph.edges, (edge) => {
           let _edge = {
             data: {
-              id: this.base16.encode(this.graphsService.buildId(dict, {
-                source: this.base16.decode(edge.source),
-                target: this.base16.decode(edge.target)
+              id: this.base16.encode(this.hashService.buildId(dict, {
+                source: edge.source,
+                target: edge.target
               })),
               label: edge.label,
               cdata: edge.cdata,
-              source: edge.source || "",
-              target: edge.target || "",
-              _source: base16.decode(edge.source || ""),
-              _target: base16.decode(edge.target || ""),
+              source: this.base16.encode(edge.source) || "",
+              target: this.base16.encode(edge.target) || "",
+              _source: edge.source || "",
+              _target: edge.target || "",
               tag: edge.tag
             }
           }
@@ -601,7 +593,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.items = this.coreItem;
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.cy = cy({
       container: this.myGraph?.nativeElement,
@@ -688,13 +680,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     })
 
     // Decode params
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe(async (params) => {
       this.id = params['label'];
 
-      let _graph = this.graphsService.findOne(this.id + "")
-      let _graph_alt = this.graphsServiceApi.findOne(this.id + "")
-      if (_graph) {
-        this.store.dispatch(retrievedGraph({ graph: _graph }))
+      let graph = await this.graphsServiceApi.findOne(this.id + "")
+      if (graph) {
+        this.store.dispatch(retrievedGraph({ graph: graph }))
       }
     });
 
@@ -758,7 +749,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export-jsondata.png",
+      icon: "dock/export-jsondata.png",
       command: () => {
         // build facts
         let fact = this.buildFacts()
@@ -776,7 +767,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export-gexf.png",
+      icon: "dock/export-gexf.png",
       command: () => {
         if (this.id) {
           this.gexf(this.id, this.id, this.currentStyle, this.currentRules)
@@ -794,7 +785,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export-graphml.png",
+      icon: "dock/export-graphml.png",
       command: () => {
         if (this.id) {
           this.graphml(this.id, this.id, this.currentStyle, this.currentRules)
@@ -812,7 +803,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/export-png.png",
+      icon: "dock/export-png.png",
       command: () => {
         // put the png data in an img tag
         if (document) {
@@ -836,20 +827,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/save.png",
+      icon: "dock/save.png",
       command: () => {
         if (this.id) {
           this.logger.info("SAVE/META", this.currentStyle, this.currentRules)
           let _graph: SysGraph = this.toSysGraph(this.id, this.id, this.currentStyle, this.currentRules)
           this.logger.info("SAVE", _graph)
           // Store this entity
-          this.graphsService.store(_graph, (entity) => {
-            entity.label = _graph.label,
-              entity.style = _graph.style,
-              entity.rules = _graph.rules,
-              entity.nodes = _graph.nodes,
-              entity.edges = _graph.edges
-          })
+          // TODO
           this.messageService.add({
             key: 'bc', severity: 'info', summary: 'Info', detail: `Save graph ${this.id}`
           });
@@ -868,7 +853,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         positionTop: -15,
         positionLeft: 15
       },
-      icon: "assets/dock/find-element.png",
+      icon: "dock/find-element.png",
       command: () => {
         // Scan all nodes and build all alias
         let allAlias: any[] = _.filter(_.map(this.cy?.elements('node'), (node) => {
@@ -1440,15 +1425,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     });
     if (this.id) {
       // Load this graph
-      this.graphsService.uploadHandler(event[0], this.id, this.id).then((loaded) => {
+      this.graphsServiceApi.uploadHandler(event[0], this.id, this.id).then((loaded) => {
         // Store this entity
-        this.graphsService.store(loaded, (entity) => {
-          entity.label = loaded.label,
-            entity.style = loaded.style,
-            entity.rules = loaded.rules,
-            entity.nodes = loaded.nodes,
-            entity.edges = loaded.edges
-        })
+        // TODO
         this.store.dispatch(retrievedGraph({ graph: loaded }))
       })
     }
@@ -1571,7 +1550,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         editable: false,
         isAlias: this.currentSelectedNode.data().alias ? true : false,
         selectElementId: this.currentSelectedNode.data().id,
-        selectElementCdata: md.render(currentDocumentation),
+        selectElementCdata: this.markdownService.render(currentDocumentation),
         selectElementRawCdata: currentDocumentation
       }
     } else {
@@ -1600,7 +1579,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.currentSelectedEdge.data().cdata) {
       this.captureData = {
         selectElementId: this.currentSelectedEdge.data().id,
-        selectElementCdata: md.render(this.currentSelectedEdge.data().cdata),
+        selectElementCdata: this.markdownService.render(this.currentSelectedEdge.data().cdata),
         selectElementRawCdata: this.currentSelectedEdge.data().cdata
       }
     } else {
@@ -1613,7 +1592,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   previewNewCData(captureData: any): void {
-    captureData.selectElementCdata = md.render(captureData.selectElementRawCdata)
+    captureData.selectElementCdata = this.markdownService.render(captureData.selectElementRawCdata)
   }
 
   applyNewCData(captureData: any): void {
@@ -1741,6 +1720,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.logger.info(`toSysGraph style: ${_style}`)
     return {
       id: _id,
+      location: "default",
       style: _style ? _style : "default",
       rules: _rules ? _rules : "default",
       label: _label,
@@ -1748,6 +1728,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         let _node: SysNode = {
           // Clone data can override the original id
           id: node.data()['clone'] || node.data()['id'] || "",
+          location: "default",
           label: node.data()['label'] || "",
           x: node.position().x || 0,
           y: node.position().y || 0,
@@ -1778,6 +1759,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
         let _edge: SysEdge = {
           id: edge.data()['id'] || "",
+          location: "default",
           label: edge.data()['label'] || "",
           source: source,
           target: target,
@@ -1794,12 +1776,14 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
   gexf(_id: string, _label: string, _style: string, _rules: string): void {
     let _graph: SysGraph = this.toSysGraph(_id, _label, _style, _rules)
-    this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(_graph).join('\n'))
+    // TODO
+    // this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(_graph).join('\n'))
   }
 
   graphml(_id: string, _label: string, _style: string, _rules: string): void {
     let _graph: SysGraph = this.toSysGraph(_id, _label, _style, _rules)
-    this.clipboardService.copyTextToClipboard(this.graphsService.toGraphml(_graph).join('\n'))
+    // TODO
+    // this.clipboardService.copyTextToClipboard(this.graphsService.toGraphml(_graph).join('\n'))
   }
 
   raiseError(summary: string, detail: string) {

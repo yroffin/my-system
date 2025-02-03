@@ -8,10 +8,11 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(255)
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
+                    unique: true
               - column:
                   name: label
                   type: varchar(255)
@@ -32,6 +33,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: location
                   type: varchar(255)
                   constraints:
                     primaryKey: true
@@ -96,6 +104,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: location
                   type: varchar(255)
                   constraints:
                     primaryKey: true

@@ -1,9 +1,12 @@
 package org.tools.mysystem.model.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,7 +18,10 @@ import lombok.Data;
 @Data
 public class SysEdgeEntity implements Serializable {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @Column(unique = true)
+    private String location;
 
     @Column(nullable = false)
     private String label;

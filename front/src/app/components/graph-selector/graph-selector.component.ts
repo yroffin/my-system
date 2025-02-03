@@ -18,6 +18,7 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { ToolbarModule } from 'primeng/toolbar';
+import { GraphApiService } from '../../services/data/graph-api.service';
 
 @Component({
   selector: 'app-graph-selector',
@@ -48,6 +49,7 @@ export class GraphSelectorComponent implements OnInit {
   constructor(
     private router: Router,
     private logger: NGXLogger,
+    private graphApiService: GraphApiService,
     private graphsService: GraphService,
     private clipboardService: ClipboardService,
     private confirmationService: ConfirmationService,
@@ -68,6 +70,7 @@ export class GraphSelectorComponent implements OnInit {
       this.graphs = _.map(_graphs, (graph) => {
         return {
           id: graph.id,
+          location: graph.location,
           style: graph.style,
           rules: graph.rules,
           label: graph.label,
@@ -78,9 +81,8 @@ export class GraphSelectorComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    let graphs = this.graphsService.findAll()
-    this.store.dispatch(retrievedGraphList({ graphs }))
+  async ngOnInit(): Promise<void> {
+    this.store.dispatch(retrievedGraphList({ graphs: await this.graphApiService.findAllLazy() }))
   }
 
   confirm(event: Event, _graph: SysGraph) {
@@ -110,6 +112,7 @@ export class GraphSelectorComponent implements OnInit {
     if (name) {
       this.graphsService.store({
         id: name,
+        location: "default",
         style: "default",
         rules: "default",
         label: name,
