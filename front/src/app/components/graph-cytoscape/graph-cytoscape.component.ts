@@ -36,7 +36,7 @@ import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
 import { SysPreference } from '../../models/preference';
 import { StyleService } from '../../services/style.service';
-import { SysTags } from '../../models/style';
+import { SysStyles } from '../../models/style';
 import { retrievedStyle } from '../../stats/style.actions';
 import { RulesService } from '../../services/rules.service';
 import { PreferenceService } from '../../services/preferences.service';
@@ -1443,8 +1443,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
-      let save: SysTags = {
+      let save: SysStyles = {
         id: style,
+        label: "default",
         tags: JSON.parse(reader.result + "")
       }
       this.styleService.store(save, (entity) => {

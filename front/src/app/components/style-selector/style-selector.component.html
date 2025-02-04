@@ -32,6 +32,8 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
+                <th pSortableColumn="id">#Id. <p-sortIcon field="id"></p-sortIcon>
+                </th>
                 <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon>
                 </th>
                 <th>Action(s)
@@ -44,13 +46,13 @@
                     <p-tableCheckbox [value]="style"></p-tableCheckbox>
                 </td>
                 <td>{{style.id}}</td>
+                <td>{{style.label}}</td>
                 <td>
                     <button pButton pRipple pTooltip="Select this style" tooltipPosition="top" icon="pi pi-sign-out"
                         (click)="selectStyle(style)"></button>
                     <span>&nbsp;</span>
                     <button pButton pRipple pTooltip="Remove this style" tooltipPosition="top" icon="pi pi-trash"
-                        (click)="confirm($event, style)" class="p-button-danger"></button>
-                    <span>&nbsp;</span>
+                        (click)="confirm($event, style)"></button>
                 </td>
             </tr>
         </ng-template>

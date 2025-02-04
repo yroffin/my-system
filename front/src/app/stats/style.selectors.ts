@@ -1,5 +1,5 @@
 import { createFeatureSelector } from '@ngrx/store';
-import { SysTags } from '../models/style';
+import { SysStyles } from '../models/style';
 
-export const selectStyles = createFeatureSelector<ReadonlyArray<SysTags>>('styles');
-export const selectStyle = createFeatureSelector<SysTags>('style');
+export const selectStyles = createFeatureSelector<ReadonlyArray<SysStyles>>('styles');
+export const selectStyle = createFeatureSelector<SysStyles>('style');

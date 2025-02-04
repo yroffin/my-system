@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SysTag, SysTags } from '../../models/style';
+import { SysTag, SysStyles } from '../../models/style';
 import { ClipboardService } from '../../services/clipboard.service';
 import { StyleService } from '../../services/style.service';
 import { retrievedStyle, retrievedStyleList } from '../../stats/style.actions';
@@ -18,21 +18,23 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
 import { FormsModule } from '@angular/forms';
+import { StyleApiService } from '../../services/data/style-api.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-style-selector',
   templateUrl: './style-selector.component.html',
   styleUrls: ['./style-selector.component.css'],
-  imports: [JsonPipe, DialogModule, ToastModule, ConfirmPopupModule, TableModule, InputTextModule, ToolbarModule, FormsModule],
+  imports: [JsonPipe, ButtonModule, DialogModule, ToastModule, ConfirmPopupModule, TableModule, InputTextModule, ToolbarModule, FormsModule],
 })
 export class StyleSelectorComponent implements OnInit {
 
-  style?: SysTags = undefined;
-  styles: Array<SysTags> = [];
+  style?: SysStyles = undefined;
+  styles: Array<SysStyles> = [];
   newStyle?: string
 
   displayStyle: boolean = false;
-  selectedStyle?: SysTags
+  selectedStyle?: SysStyles
 
   style$;
   styles$;
@@ -40,7 +42,7 @@ export class StyleSelectorComponent implements OnInit {
   constructor(
     private router: Router,
     private logger: NGXLogger,
-    private styleService: StyleService,
+    private styleApiService: StyleApiService,
     private clipboardService: ClipboardService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
@@ -62,18 +64,18 @@ export class StyleSelectorComponent implements OnInit {
       this.styles = _.map(_styles, (style) => {
         return {
           id: style.id,
+          label: style.label,
           tags: style.tags
         }
       });
     })
   }
 
-  ngOnInit(): void {
-    let styles = this.styleService.findAll()
-    this.store.dispatch(retrievedStyleList({ styles }))
+  async ngOnInit(): Promise<void> {
+    this.store.dispatch(retrievedStyleList({ styles: await this.styleApiService.findAllLazy() }))
   }
 
-  confirm(event: Event, _style: SysTags) {
+  confirm(event: Event, _style: SysStyles) {
     this.confirmationService.confirm({
       target: event.target || undefined,
       message: 'Are you sure that you want to proceed ?',
@@ -86,26 +88,33 @@ export class StyleSelectorComponent implements OnInit {
     });
   }
 
-  selectStyle(_style: SysTags): void {
-    this.selectedStyle = this.styleService.findOne(_style.id)
+  async selectStyle(_style: SysStyles): Promise<void> {
+    this.selectedStyle = await this.styleApiService.findOne(_style.id)
     this.logger.info(this.selectedStyle)
     this.displayStyle = true
   }
 
-  deleteStyle(_style: SysTags): void {
-    let styles = this.styleService.delete(_style.id)
-    this.store.dispatch(retrievedStyleList({ styles }))
+  deleteStyle(_style: SysStyles): void {
+    /**
+     * TODO
+     */
+    //let styles = this.styleService.delete(_style.id)
+    this.store.dispatch(retrievedStyleList({ styles: [] }))
   }
 
-  openNew(name?: string): void {
+  async openNew(name?: string): Promise<void> {
     if (name) {
+      /**
+       * TODO
       this.styleService.store({
         id: name,
+        label: "default",
         tags: []
       }, (entity) => {
         entity.tags = []
       })
-      let styles = this.styleService.findAll()
+       */
+      let styles = await this.styleApiService.findAllLazy()
       this.logger.info(styles)
       this.store.dispatch(retrievedStyleList({ styles }))
     }
@@ -127,14 +136,18 @@ export class StyleSelectorComponent implements OnInit {
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       let tags: Array<SysTag> = JSON.parse(reader.result + "")
+      /**
+       * TODO
       this.styleService.store({
         id: style,
+        label: "default",
         tags
       }, (entity) => {
         entity.tags = tags
       })
       let styles = this.styleService.findAll()
       this.store.dispatch(retrievedStyleList({ styles: styles }))
+       */
     });
     reader.readAsText(event[0])
   }

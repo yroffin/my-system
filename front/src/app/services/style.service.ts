@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { NGXLogger } from 'ngx-logger';
-import { SysTags } from '../models/style';
+import { SysStyles } from '../models/style';
 import { DatabaseEntity } from './database-entity.service';
 import { LocalStorageService } from 'ngx-webstorage';
 
 @Injectable({ providedIn: 'root' })
-export class StyleService extends DatabaseEntity<SysTags> {
+export class StyleService extends DatabaseEntity<SysStyles> {
 
     constructor(
         private _logger: NGXLogger,

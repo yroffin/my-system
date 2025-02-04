@@ -7,8 +7,9 @@ export interface SysTag {
     style: any
 }
 
-export interface SysTags {
+export interface SysStyles {
     id: string;
+    label: string;
     tags: Array<SysTag>;
 }
 

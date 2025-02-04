@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: "graphs"
       author: yroffin
       changes:
         - createTable:
@@ -143,5 +143,49 @@ databaseChangeLog:
               - column:
                   name: graph_id
                   type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: "styles"
+      author: yroffin
+      changes:
+        - createTable:
+            tableName: sys_styles
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+        - createTable:
+            tableName: sys_tags
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: label
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: selector
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: style
+                  type: varchar(16384)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ref_style
+                  type: uuid
                   constraints:
                     nullable: false

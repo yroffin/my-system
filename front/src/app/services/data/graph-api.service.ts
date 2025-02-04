@@ -10,32 +10,18 @@ import { MessageService } from 'primeng/api';
   providedIn: 'root'
 })
 export class GraphApiService {
-  private apiUrl = '/api/data';
-
   constructor(private logger: NGXLogger, private api: ApiService, private messageService: MessageService) { }
 
   /**
-   * extract uri last item
-   * @param url 
+   * find all graph
    * @returns 
    */
-  extractId(url: string): string {
-    const regex = /\/([^\/]+)$/;
-    const match = url.match(regex);
-
-    if (match) {
-      const idRegex = match[1];
-      return idRegex;
-    }
-    throw `Error, canot find id in ${url}`
-  }
-
   findAllLazy(): Promise<SysGraph[]> {
     return new Promise<SysGraph[]>(async (resolve, reject) => {
-      let entities = await this.api.findSysGraphEntities();
+      let entities = await this.api.findAll('sysGraphEntities');
       let map = _.map(entities._embedded.sysGraphEntities, async (entity) => {
         return <SysGraph>{
-          "id": this.extractId(entity._links.self.href),
+          "id": this.api.extractId(entity._links.self.href),
           "location": entity.location,
           "label": entity.label,
           "style": entity.style,
@@ -46,9 +32,14 @@ export class GraphApiService {
     })
   }
 
+  /**
+   * find one graph
+   * @param id 
+   * @returns 
+   */
   findOne(id: string): Promise<SysGraph> {
     return new Promise<SysGraph>(async (resolve, reject) => {
-      let entity = await this.api.getSysGraphEntities(id);
+      let entity = await this.api.findOne(id, 'sysGraphEntities');
       resolve({
         "id": id,
         "location": entity.location,

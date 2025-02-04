@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     provideHttpClient(),
     importProvidersFrom(LoggerModule.forRoot({
-      level: NgxLoggerLevel.DEBUG,
+      level: NgxLoggerLevel.TRACE,
       serverLogLevel: NgxLoggerLevel.ERROR
     })),
     provideAnimationsAsync(),
