@@ -10,8 +10,9 @@ export const stylesReducer = createReducer(
 );
 
 export const initialStyleState: SysStyles = {
-    id: "default",
-    label: "default",
+    id: "",
+    location: "",
+    label: "",
     tags: []
 }
 

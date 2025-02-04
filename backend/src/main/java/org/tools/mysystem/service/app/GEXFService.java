@@ -48,6 +48,13 @@ public class GEXFService {
             var loader = new XMLLoader();
             loader.load(content, new CallbackData() {
                 @Override
+                public void onCompleteGraph(String id, String style) {
+                    logger.trace("[GRAPH] {}", style);
+                    s.setStyle(style);
+                    graphRepository.save(s);
+                }
+
+                @Override
                 public void onCompleteNode(String id, String label, int x, int y, String alias, String group,
                         String tag, String cdata) {
                     var entity = new SysNodeEntity();
@@ -65,7 +72,7 @@ public class GEXFService {
                         entity.setCdata(cdata);
                     entity.setSysGraphNode(graph);
                     var saved = nodeRepository.save(entity);
-                    logger.info("[NODE] {}", saved);
+                    logger.trace("[NODE] {}", saved);
                 }
 
                 @Override
@@ -79,7 +86,7 @@ public class GEXFService {
                         entity.setTag(tag);
                     entity.setSysGraphEdge(graph);
                     var saved = edgeRepository.save(entity);
-                    logger.info("[EDGE] {}", saved);
+                    logger.trace("[EDGE] {}", saved);
                 }
             });
         }

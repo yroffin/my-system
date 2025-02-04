@@ -9,7 +9,8 @@ export interface SysTag {
 
 export interface SysStyles {
     id: string;
+    location: string;
     label: string;
-    tags: Array<SysTag>;
+    tags?: Array<SysTag>;
 }
 

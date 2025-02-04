@@ -34,6 +34,8 @@
                 </th>
                 <th pSortableColumn="id">#Id. <p-sortIcon field="id"></p-sortIcon>
                 </th>
+                <th pSortableColumn="location">Location <p-sortIcon field="location"></p-sortIcon>
+                </th>
                 <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon>
                 </th>
                 <th>Action(s)
@@ -46,6 +48,7 @@
                     <p-tableCheckbox [value]="style"></p-tableCheckbox>
                 </td>
                 <td>{{style.id}}</td>
+                <td>{{style.location}}</td>
                 <td>{{style.label}}</td>
                 <td>
                     <button pButton pRipple pTooltip="Select this style" tooltipPosition="top" icon="pi pi-sign-out"

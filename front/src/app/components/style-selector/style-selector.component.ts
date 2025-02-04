@@ -64,6 +64,7 @@ export class StyleSelectorComponent implements OnInit {
       this.styles = _.map(_styles, (style) => {
         return {
           id: style.id,
+          location: style.location,
           label: style.label,
           tags: style.tags
         }

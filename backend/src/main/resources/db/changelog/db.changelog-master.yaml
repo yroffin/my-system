@@ -159,6 +159,12 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
                     unique: true
+              - column:
+                  name: location
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
         - createTable:
             tableName: sys_tags
             columns:
@@ -173,7 +179,7 @@ databaseChangeLog:
                   name: label
                   type: varchar(255)
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: selector
                   type: varchar(255)

@@ -48,7 +48,11 @@
                 <div>&nbsp;&nbsp;&nbsp;</div>
                 <div class="flex">Style: {{currentStyle}}</div>
                 <div>&nbsp;&nbsp;&nbsp;</div>
-                <div class="flex">Current selection: {{selectorDisplay}}</div>
+                <div class="flex">Id.: [{{selectorDisplay}}]</div>
+                <div>&nbsp;&nbsp;&nbsp;</div>
+                <div class="flex">Tag: [{{selectorTagDisplay}}]</div>
+                <div>&nbsp;&nbsp;&nbsp;</div>
+                <div class="flex">Label: [{{selectorLabelDisplay}}]</div>
             </div>
         </div>
     </div>
@@ -176,7 +180,8 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="applyChangeProperties(captureData)" label="Ok" styleClass="p-button-text">
+        <p-button icon="pi pi-check" (click)="applyChangeProperties(captureData.style, captureData.rules)" label="Ok"
+            styleClass="p-button-text">
         </p-button>
     </ng-template>
 </p-dialog>

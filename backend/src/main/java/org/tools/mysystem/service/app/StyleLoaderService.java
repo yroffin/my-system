@@ -33,6 +33,7 @@ public class StyleLoaderService {
         tagRepository.deleteAll();
 
         var styleEntity = new SysStyleEntity();
+        styleEntity.setLocation(location);
         styleEntity.setLabel("content");
         styleRepository.saveAndFlush(styleEntity);
 
@@ -42,9 +43,10 @@ public class StyleLoaderService {
             for (JsonNode style = elements.next(); elements.hasNext(); style = elements.next()) {
                 var selector = style.get("selector").asText();
                 var css = style.get("style").toString();
-                this.logger.error("value: {}", style.get("style").get("css").toString());
+                var label = style.get("label");
                 var tagEntity = new SysTagEntity();
-                tagEntity.setLabel("content");
+                if (label != null)
+                    tagEntity.setLabel(label.asText());
                 tagEntity.setSelector(selector);
                 tagEntity.setStyle(css);
                 tagEntity.setRefStyle(styleEntity);

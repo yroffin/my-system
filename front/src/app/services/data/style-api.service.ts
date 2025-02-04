@@ -23,6 +23,7 @@ export class StyleApiService {
       let map = _.map(entities._embedded.sysStyleEntities, async (entity) => {
         return <SysStyles>{
           "id": this.api.extractId(entity._links.self.href),
+          "location": entity.location,
           "label": entity.label,
         }
       })
@@ -47,8 +48,25 @@ export class StyleApiService {
       });
       resolve({
         "id": id,
+        "location": entity.location,
         "label": entity.label,
         "tags": tags
+      });
+    })
+  }
+
+  /**
+ * find one graph
+ * @param id 
+ * @returns 
+ */
+  findByLocation(location: string): Promise<SysStyles> {
+    return new Promise<SysStyles>(async (resolve, reject) => {
+      let entity = (await this.api.findByLocation(location, 'sysStyleEntities'))._embedded.sysStyleEntities[0];
+      resolve({
+        "id": this.api.extractId(entity._links.self.href),
+        "location": entity.location,
+        "label": entity.label
       });
     })
   }

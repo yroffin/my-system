@@ -39,6 +39,16 @@ export class ApiService {
   findOne(id: string, entities: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.http.get<any>(`${this.apiUrl}/${entities}/${id}`).subscribe((entity) => {
+        this.logger.trace("[FINDONE]", entity)
+        resolve(entity)
+      });
+    })
+  }
+
+  findByLocation(id: string, entities: string): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.http.get<any>(`${this.apiUrl}/${entities}/search/findByLocation?location=${id}`).subscribe((entity) => {
+        this.logger.trace("[FINDBYLOCATION]", entity)
         resolve(entity)
       });
     })

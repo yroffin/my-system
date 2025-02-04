@@ -21,7 +21,7 @@ public class SysTagEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String label;
     @Column(nullable = false)
     private String selector;

@@ -22,6 +22,8 @@ public class SysStyleEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(unique = true)
+    private String location;
 
     @Column(nullable = false)
     private String label;

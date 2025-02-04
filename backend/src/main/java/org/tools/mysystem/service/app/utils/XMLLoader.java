@@ -40,12 +40,17 @@ public class XMLLoader {
             document.getDocumentElement().normalize();
 
             Element root = document.getDocumentElement();
-            logger.info("Loading xml root {}", root.getNodeName());
+            logger.info("Loading xml root {} {}", root.getNodeName(), root.getElementsByTagName("graph").getLength());
 
             walk(root.getChildNodes(), new Callback() {
                 @Override
                 public void onCompleteTag(String name, String text, Map<String, String> map) {
                     switch (name) {
+                        case "graph":
+                            logger.trace("[GRAPH] text: {} attrs:{}", text, map);
+                            callbackData.onCompleteGraph("", map.get("style"));
+                            break;
+
                         case "node":
                             logger.trace("[NODE] text: {} attrs:{}", text, map);
                             callbackData.onCompleteNode(map.get("id"), map.get("label"), Integer.parseInt(map.get("x")),
@@ -61,7 +66,7 @@ public class XMLLoader {
                             break;
 
                         default:
-                            logger.trace("name: {} text: {} attrs:{}", name, text, map);
+                            logger.trace("[UNKNOWN] name: {} text: {} attrs:{}", name, text, map);
                             break;
                     }
                 }

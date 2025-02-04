@@ -67,6 +67,7 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { CommonModule } from '@angular/common';
 import { MarkdownService } from '../../services/markdown.service';
 import { HashService } from '../../services/hash.service';
+import { StyleApiService } from '../../services/data/style-api.service';
 
 declare var cytoscape: any
 
@@ -154,6 +155,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   currentRulesSuccess: number = 0
 
   selectorDisplay: string = "";
+  selectorTagDisplay: string = "";
+  selectorLabelDisplay: string = "";
   edgehandles: any;
   rules: any = [];
 
@@ -170,7 +173,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     private markdownService: MarkdownService,
     private hashService: HashService,
     private graphsServiceApi: GraphApiService,
-    private styleService: StyleService,
+    private styleApiService: StyleApiService,
     private rulesService: RulesService,
     private preferenceService: PreferenceService,
     private clipboardService: ClipboardService,
@@ -192,7 +195,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.subscriptions.push(this.parameter$.subscribe(message => {
       {
-        this.logger.info(`Parameter: ${message}`)
+        this.logger.info(`Parameter`, message)
         if (message.groupMode) {
           _.each(this.rules, (rule) => {
             rule.enable()
@@ -447,8 +450,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     })
     )
 
-    this.subscriptions.push(this.graph$.subscribe(graph => {
-      if (!graph) {
+    this.subscriptions.push(this.graph$.subscribe(async (graph) => {
+      if (!graph || graph.id === "") {
         return
       }
       // refresh render
@@ -457,12 +460,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
       this.cy?.nodes().remove()
       this.cy?.edges().remove()
+      console.log(graph)
 
       // Apply style and rules
-      this.applyChangeProperties({
-        style: graph.style,
-        rule: graph.rules
-      })
+      await this.applyChangeProperties(graph.style, graph.rules)
 
       this.graphs = []
 
@@ -970,7 +971,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Edit',
       icon: 'pi pi-book',
-      command: () => {
+      command: async () => {
         // Check if any selection
         if (!this.currentSelectedNode) {
           return
@@ -981,7 +982,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter(this.styleService.findOne(this.currentStyle)?.tags, (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+        let allTags: any = _.uniq(_.map(_.filter((await this.styleApiService.findOne(this.currentStyle))?.tags, (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
           return {
             label: tag.label,
             value: tag.label
@@ -1102,7 +1103,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     {
       label: 'Edit',
       icon: 'pi pi-book',
-      command: () => {
+      command: async () => {
         // Check if any selection
         if (!this.currentSelectedEdge) {
           return
@@ -1113,7 +1114,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter(this.styleService.findOne(this.currentStyle)?.tags, (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
+        let allTags: any = _.uniq(_.map(_.filter((await this.styleApiService.findOne(this.currentStyle))?.tags, (tag) => tag.label && tag.selector == 'edge'), (tag: any) => {
           return {
             label: tag.label,
             value: tag.label
@@ -1162,24 +1163,29 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  applyChangeProperties(captureData: any): void {
-    this.cy?.style(this.retrieveStyle(captureData.style))
-    setTimeout(() => {
+  async applyChangeProperties(style: string, rule: any): Promise<void> {
+    let styleFound = await this.styleApiService.findByLocation(style)
+    this.logger.info(`applyChangeProperties style ${style} with ${styleFound.id}`)
+
+    let styles = await this.retrieveStyle(styleFound.id)
+    console.log(styles)
+    this.cy?.style(styles)
+    setTimeout(async () => {
       // Style counter
-      this.logger.info(`Apply style ${captureData.style}`)
-      this.currentStyle = captureData.style
-      let styleCountner = this.styleService.findOne(this.currentStyle)?.tags.length
-      if (styleCountner) {
-        this.currentStyleCounter = styleCountner
+      this.currentStyle = style
+      let styleEntities = await this.styleApiService.findOne(styleFound.id)
+      let styleCounter = styleEntities.tags?.length
+      if (styleCounter) {
+        this.currentStyleCounter = styleCounter
       }
       // Style counter
-      this.logger.info(`Apply ruleset`, captureData.rule)
-      this.currentRules = captureData.rule
+      this.logger.info(`Apply ruleset`, rule)
+      this.currentRules = rule
       let ruleCounter = this.rulesService.findOne(this.currentRules)?.rules.length
       if (ruleCounter) {
         this.currentRulesCounter = ruleCounter
       } else {
-        this.logger.warn(`Ruleset ${captureData.rules} empty`)
+        this.logger.warn(`Ruleset ${rule} empty`)
       }
       this.displayChangeProperties = false
     }, 1)
@@ -1319,9 +1325,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.cy?.center(selected)
   }
 
-  changeProperties(): void {
+  async changeProperties(): Promise<void> {
     this.captureData = {
-      styles: _.map(this.styleService.findAll(), (style) => style.id),
+      styles: _.map((await this.styleApiService.findAllLazy()), (style) => style.id),
       style: "default",
       rules: _.map(this.rulesService.findAll(), (rule) => rule.id),
       rule: "default"
@@ -1445,18 +1451,19 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     reader.addEventListener("loadend", async () => {
       let save: SysStyles = {
         id: style,
-        label: "default",
+        location: "",
+        label: "",
         tags: JSON.parse(reader.result + "")
       }
-      this.styleService.store(save, (entity) => {
+      /**
+       * TODO
+      await this.styleApiService.store(save, (entity) => {
         entity.tags = save.tags
       })
+       */
 
       // Apply style and rules
-      this.applyChangeProperties({
-        style: this.currentStyle,
-        rule: this.currentRules
-      })
+      await this.applyChangeProperties(this.currentStyle, this.currentRules)
 
       this.store.dispatch(retrievedStyle({ style: save }))
     });
@@ -1477,10 +1484,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.rulesService.load(rule, JSON.parse(reader.result + ""))
 
       // Apply style and rules
-      this.applyChangeProperties({
-        style: this.currentStyle,
-        rule: this.currentRules
-      })
+      await this.applyChangeProperties(this.currentStyle, this.currentRules)
     });
     reader.readAsText(event[0])
   }
@@ -1529,6 +1533,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.currentSelectedEdge = undefined
     this.currentSelectedNode = event.target[0]
+    this.selectorTagDisplay = this.currentSelectedNode.data().tag
+    this.selectorLabelDisplay = this.currentSelectedNode.data().label
 
     // Find any documentation
     let currentDocumentation = ""
@@ -1576,6 +1582,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.selectorDisplay = this.base16.decode(event.target.id())
     this.currentSelectedNode = undefined
     this.currentSelectedEdge = event.target[0]
+    this.selectorTagDisplay = this.currentSelectedEdge.data().tag
+    this.selectorLabelDisplay = this.currentSelectedEdge.data().label
+
     // Any documentation
     if (this.currentSelectedEdge.data().cdata) {
       this.captureData = {
@@ -1644,8 +1653,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.items = this.coreItem;
   }
 
-  retrieveStyle(style: string): any[] {
-    let tags = this.styleService.findOne(style)?.tags;
+  async retrieveStyle(id: string): Promise<any[]> {
+    let styles = await this.styleApiService.findOne(id)
+    let tags = styles?.tags;
 
     let styleCss: Array<any> = []
     _.each(tags, (tag) => {
