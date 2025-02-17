@@ -27,7 +27,11 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
-                <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon>
+                <th pSortableColumn="id">#Id <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="location">Location <p-sortIcon field="location"></p-sortIcon>
+                </th>
+                <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon>
                 </th>
                 <th pSortableColumn="type">Type <p-sortIcon field="type"></p-sortIcon>
                 </th>
@@ -43,6 +47,8 @@
                     <p-tableCheckbox [value]="rule"></p-tableCheckbox>
                 </td>
                 <td>{{rule.id}}</td>
+                <td>{{rule.location}}</td>
+                <td>{{rule.label}}</td>
                 <td>{{rule.type}}</td>
                 <td>{{rule.size}}</td>
                 <td>

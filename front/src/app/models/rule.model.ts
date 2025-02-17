@@ -8,5 +8,7 @@ export interface SysRule {
 }
 
 export interface SysRules extends SysEntity {
+    label: string;
+    location: string;
     rules: SysRule[];
 }

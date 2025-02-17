@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import Graph from 'graphology';
 import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from 'sigma';
-import { GraphService } from '../../services/graph.service';
 import { selectGraphs } from '../../stats/graph.selectors';
 import * as _ from 'lodash';
 import { retrievedGraphList } from '../../stats/graph.actions';
@@ -13,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CommonModule } from '@angular/common';
+import { GraphApiService } from '../../services/data/graph-api.service';
 
 @Component({
   selector: 'app-graph',
@@ -35,7 +35,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     private logger: NGXLogger,
-    private graphsService: GraphService,
+    private graphsApiService: GraphApiService,
     private store: Store) {
     this.graphs$ = this.store.select(selectGraphs);
     this.graphs$.subscribe(graphs => {
@@ -75,8 +75,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
     })
   }
 
-  ngOnInit(): void {
-    let graphs = this.graphsService.findAll()
+  async ngOnInit(): Promise<void> {
+    let graphs = await this.graphsApiService.findAllLazy()
     this.store.dispatch(retrievedGraphList({ graphs }))
   }
 

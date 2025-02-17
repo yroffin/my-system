@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { GraphService } from '../../services/graph.service';
 import { retrievedGraph } from '../../stats/graph.actions';
 import { selectGraph, selectGraphs } from '../../stats/graph.selectors';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,10 +34,8 @@ import { Base16Service } from '../../services/base16.service';
 import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { TreeTable } from 'primeng/treetable';
 import { SysPreference } from '../../models/preference';
-import { StyleService } from '../../services/style.service';
 import { SysStyles } from '../../models/style';
 import { retrievedStyle } from '../../stats/style.actions';
-import { RulesService } from '../../services/rules.service';
 import { PreferenceService } from '../../services/preferences.service';
 import { selectMenu, selectParameter } from '../../stats/menu.selectors';
 import { menuIds } from '../../models/menu';
@@ -68,6 +65,7 @@ import { CommonModule } from '@angular/common';
 import { MarkdownService } from '../../services/markdown.service';
 import { HashService } from '../../services/hash.service';
 import { StyleApiService } from '../../services/data/style-api.service';
+import { RuleApiService } from '../../services/data/rule-api.service';
 
 declare var cytoscape: any
 
@@ -174,7 +172,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     private hashService: HashService,
     private graphsServiceApi: GraphApiService,
     private styleApiService: StyleApiService,
-    private rulesService: RulesService,
+    private ruleApiService: RuleApiService,
     private preferenceService: PreferenceService,
     private clipboardService: ClipboardService,
     private router: Router,
@@ -1181,7 +1179,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       // Style counter
       this.logger.info(`Apply ruleset`, rule)
       this.currentRules = rule
-      let ruleCounter = this.rulesService.findOne(this.currentRules)?.rules.length
+      let ruleCounter = (await this.ruleApiService.findOne(this.currentRules))?.rules.length
       if (ruleCounter) {
         this.currentRulesCounter = ruleCounter
       } else {
@@ -1256,7 +1254,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     // Apply fact
     this.logger.debug("Execute", this.currentRules, facts)
     if (onlyFail) {
-      this.rulesService.jsondataEngine(this.currentRules, facts, false, false).then((result) => {
+      this.ruleApiService.jsondataEngine(this.currentRules, facts, false, false).then((result) => {
         this.logger.info(result)
         this.jsonRules = result.treenodes
         this.currentRulesFail = result.failure.length
@@ -1264,7 +1262,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.displaySidebar = displaySidebar
       })
     } else {
-      this.rulesService.jsondataEngine(this.currentRules, facts, false, true).then((result) => {
+      this.ruleApiService.jsondataEngine(this.currentRules, facts, false, true).then((result) => {
         this.logger.info(result)
         this.jsonRules = result.treenodes
         this.currentRulesFail = result.failure.length
@@ -1329,7 +1327,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.captureData = {
       styles: _.map((await this.styleApiService.findAllLazy()), (style) => style.id),
       style: "default",
+      /**
+       * TODO
       rules: _.map(this.rulesService.findAll(), (rule) => rule.id),
+       */
       rule: "default"
     }
     this.displayChangeProperties = true
@@ -1481,7 +1482,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let reader = new FileReader();
     reader.addEventListener("loadend", async () => {
       // Load rule
+      /**
+       * TODO
       this.rulesService.load(rule, JSON.parse(reader.result + ""))
+       */
 
       // Apply style and rules
       await this.applyChangeProperties(this.currentStyle, this.currentRules)

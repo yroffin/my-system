@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SysGraph } from '../../models/graph';
 import { ClipboardService } from '../../services/clipboard.service';
-import { GraphService } from '../../services/graph.service';
 import { LoggerModule, NGXLogger } from 'ngx-logger';
 import { retrievedGraphList } from '../../stats/graph.actions';
 import { selectGraph, selectGraphs } from '../../stats/graph.selectors';
@@ -50,7 +49,6 @@ export class GraphSelectorComponent implements OnInit {
     private router: Router,
     private logger: NGXLogger,
     private graphApiService: GraphApiService,
-    private graphsService: GraphService,
     private clipboardService: ClipboardService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
@@ -99,8 +97,11 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   deleteGraph(_graph: SysGraph): void {
+    /*
+    TODO
     let graphs = this.graphsService.delete(_graph.id)
     this.store.dispatch(retrievedGraphList({ graphs }))
+    */
   }
 
   showImport(_graph: SysGraph) {
@@ -109,6 +110,8 @@ export class GraphSelectorComponent implements OnInit {
   }
 
   openNew(name?: string): void {
+    /*
+    TODO
     if (name) {
       this.graphsService.store({
         id: name,
@@ -128,9 +131,12 @@ export class GraphSelectorComponent implements OnInit {
       let graphs = this.graphsService.findAll()
       this.store.dispatch(retrievedGraphList({ graphs }))
     }
+      */
   }
 
   uploadHandler(event: any, _graph?: SysGraph): void {
+    /*
+    TODO
     if (_graph) {
       // Load this graph
       this.graphsService.uploadHandler(event.files[0], _graph.id, _graph.id).then((loaded) => {
@@ -145,14 +151,18 @@ export class GraphSelectorComponent implements OnInit {
         this.displayImport = false
       })
     }
+      */
   }
 
   gexf(_graph: SysGraph): void {
+    /*
+    TODO
     let graph = this.graphsService.findOne(_graph.id + "")
     this.exportData = this.graphsService.toGexf(graph)
     this.exportDataHtml = this.exportData.join('\n')
     this.clipboardService.copyTextToClipboard(this.exportData.join('\n'))
     this.displayExport = true
+    */
   }
 
   selectCytoscape(_graph: SysGraph): void {

@@ -6,7 +6,6 @@ import { GraphCytoscapeComponent } from './components/graph-cytoscape/graph-cyto
 import { ConverterComponent } from './components/converter/converter.component';
 import { PreferenceComponent } from './components/preference/preference.component';
 import { AboutComponent } from './components/about/about.component';
-import { ThreejsComponent } from './components/threejs/threejs.component';
 import { StyleSelectorComponent } from './components/style-selector/style-selector.component';
 import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
 
@@ -14,7 +13,6 @@ export const routes: Routes = [
     { path: 'graphs', component: GraphSelectorComponent },
     { path: 'graphs/sigma/:label', component: GraphComponent },
     { path: 'graphs/cytoscape/:label', component: GraphCytoscapeComponent },
-    { path: 'graphs/threejs/:label', component: ThreejsComponent },
     { path: 'rules', component: RuleSelectorComponent },
     { path: 'styles', component: StyleSelectorComponent },
     { path: 'converters/images', component: ConverterComponent },

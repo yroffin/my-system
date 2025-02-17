@@ -1,38 +1,81 @@
-import * as _ from 'lodash';
-import { LocalStorageService } from 'ngx-webstorage';
 import { Injectable } from '@angular/core';
-import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
-import { DatabaseEntity } from './database-entity.service';
-import { SysRule, SysRules } from '../models/rule.model';
-import { Base16Service } from './base16.service';
-import * as jsonata from 'jsonata';
+import { ApiService } from './api.service';
+import * as _ from 'lodash';
+import { NGXLogger } from 'ngx-logger';
+import { MessageService } from 'primeng/api';
+import { SysRule, SysRules } from '../../models/rule.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RulesService extends DatabaseEntity<SysRules> {
+export class RuleApiService {
+  constructor(private logger: NGXLogger, private api: ApiService, private messageService: MessageService) { }
 
-  constructor(
-    private _logger: NGXLogger,
-    private _storage: LocalStorageService,
-    private base16: Base16Service,
-  ) {
-    super()
-    this.init("rules", this._storage, this._logger)
-  }
-
-  load(id: string, rules: SysRule[]): void {
-    this.store({
-      id,
-      rules: rules
-    }, (entity) => {
-      entity.rules = rules
+  /**
+   * find all graph
+   * @returns 
+   */
+  findAllLazy(): Promise<SysRules[]> {
+    return new Promise<SysRules[]>(async (resolve, reject) => {
+      let entities = await this.api.findAll('sysRuleEntities');
+      let map = _.map(entities._embedded.sysRuleEntities, async (entity) => {
+        return <SysRules>{
+          id: this.api.extractId(entity._links.self.href),
+          label: entity.label,
+          location: entity.location,
+          rules: [],
+        }
+      })
+      let result = Promise.all(map);
+      this.logger.error(result)
+      resolve(result);
     })
   }
 
-  jsondataEngine(id: string, facts: any, fail: boolean, success: boolean): Promise<any> {
+  /**
+   * find one graph
+   * @param id 
+   * @returns 
+   */
+  findOne(id: string): Promise<SysRules> {
+    return new Promise<SysRules>(async (resolve, reject) => {
+      let entity = await this.api.findOne(id, 'sysRuleEntities');
+      let rules = _.map(await this.api.links(entity._links.tags.href, 'sysRulesetEntities'), (entity) => {
+        return <SysRule>{
+          name: entity.name,
+          sets: JSON.parse(entity.sets),
+          asserts: JSON.parse(entity.asserts)
+        }
+      });
+      resolve({
+        id,
+        label: entity.label,
+        location: entity.location,
+        rules
+      });
+    })
+  }
 
-    let rules = this.findOne(id)?.rules
+  /**
+ * find one graph
+ * @param id 
+ * @returns 
+ */
+  findByLocation(location: string): Promise<SysRules> {
+    return new Promise<SysRules>(async (resolve, reject) => {
+      let entity = (await this.api.findByLocation(location, 'sysRuleEntities'))._embedded.sysRuleEntities[0];
+      resolve({
+        id: this.api.extractId(entity._links.self.href),
+        label: entity.label,
+        location: entity.location,
+        rules: []
+      });
+    })
+  }
+
+  async jsondataEngine(id: string, facts: any, fail: boolean, success: boolean): Promise<any> {
+
+    let rules = (await this.findOne(id))?.rules
     if (rules) {
       let rulesets: SysRule[] = []
       _.each(rules, (rule) => {
@@ -56,7 +99,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
           if (!query.length) {
             query = [query]
           }
-          this._logger.info(query)
+          this.logger.info(query)
           _.each(query, (elements) => {
             sets.push(elements)
           })
@@ -107,7 +150,7 @@ export class RulesService extends DatabaseEntity<SysRules> {
               "children": _.filter(_.map(collector, (item) => {
                 return {
                   "data": {
-                    "uid": this.base16.encode(item.fact.data.id),
+                    "uid": /* TODO this.base16.encode(item.fact.data.id) */"00000000",
                     "id": item.fact.data.id,
                     "alias": item.fact.data.alias,
                     "label": item.fact.data.label,
@@ -132,4 +175,5 @@ export class RulesService extends DatabaseEntity<SysRules> {
       })
     }
   }
+
 }

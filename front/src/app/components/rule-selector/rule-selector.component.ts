@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import { NGXLogger } from 'ngx-logger';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SysRule, SysRules } from '../../models/rule.model';
-import { RulesService } from '../../services/rules.service';
+import { SysRules } from '../../models/rule.model';
 
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
+import { RuleApiService } from '../../services/data/rule-api.service';
 
 @Component({
   selector: 'app-rule-selector',
@@ -26,9 +26,13 @@ export class RuleSelectorComponent implements OnInit {
     private logger: NGXLogger,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private rulesService: RulesService,
+    private ruleApiService: RuleApiService,
   ) {
-    this.rules = this.rulesService.findAll()
+    this.logger.log("rules")
+    this.ruleApiService.findAllLazy().then((rules) => {
+      this.rules = rules;
+      this.logger.log(rules)
+    })
   }
 
   ngOnInit(): void {
@@ -56,9 +60,11 @@ export class RuleSelectorComponent implements OnInit {
 
       // Load this rules
       this.logger.info("UPDATE", filename, JSON.parse(reader.result + ""))
+      /* TODO
       this.rulesService.load(filename, JSON.parse(reader.result + ""))
       this.logger.info("REFRESH")
       this.rules = this.rulesService.findAll()
+      */
     });
 
     // Start reading data
@@ -75,7 +81,10 @@ export class RuleSelectorComponent implements OnInit {
       message: 'Are you sure that you want to proceed ?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
+        /**
+         * TODO
         this.rules = this.rulesService.delete(rule.id)
+         */
       },
       reject: () => {
       }
