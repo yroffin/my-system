@@ -66,6 +66,7 @@ import { MarkdownService } from '../../services/markdown.service';
 import { HashService } from '../../services/hash.service';
 import { StyleApiService } from '../../services/data/style-api.service';
 import { RuleApiService } from '../../services/data/rule-api.service';
+import { InputTextModule } from 'primeng/inputtext';
 
 declare var cytoscape: any
 
@@ -79,7 +80,7 @@ class link {
   selector: 'app-graph-cytoscape',
   templateUrl: './graph-cytoscape.component.html',
   styleUrls: ['./graph-cytoscape.component.css'],
-  imports: [CommonModule, ContextMenuModule, DockModule, BadgeModule, OverlayBadgeModule, TooltipModule,
+  imports: [CommonModule, InputTextModule, ContextMenuModule, DockModule, BadgeModule, OverlayBadgeModule, TooltipModule,
     CheckboxModule, DropdownModule, FormsModule, TextareaModule, TableModule, PanelModule, ToastModule, DialogModule,
     TreeTableModule, TreeModule, TabViewModule, ChartModule, ButtonModule, ToggleButtonModule, SplitterModule]
 })

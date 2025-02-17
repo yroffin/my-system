@@ -13,12 +13,13 @@ import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CommonModule } from '@angular/common';
 import { GraphApiService } from '../../services/data/graph-api.service';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.css'],
-  imports: [CommonModule, ButtonModule, DialogModule, FileUploadModule]
+  imports: [CommonModule, ButtonModule, InputTextModule, DialogModule, FileUploadModule]
 })
 export class GraphComponent implements OnInit, AfterViewInit {
 

@@ -27,7 +27,6 @@ export class RuleApiService {
         }
       })
       let result = Promise.all(map);
-      this.logger.error(result)
       resolve(result);
     })
   }

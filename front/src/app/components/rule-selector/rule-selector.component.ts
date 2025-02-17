@@ -10,12 +10,16 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { RuleApiService } from '../../services/data/rule-api.service';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { TextareaModule } from 'primeng/textarea';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-rule-selector',
   templateUrl: './rule-selector.component.html',
   styleUrls: ['./rule-selector.component.css'],
-  imports: [ConfirmPopupModule, TableModule, ToastModule, ToolbarModule]
+  imports: [ConfirmPopupModule, InputTextModule, FormsModule, TextareaModule, TableModule, ToastModule, ToolbarModule, ButtonModule]
 })
 export class RuleSelectorComponent implements OnInit {
 
@@ -28,10 +32,8 @@ export class RuleSelectorComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private ruleApiService: RuleApiService,
   ) {
-    this.logger.log("rules")
     this.ruleApiService.findAllLazy().then((rules) => {
       this.rules = rules;
-      this.logger.log(rules)
     })
   }
 
