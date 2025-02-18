@@ -1160,12 +1160,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  async applyChangeProperties(style: string, rule: any): Promise<void> {
+  async applyChangeProperties(style: string, rule: string): Promise<void> {
     let styleFound = await this.styleApiService.findByLocation(style)
-    this.logger.info(`applyChangeProperties style ${style} with ${styleFound.id}`)
+    let ruleFound = await this.ruleApiService.findByLocation(rule)
+    this.logger.info(`applyChangeProperties style ${style} with ${styleFound.id} and rule ${rule} with ${ruleFound.id}`)
 
     let styles = await this.retrieveStyle(styleFound)
-    console.log(styles)
     this.cy?.style(styles)
     setTimeout(async () => {
       // Style counter
@@ -1176,9 +1176,9 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         this.currentStyleCounter = styleCounter
       }
       // Style counter
-      this.logger.info(`Apply ruleset`, rule)
+      this.logger.info(`Apply ruleset ${rule}`)
       this.currentRules = rule
-      let ruleCounter = (await this.ruleApiService.findOne(this.currentRules))?.rules.length
+      let ruleCounter = (await this.ruleApiService.findOne(ruleFound.id))?.rules.length
       if (ruleCounter) {
         this.currentRulesCounter = ruleCounter
       } else {
@@ -1657,11 +1657,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   retrieveStyle(styles: SysStyles): any[] {
-    console.log(styles)
-    let tags = styles?.tags;
-
     let styleCss: Array<any> = []
-    _.each(tags, (tag) => {
+    _.each(styles?.tags, (tag) => {
       if (!tag.label) {
         let data = {
           selector: `${tag.selector}`,

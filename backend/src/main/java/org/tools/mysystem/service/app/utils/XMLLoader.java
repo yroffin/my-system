@@ -48,7 +48,7 @@ public class XMLLoader {
                     switch (name) {
                         case "graph":
                             logger.trace("[GRAPH] text: {} attrs:{}", text, map);
-                            callbackData.onCompleteGraph("", map.get("style"));
+                            callbackData.onCompleteGraph("", map.get("style"), map.get("rule"));
                             break;
 
                         case "node":

@@ -48,9 +48,10 @@ public class GEXFService {
             var loader = new XMLLoader();
             loader.load(content, new CallbackData() {
                 @Override
-                public void onCompleteGraph(String id, String style) {
+                public void onCompleteGraph(String id, String style, String rule) {
                     logger.trace("[GRAPH] {}", style);
                     s.setStyle(style);
+                    s.setRules(rule);
                     graphRepository.save(s);
                 }
 

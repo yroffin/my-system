@@ -39,11 +39,11 @@ export class RuleApiService {
   findOne(id: string): Promise<SysRules> {
     return new Promise<SysRules>(async (resolve, reject) => {
       let entity = await this.api.findOne(id, 'sysRuleEntities');
-      let rules = _.map(await this.api.links(entity._links.tags.href, 'sysRulesetEntities'), (entity) => {
+      let rules = _.map(await this.api.links(entity._links.rulesets.href, 'sysRulesetEntities'), (entity) => {
         return <SysRule>{
           name: entity.name,
-          sets: JSON.parse(entity.sets),
-          asserts: JSON.parse(entity.asserts)
+          sets: entity.sets,
+          asserts: entity.asserts
         }
       });
       resolve({
