@@ -679,14 +679,12 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.activeQueryParams = activeQueryParams
     })
 
+
     // Decode params
     this.route.params.subscribe(async (params) => {
-      this.id = params['label'];
-
-      let graph = await this.graphsServiceApi.findOne(this.id + "")
-      if (graph) {
+      this.graphsServiceApi.findByLocation(params['location']).then((graph) => {
         this.store.dispatch(retrievedGraph({ graph: graph }))
-      }
+      })
     });
 
     setTimeout(() => {
@@ -1166,7 +1164,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     let styleFound = await this.styleApiService.findByLocation(style)
     this.logger.info(`applyChangeProperties style ${style} with ${styleFound.id}`)
 
-    let styles = await this.retrieveStyle(styleFound.id)
+    let styles = await this.retrieveStyle(styleFound)
     console.log(styles)
     this.cy?.style(styles)
     setTimeout(async () => {
@@ -1658,8 +1656,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     this.items = this.coreItem;
   }
 
-  async retrieveStyle(id: string): Promise<any[]> {
-    let styles = await this.styleApiService.findOne(id)
+  retrieveStyle(styles: SysStyles): any[] {
+    console.log(styles)
     let tags = styles?.tags;
 
     let styleCss: Array<any> = []

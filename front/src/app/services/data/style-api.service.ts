@@ -63,10 +63,18 @@ export class StyleApiService {
   findByLocation(location: string): Promise<SysStyles> {
     return new Promise<SysStyles>(async (resolve, reject) => {
       let entity = (await this.api.findByLocation(location, 'sysStyleEntities'))._embedded.sysStyleEntities[0];
+      let tags = _.map(await this.api.links(entity._links.tags.href, 'sysTagEntities'), (entity) => {
+        return <SysTag>{
+          label: entity.label,
+          selector: entity.selector,
+          style: JSON.parse(entity.style)
+        }
+      });
       resolve({
         "id": this.api.extractId(entity._links.self.href),
         "location": entity.location,
-        "label": entity.label
+        "label": entity.label,
+        "tags": tags
       });
     })
   }

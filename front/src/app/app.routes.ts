@@ -13,7 +13,7 @@ import { RuleViewerComponent } from './components/rule-viewer/rule-viewer.compon
 export const routes: Routes = [
     { path: 'graphs', component: GraphSelectorComponent },
     { path: 'graphs/sigma/:label', component: GraphComponent },
-    { path: 'graphs/cytoscape/:label', component: GraphCytoscapeComponent },
+    { path: 'graphs/cytoscape/:location', component: GraphCytoscapeComponent },
     { path: 'rules', component: RuleSelectorComponent },
     { path: 'rules/:location', component: RuleViewerComponent },
     { path: 'styles', component: StyleSelectorComponent },

@@ -56,10 +56,10 @@ export class RuleApiService {
   }
 
   /**
- * find one graph
- * @param id 
- * @returns 
- */
+   * find one graph
+   * @param id 
+   * @returns 
+   */
   findByLocation(location: string): Promise<SysRules> {
     return new Promise<SysRules>(async (resolve, reject) => {
       let entity = (await this.api.findByLocation(location, 'sysRuleEntities'))._embedded.sysRuleEntities[0];

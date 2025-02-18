@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import * as _ from 'lodash';
-import { SysGraph } from '../../models/graph';
+import { SysGraph, SysNode } from '../../models/graph';
 import { NGXLogger } from 'ngx-logger';
 import { MessageService } from 'primeng/api';
 
@@ -29,6 +29,26 @@ export class GraphApiService {
         }
       })
       resolve(Promise.all(map));
+    })
+  }
+
+  /**
+   * find one graph
+   * @param id 
+   * @returns 
+   */
+  findByLocation(location: string): Promise<SysGraph> {
+    return new Promise<SysGraph>(async (resolve, reject) => {
+      let entity = (await this.api.findByLocation(location, 'sysGraphEntities'))._embedded.sysGraphEntities[0];
+      resolve({
+        "id": this.api.extractId(entity._links.self.href),
+        "location": entity.location,
+        "label": entity.label,
+        "style": entity.style,
+        "rules": entity.rules,
+        "nodes": await this.api.links(entity._links.nodes.href, 'sysNodeEntities'),
+        "edges": await this.api.links(entity._links.edges.href, 'sysEdgeEntities')
+      });
     })
   }
 
