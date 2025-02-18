@@ -20,12 +20,13 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { FormsModule } from '@angular/forms';
 import { StyleApiService } from '../../services/data/style-api.service';
 import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-style-selector',
   templateUrl: './style-selector.component.html',
   styleUrls: ['./style-selector.component.css'],
-  imports: [JsonPipe, ButtonModule, DialogModule, ToastModule, ConfirmPopupModule, TableModule, InputTextModule, ToolbarModule, FormsModule],
+  imports: [JsonPipe, FloatLabelModule, ButtonModule, DialogModule, ToastModule, ConfirmPopupModule, TableModule, InputTextModule, ToolbarModule, FormsModule],
 })
 export class StyleSelectorComponent implements OnInit {
 

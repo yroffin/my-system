@@ -1,32 +1,26 @@
 <div class="card" dropZoneDirective (fileDropped)="onFileDropped($event)">
-    <p-toolbar styleClass="mb-4">
-        <ng-template pTemplate="left">
-            <span class="p-float-label">
-                <input id="float-input" type="text" pInputText [(ngModel)]="newStyle">
-                <label for="float-input">Name</label>
-                <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
-                    (click)="openNew(newStyle)"></button>
-            </span>
-        </ng-template>
-
-        <ng-template pTemplate="right">
-        </ng-template>
-    </p-toolbar>
-
     <p-toast></p-toast>
 
     <p-table #mystyles [value]="styles" [rows]="10" [paginator]="true" [globalFilterFields]="['label']"
         responsiveLayout="scroll" [rowHover]="true" dataKey="id"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+
+
         <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-between">
-                <h5 class="m-0">Manage Styles</h5>
+                <h4>Manage Styles</h4>
+                <p-floatlabel>
+                    <input id="float-input" type="text" pInputText [(ngModel)]="newStyle">
+                    <label for="float-input">New style name ...</label>
+                    <p-button icon="pi pi-plus" (click)="openNew(newStyle)" rounded></p-button>
+                </p-floatlabel>
                 <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
+                    <p-button icon="pi pi-search" severity="secondary" rounded></p-button>
                     <input pInputText type="text" placeholder="Search..." />
                 </span>
             </div>
         </ng-template>
+
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 3rem">
@@ -51,11 +45,8 @@
                 <td>{{style.location}}</td>
                 <td>{{style.label}}</td>
                 <td>
-                    <button pButton pRipple pTooltip="Select this style" tooltipPosition="top" icon="pi pi-sign-out"
-                        (click)="selectStyle(style)"></button>
-                    <span>&nbsp;</span>
-                    <button pButton pRipple pTooltip="Remove this style" tooltipPosition="top" icon="pi pi-trash"
-                        (click)="confirm($event, style)"></button>
+                    <p-button icon="pi pi-trash" (click)="confirm($event, style)" severity="danger" rounded></p-button>
+                    <p-button icon="pi pi-sign-out" (click)="selectStyle(style)" severity="success" rounded></p-button>
                 </td>
             </tr>
         </ng-template>

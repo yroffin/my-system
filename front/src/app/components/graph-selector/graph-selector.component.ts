@@ -19,13 +19,14 @@ import { FormsModule } from '@angular/forms';
 import { ToolbarModule } from 'primeng/toolbar';
 import { GraphApiService } from '../../services/data/graph-api.service';
 import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-graph-selector',
   templateUrl: './graph-selector.component.html',
   providers: [MessageService],
   styleUrls: ['./graph-selector.component.css'],
-  imports: [LoggerModule, InputTextModule, ButtonModule, DialogModule, FileUploadModule, ConfirmDialogModule, ConfirmPopupModule, TableModule, ToastModule, FormsModule, ToolbarModule]
+  imports: [FloatLabelModule, LoggerModule, InputTextModule, ButtonModule, DialogModule, FileUploadModule, ConfirmDialogModule, ConfirmPopupModule, TableModule, ToastModule, FormsModule, ToolbarModule]
 })
 export class GraphSelectorComponent implements OnInit {
 
