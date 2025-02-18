@@ -40,6 +40,10 @@ export class RuleSelectorComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  selectRuleset(rule: any): void {
+    this.router.navigate(['rules', rule.location])
+  }
+
   onFileDropped(event: any): void {
     let filename = event[0].name
     this.logger.info("Load file", filename)

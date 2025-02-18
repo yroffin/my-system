@@ -16,6 +16,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { provideNgxWebstorage, withLocalStorage, withNgxWebstorageConfig, withSessionStorage } from 'ngx-webstorage';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { provideHttpClient } from '@angular/common/http';
+import { ruleReducer, rulesReducer } from './stats/rule.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,6 +48,8 @@ export const appConfig: ApplicationConfig = {
       graph: graphReducer,
       styles: stylesReducer,
       style: styleReducer,
+      rules: rulesReducer,
+      rule: ruleReducer,
       menu: menuReducer,
       preferences: PreferencesReducer,
       parameter: parameterReducer

@@ -63,11 +63,18 @@ export class RuleApiService {
   findByLocation(location: string): Promise<SysRules> {
     return new Promise<SysRules>(async (resolve, reject) => {
       let entity = (await this.api.findByLocation(location, 'sysRuleEntities'))._embedded.sysRuleEntities[0];
+      let rules = _.map(await this.api.links(entity._links.rulesets.href, 'sysRulesetEntities'), (entity) => {
+        return <SysRule>{
+          name: entity.name,
+          sets: entity.sets,
+          asserts: entity.asserts
+        }
+      });
       resolve({
         id: this.api.extractId(entity._links.self.href),
         label: entity.label,
         location: entity.location,
-        rules: []
+        rules: rules
       });
     })
   }

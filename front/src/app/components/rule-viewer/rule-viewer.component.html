@@ -1,1 +1,21 @@
-<p>rule-viewer works!</p>
+<div class="card">
+    <p-treetable [value]="rules" [columns]="cols" [scrollable]="true" [paginator]="true" [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 25]" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header let-columns>
+            <tr>
+                <th *ngFor="let col of columns">
+                    {{ col.header }}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode">
+                <td>
+                    <p-treeTableToggler [rowNode]="rowNode" />
+                    {{ rowData.name }}
+                </td>
+                <td>{{ rowData.type }}</td>
+            </tr>
+        </ng-template>
+    </p-treetable>
+</div>
