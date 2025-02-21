@@ -48,8 +48,15 @@ public class GEXFService {
             var loader = new XMLLoader();
             loader.load(content, new CallbackData() {
                 @Override
+                public void onCompleteMeta(String description) {
+                    logger.trace("[META] description: {}", description);
+                    s.setLabel(description);
+                    graphRepository.save(s);
+                }
+
+                @Override
                 public void onCompleteGraph(String id, String style, String rule) {
-                    logger.trace("[GRAPH] {}", style);
+                    logger.trace("[GRAPH] style: {} rule: {}", style, rule);
                     s.setStyle(style);
                     s.setRules(rule);
                     graphRepository.save(s);
@@ -91,6 +98,12 @@ public class GEXFService {
                 }
             });
         }
+
+        graphRepository.flush();
+        nodeRepository.flush();
+        edgeRepository.flush();
     }
 
+    public void dump(String location) {
+    }
 }

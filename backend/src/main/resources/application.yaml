@@ -1,3 +1,7 @@
+logging:
+  level:
+    org.thymeleaf: TRACE
+    org.springframework.web: DEBUG
 spring:
   application:
     name: my-system
@@ -6,8 +10,6 @@ spring:
       enabled: true
     restart:
       enabled: true
-  thymeleaf:
-    cache: false
   web:
     resources:
       cache:

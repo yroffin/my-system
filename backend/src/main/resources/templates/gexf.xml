@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.2" version="1.2">
+    <meta lastmodifieddate="2009-03-20">
+    <id th:text="${graph.location}"></id>
+    <description th:text="${graph.label}"></description>
+    </meta>
+    <graph mode="static" defaultedgetype="directed" th:attr="style=${graph.style}, rules=${graph.rules}">
+        <nodes>
+            <node th:each="node : ${nodes}" th:text="${node.cdata}"
+                th:attr="id=${node.location}, label=${node.label}, x=${node.x}, y=${node.y}, tag=${node.tag}">
+            </node>
+        </nodes>
+        <edges>
+            <edge th:each="edge : ${edges}"
+                th:attr="id=${edge.location}, label=${edge.label}, tag=${edge.tag}, source=${edge.source}, target=${edge.target}" />
+        </edges>
+    </graph>
+</gexf>
