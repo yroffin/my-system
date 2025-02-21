@@ -64,4 +64,17 @@ export class ApiService {
     })
   }
 
+  postXml(url: string, body: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.http.post(url, body, {
+        headers: {
+          'Accept': 'application/xml',
+          'Content-Type': 'application/xml'
+        }, responseType: "text"
+      }).subscribe((result) => {
+        resolve(result)
+      });
+    })
+  }
+
 }

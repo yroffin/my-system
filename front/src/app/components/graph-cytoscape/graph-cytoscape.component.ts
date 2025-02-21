@@ -118,6 +118,8 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   tagsSummary: string[] = []
   markdownSummary: any[][] = []
 
+  loaded: any
+
   cols: any[] = [
     { field: 'label', header: 'Label' }
   ];
@@ -459,10 +461,16 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       this.cy?.boxSelectionEnabled(this.boxSelectionEnabled)
       this.cy?.nodes().remove()
       this.cy?.edges().remove()
-      console.log(graph)
 
-      // Apply style and rules
+      // Apply properties
       await this.applyChangeProperties(graph.style, graph.rules)
+
+      this.loaded = {
+        id: graph.location,
+        label: graph.label,
+        style: graph.style,
+        rules: graph.rules
+      }
 
       this.graphs = []
 
@@ -768,7 +776,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       icon: "dock/export-gexf.png",
       command: () => {
         if (this.id) {
-          this.gexf(this.id, this.id, this.currentStyle, this.currentRules)
+          //this.gexf()
           this.messageService.add({
             key: 'bc', severity: 'info', summary: 'Info', detail: `Store GEXF in clipboard`
           });
@@ -827,16 +835,10 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
       },
       icon: "dock/save.png",
       command: () => {
-        if (this.id) {
-          this.logger.info("SAVE/META", this.currentStyle, this.currentRules)
-          let _graph: SysGraph = this.toSysGraph(this.id, this.id, this.currentStyle, this.currentRules)
-          this.logger.info("SAVE", _graph)
-          // Store this entity
-          // TODO
-          this.messageService.add({
-            key: 'bc', severity: 'info', summary: 'Info', detail: `Save graph ${this.id}`
-          });
-        }
+        let gexf = this.gexf(this.loaded.id, this.loaded.label, this.loaded.style, this.loaded.rules)
+        this.messageService.add({
+          key: 'bc', severity: 'info', summary: 'Info', detail: `Save graph ${this.loaded.id} / ${this.loaded.label}`
+        });
       }
     }
   ]
@@ -1727,36 +1729,26 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   toSysGraph(_id: string, _label: string, _style: string, _rules: string): SysGraph {
-    let index: any = {}
-    this.logger.info(`toSysGraph style: ${_style}`)
+    this.logger.info("save", _id, _label, _style, _rules)
     return {
       id: _id,
-      location: "default",
-      style: _style ? _style : "default",
-      rules: _rules ? _rules : "default",
+      location: _id,
+      style: _style || "default",
+      rules: _rules || "default",
       label: _label,
       nodes: _.map(this.cy?.nodes(), (node) => {
+        let id = node.data()['clone'] || node.data()['id'] || ""
         let _node: SysNode = {
           // Clone data can override the original id
-          id: node.data()['clone'] || node.data()['id'] || "",
-          location: "default",
+          id: id,
+          location: this.base16.decode(id),
           label: node.data()['label'] || "",
-          x: node.position().x || 0,
-          y: node.position().y || 0,
-          size: 10,
-          color: "0",
-          group: node.data()['group'],
-          tag: node.data()['tag']
-        }
-        index[node.data()['id'] || ""] = _node
-        if (node.data()['alias']) {
-          _node.alias = node.data()['alias']
-        }
-        if (node.data()['cdata']) {
-          _node.cdata = node.data()['cdata']
-        }
-        if (node.data()['parent']) {
-          _node.parent = node.data()['parent']
+          x: Math.trunc(node.position().x || 0),
+          y: Math.trunc(node.position().y || 0),
+          group: node.data()['group'] || "",
+          alias: node.data()['alias'] || "",
+          cdata: node.data()['cdata'] || "",
+          tag: node.data()['tag'] || ""
         }
         return _node
       }),
@@ -1768,27 +1760,50 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
           this.logger.error("Internal error while resolving source and target")
           throw new String("Internal error while resolving source and target")
         }
+        let id = edge.data()['id'] || ""
         let _edge: SysEdge = {
-          id: edge.data()['id'] || "",
-          location: "default",
+          id: id,
+          location: this.base16.decode(id),
           label: edge.data()['label'] || "",
-          source: source,
-          target: target,
-          cdata: edge.data()['cdata'],
-          tag: edge.data()['tag']
-        }
-        if (edge.data()['cdata']) {
-          _edge.cdata = edge.data()['cdata']
+          source: this.base16.decode(source),
+          target: this.base16.decode(target),
+          cdata: edge.data()['cdata'] || "",
+          tag: edge.data()['tag'] || ""
         }
         return _edge
       })
     }
   }
 
-  gexf(_id: string, _label: string, _style: string, _rules: string): void {
-    let _graph: SysGraph = this.toSysGraph(_id, _label, _style, _rules)
-    // TODO
-    // this.clipboardService.copyTextToClipboard(this.graphsService.toGexf(_graph).join('\n'))
+  gexf(id: string, label: string, style: string, rules: string): void {
+    this.logger.info("save", id, label, style, rules)
+    let _graph: SysGraph = this.toSysGraph(id, label, style, rules)
+    let buffer = ""
+    buffer += `<?xml version="1.0" encoding="UTF-8"?>\n`
+    buffer += `<gexf xmlns="http://gexf.net/1.2" version="1.2">\n`
+    buffer += `<meta lastmodifieddate="2009-03-20">\n`
+    buffer += `<id>sample</id>\n`
+    buffer += `<description>A hello world! file</description>\n`
+    buffer += `</meta>\n`
+    buffer += `<graph mode="static" defaultedgetype="directed" style="sample" rules="sample">\n`
+    buffer += `<nodes>\n`
+    _.each(_graph.nodes, (node) => {
+      buffer += `<node id="${node.location}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}">![CDATA[\n${node.cdata}]]\n</node>\n`
+    })
+    buffer += `</nodes>\n`
+    buffer += `<edges>\n`
+    _.each(_graph.edges, (edge) => {
+      buffer += `<edge id="${edge.location}" label="${edge.label}" source="${edge.source}" target="${edge.target}">![CDATA[\n${edge.cdata}]]\n</edge>\n`
+    })
+    buffer += `</edges>\n`
+    buffer += `</graph>\n`
+    buffer += `</gexf>\n`
+    this.logger.trace("graph", buffer)
+    this.graphsServiceApi.update(id, buffer).then((result) => {
+      if (result) {
+        this.clipboardService.copyTextToClipboard(buffer)
+      }
+    })
   }
 
   graphml(_id: string, _label: string, _style: string, _rules: string): void {

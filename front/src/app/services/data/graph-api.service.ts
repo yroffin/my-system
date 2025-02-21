@@ -72,6 +72,13 @@ export class GraphApiService {
     })
   }
 
+  update(id: string, gexf: string): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      let result = await this.api.postXml(`/api/graph/gexf/${id}`, gexf);
+      resolve(true)
+    })
+  }
+
   uploadHandler(file: any, id: string, label: string): Promise<SysGraph> {
     return new Promise<SysGraph>((resolve) => {
       let reader = new FileReader();
