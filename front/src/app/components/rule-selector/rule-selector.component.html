@@ -39,11 +39,10 @@
                 <td>{{rule.location}}</td>
                 <td>{{rule.label}}</td>
                 <td>
-                    <button pButton pRipple pTooltip="Remove this rule" tooltipPosition="top" icon="pi pi-trash"
-                        (click)="confirm($event, rule)" class="p-button-danger"></button>
-                    <span>&nbsp;</span>
-                    <button pButton pRipple pTooltip="Select this ruleset" tooltipPosition="top" icon="pi pi-sign-out"
-                        (click)="selectRuleset(rule)"></button>
+                    <p-button icon="pi pi-trash" pTooltip="Remove this rule" tooltipPosition="top"
+                        (click)="confirm($event, rule)" severity="danger" rounded></p-button>
+                    <p-button icon="pi pi-sign-out" pTooltip="Select this ruleset" tooltipPosition="top"
+                        (click)="selectRuleset(rule)" severity="success" rounded></p-button>
                 </td>
             </tr>
         </ng-template>

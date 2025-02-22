@@ -65,7 +65,7 @@ public class XMLLoader {
                             logger.trace("[NODE] text: {} attrs:{}", text, map);
                             callbackData.onCompleteNode(map.get("id"), map.get("label"), Integer.parseInt(map.get("x")),
                                     Integer.parseInt(map.get("y")), map.get("alias"), map.get("group"),
-                                    map.get("tag"), map.get("cdata"));
+                                    map.get("tag"), text);
                             break;
 
                         case "edge":

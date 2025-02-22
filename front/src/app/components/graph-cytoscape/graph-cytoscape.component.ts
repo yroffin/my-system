@@ -1766,7 +1766,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         let id = edge.data()['id'] || ""
         let _edge: SysEdge = {
           id: id,
-          location: this.base16.decode(id),
+          location: `${this.base16.decode(source)}:${this.base16.decode(target)}`,
           label: edge.data()['label'] || "",
           source: this.base16.decode(source),
           target: this.base16.decode(target),
