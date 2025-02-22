@@ -7,7 +7,7 @@
     <graph mode="static" defaultedgetype="directed" th:attr="style=${graph.style}, rules=${graph.rules}">
         <nodes>
             <node th:each="node : ${nodes}" th:text="${node.cdata}"
-                th:attr="id=${node.location}, label=${node.label}, x=${node.x}, y=${node.y}, tag=${node.tag}">
+                th:attr="id=${node.location}, label=${node.label}, x=${node.x}, y=${node.y}, tag=${node.tag}, alias=${node.alias}, group=${node.group}">
             </node>
         </nodes>
         <edges>

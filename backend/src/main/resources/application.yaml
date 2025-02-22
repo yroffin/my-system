@@ -1,7 +1,7 @@
 logging:
   level:
-    org.thymeleaf: TRACE
-    org.springframework.web: DEBUG
+    org.thymeleaf: WARN
+    org.springframework.web: WARN
 spring:
   application:
     name: my-system

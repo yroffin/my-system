@@ -70,10 +70,12 @@ public class GEXFService {
                     entity.setLabel(label);
                     entity.setX(x);
                     entity.setY(y);
-                    if (alias != null)
+                    if (alias != null) {
                         entity.setAlias(alias);
-                    if (group != null)
-                        entity.setGrp(group);
+                    }
+                    if (group != null) {
+                        entity.setGroup(group);
+                    }
                     if (tag != null)
                         entity.setTag(tag);
                     if (cdata != null)

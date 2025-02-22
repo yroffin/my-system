@@ -75,6 +75,8 @@ public class ThymeleafService {
                     put("x", String.valueOf(node.getX()));
                     put("y", String.valueOf(node.getY()));
                     put("tag", node.getTag());
+                    put("group", node.getGroup());
+                    put("alias", node.getAlias());
                 }
             });
         }

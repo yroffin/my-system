@@ -50,16 +50,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: parent
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
-              - column:
-                  name: alias
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
-              - column:
                   name: cdata
                   type: varchar(255)
                   constraints:
@@ -79,16 +69,6 @@ databaseChangeLog:
                   type: integer
                   constraints:
                     nullable: false
-              - column:
-                  name: size
-                  type: integer
-                  constraints:
-                    nullable: true
-              - column:
-                  name: color
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
               - column:
                   name: tag
                   type: varchar(255)

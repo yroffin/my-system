@@ -23,24 +23,18 @@ public class SysNodeEntity implements Serializable {
     @Column(unique = true)
     private String location;
 
-    @Column(nullable = true)
-    private String parent;
     @Column(nullable = false)
     private String label;
     @Column(nullable = true)
     private String alias;
     @Column(nullable = true)
     private String cdata;
-    @Column(nullable = true)
-    private String grp;
+    @Column(nullable = true, name = "grp")
+    private String group;
     @Column(nullable = false)
     private int x;
     @Column(nullable = false)
     private int y;
-    @Column(nullable = true)
-    private int size;
-    @Column(nullable = true)
-    private String color;
     @Column(nullable = true)
     private String tag;
 

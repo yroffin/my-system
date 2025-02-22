@@ -54,7 +54,6 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SplitterModule } from 'primeng/splitter';
 import { TextareaModule } from 'primeng/textarea';
 import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown'
 import { CheckboxModule } from 'primeng/checkbox';
 import { TooltipModule } from 'primeng/tooltip';
 import { BadgeModule } from 'primeng/badge';
@@ -67,6 +66,10 @@ import { HashService } from '../../services/hash.service';
 import { StyleApiService } from '../../services/data/style-api.service';
 import { RuleApiService } from '../../services/data/rule-api.service';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 declare var cytoscape: any
 
@@ -80,8 +83,8 @@ class link {
   selector: 'app-graph-cytoscape',
   templateUrl: './graph-cytoscape.component.html',
   styleUrls: ['./graph-cytoscape.component.css'],
-  imports: [CommonModule, InputTextModule, ContextMenuModule, DockModule, BadgeModule, OverlayBadgeModule, TooltipModule,
-    CheckboxModule, DropdownModule, FormsModule, TextareaModule, TableModule, PanelModule, ToastModule, DialogModule,
+  imports: [CommonModule, FloatLabelModule, InputGroupModule, InputGroupAddonModule, SelectModule, InputTextModule, ContextMenuModule, DockModule, BadgeModule, OverlayBadgeModule, TooltipModule,
+    CheckboxModule, FormsModule, TextareaModule, TableModule, PanelModule, ToastModule, DialogModule,
     TreeTableModule, TreeModule, TabViewModule, ChartModule, ButtonModule, ToggleButtonModule, SplitterModule]
 })
 export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -981,7 +984,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Retrieve all tags
-        let allTags: any = _.uniq(_.map(_.filter((await this.styleApiService.findOne(this.currentStyle))?.tags, (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
+        let allTags: any = _.uniq(_.map(_.filter((await this.styleApiService.findByLocation(this.currentStyle))?.tags, (tag) => tag.label && tag.selector == 'node'), (tag: any) => {
           return {
             label: tag.label,
             value: tag.label
@@ -1788,7 +1791,7 @@ export class GraphCytoscapeComponent implements OnInit, AfterViewInit, OnDestroy
     buffer += `<graph mode="static" defaultedgetype="directed" style="sample" rules="sample">\n`
     buffer += `<nodes>\n`
     _.each(_graph.nodes, (node) => {
-      buffer += `<node id="${node.location}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}">![CDATA[\n${node.cdata}]]\n</node>\n`
+      buffer += `<node id="${node.location}" label="${node.label}" x="${node.x}" y="${node.y}" tag="${node.tag}" group="${node.group}" alias="${node.alias}">![CDATA[\n${node.cdata}]]\n</node>\n`
     })
     buffer += `</nodes>\n`
     buffer += `<edges>\n`

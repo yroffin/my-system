@@ -59,57 +59,70 @@
 </div>
 
 <p-dialog header="Current node" [(visible)]="displaySelectionNode" [modal]="true" (onHide)="onHide()"
-    [maximizable]="true" [style]="{width: '100vw', height: '42vw'}" [draggable]="true" [resizable]="false">
+    [maximizable]="true" [style]="{width: '80vw', height: '42vw'}" [draggable]="true" [resizable]="false">
     <div *ngIf="currentSelectedNode" class="grid p-fluid">
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-bookmark"
-                        pTooltip="Internal ID to override current ID on next save or diagram export"
-                        tooltipPosition="top"></i></span>
-                <input type="text" [(ngModel)]="captureData.clone" pInputText placeholder="">
-                <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" label="Labelize"
-                    styleClass="p-button-text" pTooltip="Rebuild id with tag and label" tooltipPosition="top">
-                </p-button>
-            </div>
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-bookmark" severity="secondary" pTooltip="Location" tooltipPosition="top" />
+                </p-inputgroup-addon>
+                <p-floatlabel>
+                    <input pInputText id="node_clone" type="text" [(ngModel)]="captureData.clone" placeholder="">
+                    <label for="node_clone">Clone</label>
+                </p-floatlabel>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-check" (click)="applyLabelize(captureData)" severity="success"
+                        pTooltip="Rebuild id with tag and label" tooltipPosition="top" />
+                </p-inputgroup-addon>
+            </p-inputgroup>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-hashtag" pTooltip="Label"
-                        tooltipPosition="top"></i></span>
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-hashtag" severity="secondary" pTooltip="Label" tooltipPosition="top" />
+                </p-inputgroup-addon>
                 <input type="text" [(ngModel)]="captureData.label" pInputText placeholder="">
-            </div>
+            </p-inputgroup>
         </div>
         <div class="col-12">
-            <div pTooltip="Alias" tooltipPosition="top">
-                <p-dropdown class="p-col" scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-exclamation-circle" severity="secondary" pTooltip="Alias"
+                        tooltipPosition="top" />
+                </p-inputgroup-addon>
+                <p-select scrollHeight="120px" [options]="allNodes" [(ngModel)]="captureData.alias"
                     [style]="{width: '100%'}" defaultLabel="Select an alias" [filter]="true" [showClear]="true"
                     filterBy="label">
-                </p-dropdown>
-            </div>
+                </p-select>
+            </p-inputgroup>
         </div>
         <div class="col-12">
-            <div pTooltip="Tags" tooltipPosition="top">
-                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-tags" severity="secondary" pTooltip="Tags" tooltipPosition="top" />
+                </p-inputgroup-addon>
+                <p-select scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
                     [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
                     filterBy="label">
-                </p-dropdown>
-            </div>
+                </p-select>
+            </p-inputgroup>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-clone" pTooltip="Group"
-                        tooltipPosition="top"></i></span>
-                <input type="text" [(ngModel)]="captureData.group" pInputText placeholder="">
-            </div>
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-share-alt" severity="secondary" pTooltip="Group" tooltipPosition="top" />
+                </p-inputgroup-addon>
+                <input pInputText [(ngModel)]="captureData.group" placeholder="Group name" />
+            </p-inputgroup>
         </div>
         <div class="col-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon" pTooltip="Locked item ?" tooltipPosition="top">
-                    <p-checkbox [(ngModel)]="_lockedElement" [binary]="true" inputId="binary"
-                        (onChange)="handleChangeLock($event)"></p-checkbox>
-                </span>
-                <input type="text" pInputText placeholder="Locked" readonly="true">
-            </div>
+            <p-inputgroup>
+                <p-inputgroup-addon>
+                    <p-button icon="pi pi-lock" severity="secondary" pTooltip="Lock" tooltipPosition="top" />
+                </p-inputgroup-addon>
+                <input type="text" pInputText placeholder="Locked" readonly="true" />
+                <p-inputgroup-addon><p-checkbox [(ngModel)]="_lockedElement" [binary]="true" /></p-inputgroup-addon>
+            </p-inputgroup>
         </div>
     </div>
     <ng-template pTemplate="footer">
@@ -130,10 +143,10 @@
         </div>
         <div class="col-12">
             <div pTooltip="Tags" tooltipPosition="top">
-                <p-dropdown scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
+                <p-select scrollHeight="120px" [options]="captureData.tags" [(ngModel)]="captureData.tag"
                     [style]="{width: '100%'}" defaultLabel="Select a tag" [filter]="true" [showClear]="true"
                     filterBy="label">
-                </p-dropdown>
+                </p-select>
             </div>
         </div>
         <div class="col-12">
@@ -164,18 +177,18 @@
     <div class="grid p-fluid">
         <div class="col-12">
             <div pTooltip="Styles" tooltipPosition="top">
-                <p-dropdown scrollHeight="120px" [options]="captureData.styles" [(ngModel)]="captureData.style"
+                <p-select scrollHeight="120px" [options]="captureData.styles" [(ngModel)]="captureData.style"
                     [style]="{width: '100%'}" defaultLabel="Select a style" [filter]="true" [showClear]="true"
                     filterBy="label">
-                </p-dropdown>
+                </p-select>
             </div>
         </div>
         <div class="col-12">
             <div pTooltip="Rules" tooltipPosition="top">
-                <p-dropdown scrollHeight="120px" [options]="captureData.rules" [(ngModel)]="captureData.rule"
+                <p-select scrollHeight="120px" [options]="captureData.rules" [(ngModel)]="captureData.rule"
                     [style]="{width: '100%'}" defaultLabel="Select a ruleset" [filter]="true" [showClear]="true"
                     filterBy="label">
-                </p-dropdown>
+                </p-select>
             </div>
         </div>
     </div>
